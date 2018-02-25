@@ -1,13 +1,9 @@
 
 #include <string>
 #include <vector>
-#include <chrono>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
 
 namespace flightkml {
-
-typedef std::chrono::system_clock::time_point time_point;
-
-
 
 /**
  * The position of an aircraft during a flight
@@ -15,11 +11,15 @@ typedef std::chrono::system_clock::time_point time_point;
 class Point {
 private:
     /** Time, UTC */
-    time_point _time;
+    boost::posix_time::ptime _time;
     /** Latitude, degrees */
     double _latitude;
     /** Longitude, degrees */
     double _longitude;
+    /** Altitude above mean sea level, meters */
+    double _altitude;
+public:
+    Point(boost::posix_time::ptime time, double latitude, double longitude, double altitude);
 };
 
 /**
