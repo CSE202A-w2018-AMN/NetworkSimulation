@@ -26,6 +26,13 @@ public:
 
     /** Returns the points in this flight */
     const std::vector<Point>& points() const;
+
+    /**
+     * Returns the departure time of this flight
+     *
+     * If the flight has no points, a default-constructed ptime is returned.
+     */
+    boost::posix_time::ptime departure_time() const;
 };
 
 }
