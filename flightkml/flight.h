@@ -1,26 +1,11 @@
-
+#ifndef FLIGHTKML_FLIGHT_H
+#define FLIGHTKML_FLIGHT_H
 #include <string>
 #include <vector>
-#include <boost/date_time/posix_time/posix_time_types.hpp>
+
+#include "point.h"
 
 namespace flightkml {
-
-/**
- * The position of an aircraft during a flight
- */
-class Point {
-private:
-    /** Time, UTC */
-    boost::posix_time::ptime _time;
-    /** Latitude, degrees */
-    double _latitude;
-    /** Longitude, degrees */
-    double _longitude;
-    /** Altitude above mean sea level, meters */
-    double _altitude;
-public:
-    Point(boost::posix_time::ptime time, double latitude, double longitude, double altitude);
-};
 
 /**
  * Information about a flight
@@ -30,6 +15,7 @@ private:
     /** The points that define this flight */
     std::vector<Point> _points;
 
+    /** Creates a Flight from a vector of points */
     Flight(std::vector<Point>&& points);
 public:
     /**
@@ -43,3 +29,5 @@ public:
 };
 
 }
+
+#endif

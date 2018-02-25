@@ -1,6 +1,15 @@
 
 set(FLIGHTKML_TARGET flightkml)
-set(SOURCES flightkml.cpp flightkml.h)
+set(SOURCES
+    flight.cpp
+    flight.h
+    point.cpp
+    point.h
+    detail/flight_sax_parser.cpp
+    detail/flight_sax_parser.h
+    detail/lat_lon_alt.cpp
+    detail/lat_lon_alt.h
+)
 
 set(CMAKE_CXX_STANDARD 11)
 
