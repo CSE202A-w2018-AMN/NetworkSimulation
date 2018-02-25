@@ -37,6 +37,9 @@ public:
      * The FlightAware website provides such files for download.
      */
     static Flight read_from_kml(const std::string& path);
+
+    /** Returns the points in this flight */
+    const std::vector<Point>& points() const;
 };
 
 }

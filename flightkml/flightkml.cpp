@@ -2,6 +2,8 @@
 
 #include <libxml++/libxml++.h>
 
+#include <boost/date_time.hpp>
+
 #include <iostream>
 #include <stdexcept>
 #include <vector>
@@ -36,7 +38,6 @@ struct LatLonAlt {
      * On failure, returns -1 and writes an error message to error
      */
     static int from_string(const Glib::ustring& s, LatLonAlt* result, std::string* error) {
-        std::cout << s << '\n';
         std::stringstream stream(s);
         stream >> result->latitude;
         if (!stream) {
@@ -70,7 +71,7 @@ private:
     /** Latitude/longitude/altitude entries */
     std::vector<LatLonAlt> _lat_lon_alt;
     /** Time entries, in UTC */
-    std::vector<std::tm> _time;
+    std::vector<boost::posix_time::ptime> _time;
 
     // Parsing state
     /** In a <gx:Track> element */
@@ -97,7 +98,7 @@ public:
     const std::vector<LatLonAlt> lat_lon_alt() const {
         return _lat_lon_alt;
     }
-    const std::vector<std::tm> time() const {
+    const std::vector<boost::posix_time::ptime> time() const {
         return _time;
     }
 
@@ -147,13 +148,17 @@ protected:
     }
     virtual void on_characters(const Glib::ustring& text) override {
         if (_in_track && _in_when) {
-            std::tm time;
-            std::string error;
-            const auto status = parse_time(text, &time, &error);
-            if (status == 0) {
+
+            boost::posix_time::ptime time;
+            boost::posix_time::time_input_facet* tif = new boost::posix_time::time_input_facet;
+            tif->set_iso_extended_format();
+            std::istringstream iss(text);
+            iss.imbue(std::locale(std::locale::classic(), tif));
+            iss >> time;
+            if (iss) {
                 _time.push_back(time);
             } else {
-                _errors.push_back(error);
+                _errors.push_back("Invalid time format");
             }
         }
         if (_in_track && _in_coord) {
@@ -175,27 +180,6 @@ protected:
     }
     virtual void on_fatal_error(const Glib::ustring& text) override {
         _fatal_errors.push_back(text);
-    }
-
-private:
-    /**
-     * Parses an ISO 8601 time string (in the format 2018-02-24T09:59:46Z)
-     * and stores it in the provided tm object
-     *
-     * Returns 0 on success and writes to the provided tm object
-     * Returns -1 on failure and writes an error message to the provided error
-     * string
-     */
-    static int parse_time(const std::string& time_string, std::tm* time, std::string* error) {
-        std::memset(time, 0x0, sizeof *time);
-        std::stringstream stream(time_string);
-        stream >> std::get_time(time, "%Y-%m-%dT%H:%M:%SZ");
-        if (stream) {
-            return 0;
-        } else {
-            *error = "Invalid date/time format";
-            return -1;
-        }
     }
 };
 
@@ -228,10 +212,15 @@ Flight Flight::read_from_kml(const std::string& path) {
     std::vector<Point> points;
     points.reserve(point_count);
     for (std::size_t i = 0; i < point_count; i++) {
-        // Convert time to
+        const auto point = Point(time[i], lla[i].latitude, lla[i].longitude, lla[i].altitude);
+        points.emplace_back(std::move(point));
     }
 
     return Flight(std::move(points));
+}
+
+const std::vector<Point>& Flight::points() const {
+    return _points;
 }
 
 }
