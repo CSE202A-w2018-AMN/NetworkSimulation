@@ -1,7 +1,7 @@
 #ifndef FLIGHTKML_DETAIL_FLIGHT_SAX_PARSER_H
 #define FLIGHTKML_DETAIL_FLIGHT_SAX_PARSER_H
 
-#include <libxml++/libxml++.h>
+#include <libxml++/parsers/saxparser.h>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <vector>
 
