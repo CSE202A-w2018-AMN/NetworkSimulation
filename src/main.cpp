@@ -1,4 +1,10 @@
 
+#include <iostream>
+
+#include <boost/date_time/posix_time/posix_time.hpp>
+
+#include "flight_load.h"
+
 #include "ns3/core-module.h"
 #include "ns3/network-module.h"
 #include "ns3/internet-module.h"
@@ -7,7 +13,17 @@
 
 NS_LOG_COMPONENT_DEFINE ("FirstScriptExample");
 
-int main() {
+int main(int argc, char** argv) {
+    if (argc != 2) {
+        std::cerr << "Usage: simulation kml-folder-path\n";
+        return -1;
+    }
+
+    const auto flights = load_flights(argv[1]);
+    std::cout << "Read " << flights.flights().size() << " flights\n";
+    std::cout << "Earliest departure time: " << flights.first_departure_time() << '\n';
+    std::cout << "Latest arrival time: " << flights.last_arrival_time() << '\n';
+
     ns3::Time::SetResolution(ns3::Time::NS);
 
     ns3::LogComponentEnable("UdpEchoClientApplication", ns3::LOG_LEVEL_INFO);

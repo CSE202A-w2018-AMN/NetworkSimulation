@@ -33,6 +33,13 @@ public:
      * If the flight has no points, a default-constructed ptime is returned.
      */
     boost::posix_time::ptime departure_time() const;
+
+    /**
+     * Returns the arrival time of this flight
+     *
+     * If the flight has no points, a default-constructed ptime is returned.
+     */
+     boost::posix_time::ptime arrival_time() const;
 };
 
 }

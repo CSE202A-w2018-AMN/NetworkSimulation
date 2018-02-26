@@ -52,10 +52,18 @@ const std::vector<Point>& Flight::points() const {
 }
 
 boost::posix_time::ptime Flight::departure_time() const {
-    if (_points.size() == 0) {
+    if (_points.empty()) {
         return boost::posix_time::ptime();
     } else {
-        return _points[0].time();
+        return _points.front().time();
+    }
+}
+
+boost::posix_time::ptime Flight::arrival_time() const {
+    if (_points.empty()) {
+        return boost::posix_time::ptime();
+    } else {
+        return _points.back().time();
     }
 }
 
