@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 11)
 # Main package
 
 # NS3
-find_package(NS3 3.26 REQUIRED COMPONENTS core network internet point-to-point applications mobility)
+find_package(NS3 3.26 REQUIRED COMPONENTS core network internet point-to-point applications mobility csma)
 
 find_package(Boost REQUIRED COMPONENTS filesystem)
 

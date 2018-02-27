@@ -10,8 +10,8 @@
 #include "ns3/core-module.h"
 #include "ns3/network-module.h"
 #include "ns3/internet-module.h"
-#include "ns3/point-to-point-module.h"
 #include "ns3/applications-module.h"
+#include "ns3/csma-module.h"
 
 #include <ns3/mobility-helper.h>
 
@@ -25,7 +25,9 @@ int main(int argc, char** argv) {
 
     // Simulation configuration
     ns3::Time::SetResolution(ns3::Time::NS);
-    ns3::LogComponentEnable("MobilityHelper", ns3::LOG_LEVEL_DEBUG);
+    ns3::LogComponentEnable("MobilityHelper", ns3::LOG_ALL);
+    ns3::LogComponentEnable("UdpEchoClientApplication", ns3::LOG_LEVEL_INFO);
+    ns3::LogComponentEnable("UdpEchoServerApplication", ns3::LOG_LEVEL_INFO);
 
     // Read flights
     const auto flights = load_flights(argv[1]);
@@ -51,6 +53,38 @@ int main(int argc, char** argv) {
         assert(!!mobility_model);
         // Fill in waypoints
         fill_flight_waypoints(flight, first_departure, ns3::PeekPointer(mobility_model));
+    }
+
+    // Connect all aircraft over a bus with CSMA (temporarily)
+    ns3::CsmaHelper csma;
+    csma.SetChannelAttribute("DataRate", ns3::StringValue("100Mbps"));
+    csma.SetChannelAttribute("Delay", ns3::TimeValue(ns3::MilliSeconds(100)));
+    ns3::NetDeviceContainer csmaDevices = csma.Install(nodes);
+
+    // Addressing
+    ns3::InternetStackHelper stack;
+    stack.Install(nodes);
+    ns3::Ipv4AddressHelper address_helper;
+    address_helper.SetBase("10.0.0.0", "255.0.0.0");
+    ns3::Ipv4InterfaceContainer interfaces = address_helper.Assign(csmaDevices);
+
+    // Set up an echo server on flight 0, and an echo client on 1
+    if (nodes.GetN() != 0) {
+        ns3::UdpEchoServerHelper echoServer(9000);
+        ns3::ApplicationContainer serverApps = echoServer.Install(nodes.Get(0));
+        serverApps.Start(ns3::Seconds(0));
+        serverApps.Stop(ns3::Hours(1));
+    }
+
+    if (nodes.GetN() >= 2) {
+        ns3::UdpEchoClientHelper client(interfaces.GetAddress(0), 9000);
+        client.SetAttribute("MaxPackets", ns3::UintegerValue(10));
+        client.SetAttribute("Interval", ns3::TimeValue(ns3::Minutes(1)));
+        client.SetAttribute("PacketSize", ns3::UintegerValue(512));
+
+        ns3::ApplicationContainer clientApps = client.Install(nodes.Get(1));
+        clientApps.Start(ns3::Seconds(0));
+        clientApps.Stop(ns3::Hours(1));
     }
 
     // ns3::Time::SetResolution(ns3::Time::NS);
