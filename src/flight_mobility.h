@@ -5,8 +5,8 @@
 #include <flightkml/flight.h>
 
 /**
- * Creates a WaypointMobilityModel for a flight
+ * Fills a WaypointMobilityModel with waypoints from a flight
  */
-ns3::WaypointMobilityModel create_flight_mobility_model(const flightkml::Flight& flight);
+void fill_flight_waypoints(const flightkml::Flight& flight, ns3::WaypointMobilityModel* model);
 
 #endif

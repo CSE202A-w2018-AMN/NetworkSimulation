@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <cassert>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -12,7 +13,9 @@
 #include "ns3/point-to-point-module.h"
 #include "ns3/applications-module.h"
 
-NS_LOG_COMPONENT_DEFINE ("FirstScriptExample");
+#include <ns3/mobility-helper.h>
+
+NS_LOG_COMPONENT_DEFINE ("AircraftMeshSimulation");
 
 int main(int argc, char** argv) {
     if (argc != 2) {
@@ -22,7 +25,9 @@ int main(int argc, char** argv) {
 
     // Simulation configuration
     ns3::Time::SetResolution(ns3::Time::NS);
+    ns3::LogComponentEnable("MobilityHelper", ns3::LOG_LEVEL_DEBUG);
 
+    // Read flights
     const auto flights = load_flights(argv[1]);
     std::cout << "Read " << flights.flights().size() << " flights\n";
     std::cout << "Earliest departure time: " << flights.first_departure_time() << '\n';
@@ -30,6 +35,22 @@ int main(int argc, char** argv) {
     // Set up a node for each flight
     ns3::NodeContainer nodes;
     nodes.Create(flights.flights().size());
+
+    // Set up mobility helper, which allocates a WaypointMobilityModel
+    // for each flight
+    ns3::MobilityHelper mobility;
+    mobility.SetMobilityModel("ns3::WaypointMobilityModel");
+    mobility.Install(nodes);
+
+    // Per-flight setup
+    for (std::size_t i = 0; i < flights.flights().size(); i++) {
+        auto node = nodes.Get(i);
+        const auto& flight = flights.flights()[i];
+        auto mobility_model = node->GetObject<ns3::WaypointMobilityModel>();
+        assert(!!mobility_model);
+        // Fill in waypoints
+        fill_flight_waypoints(flight, ns3::PeekPointer(mobility_model));
+    }
 
     // ns3::Time::SetResolution(ns3::Time::NS);
     //
