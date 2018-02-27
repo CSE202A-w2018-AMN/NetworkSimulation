@@ -29,8 +29,9 @@ int main(int argc, char** argv) {
 
     // Read flights
     const auto flights = load_flights(argv[1]);
+    const auto first_departure = flights.first_departure_time();
     std::cout << "Read " << flights.flights().size() << " flights\n";
-    std::cout << "Earliest departure time: " << flights.first_departure_time() << '\n';
+    std::cout << "Earliest departure time: " << first_departure << '\n';
     std::cout << "Latest arrival time: " << flights.last_arrival_time() << '\n';
     // Set up a node for each flight
     ns3::NodeContainer nodes;
@@ -49,7 +50,7 @@ int main(int argc, char** argv) {
         auto mobility_model = node->GetObject<ns3::WaypointMobilityModel>();
         assert(!!mobility_model);
         // Fill in waypoints
-        fill_flight_waypoints(flight, ns3::PeekPointer(mobility_model));
+        fill_flight_waypoints(flight, first_departure, ns3::PeekPointer(mobility_model));
     }
 
     // ns3::Time::SetResolution(ns3::Time::NS);
