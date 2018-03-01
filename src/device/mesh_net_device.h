@@ -49,6 +49,7 @@ public:
      */
     void SetSendCallback(send_callback callback);
     void SetMobilityModel(ns3::Ptr<ns3::MobilityModel> mobility);
+    ns3::Ptr<ns3::MobilityModel> GetMobilityModel();
 
     static ns3::TypeId GetTypeId();
 

@@ -33,7 +33,7 @@ void AdsBSender::SendMessage() {
     NS_LOG_FUNCTION(this);
     NS_LOG_INFO(ns3::Simulator::Now() << " ADS-B sending message");
     if (_net_device) {
-        const auto packet = ns3::Packet(8);
+        const auto packet = ns3::Packet(reinterpret_cast<const std::uint8_t*>("ADSB"), 4);
         _net_device->Send(packet, IcaoAddress(0xffffff));
     } else {
         NS_LOG_WARN("No network device to send on");

@@ -42,8 +42,13 @@ void MeshNetDevice::SetMobilityModel(ns3::Ptr<ns3::MobilityModel> mobility) {
     _mobility = mobility;
 }
 
+ns3::Ptr<ns3::MobilityModel> MeshNetDevice::GetMobilityModel() {
+    return _mobility;
+}
+
 void MeshNetDevice::Receive(ns3::Packet packet) {
     NS_LOG_FUNCTION(this << packet);
+    NS_LOG_INFO("Received packet " << packet);
 }
 
 ns3::TypeId MeshNetDevice::GetTypeId() {

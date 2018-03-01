@@ -14,8 +14,16 @@ private:
      * The network devices that communicate over this medium
      */
     std::vector<ns3::Ptr<MeshNetDevice>> _devices;
+
+    /**
+     * Maximum transmission range, meters
+     */
+    double _range;
 public:
-    Ether() = default;
+    /**
+     * Creates an Ether with unlimited range
+     */
+    Ether();
 
     /**
      * Creates an Ether from a start iterator and a past-end iterator that yield
@@ -29,6 +37,9 @@ public:
             device->SetSendCallback(std::bind(&Ether::OnSend, this, std::placeholders::_1, std::placeholders::_2));
         }
     }
+
+    void SetRange(double range);
+    double GetRange() const;
 
     void AddDevice(ns3::Ptr<MeshNetDevice> device);
 

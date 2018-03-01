@@ -76,6 +76,7 @@ ns3::NodeContainer create_ground_stations() {
     ns3::MobilityHelper mobility;
     mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
     mobility.Install(nodes);
+    const auto node = nodes.Get(0);
 
     // Create a node in Iceland
     const auto iceland_latitude = 64.1241;
@@ -87,7 +88,14 @@ ns3::NodeContainer create_ground_stations() {
         iceland_altitude,
         ns3::GeographicPositions::WGS84);
     NS_LOG_INFO("Position of Iceland ground station: " << iceland_ecec);
-    nodes.Get(0)->GetObject<ns3::MobilityModel>()->SetPosition(iceland_ecec);
+    node->GetObject<ns3::MobilityModel>()->SetPosition(iceland_ecec);
+    // Network interface
+    const IcaoAddress address(0x800000);
+    NS_LOG_INFO("Iceland ground station: address " << address);
+    const ns3::Ptr<MeshNetDevice> device = ns3::CreateObject<MeshNetDevice>();
+    device->SetAddress(address);
+    device->SetMobilityModel(node->GetObject<ns3::MobilityModel>());
+    node->AggregateObject(device);
 
     return nodes;
 }
@@ -112,7 +120,12 @@ int main(int argc, char** argv) {
 
     // Create ether
     Ether ether;
+    // 1000 km
+    ether.SetRange(1e6);
     for (auto iter = aircraft.Begin(); iter != aircraft.End(); ++iter) {
+        ether.AddDevice((*iter)->GetObject<MeshNetDevice>());
+    }
+    for (auto iter = ground_stations.Begin(); iter != ground_stations.End(); ++iter) {
         ether.AddDevice((*iter)->GetObject<MeshNetDevice>());
     }
 
