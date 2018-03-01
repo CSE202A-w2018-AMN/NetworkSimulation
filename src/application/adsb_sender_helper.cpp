@@ -21,6 +21,7 @@ ns3::ApplicationContainer AdsBSenderHelper::Install(ns3::NodeContainer nodes) {
         ns3::Ptr<ns3::Node> node = *iter;
         auto application = ns3::CreateObject<AdsBSender>();
         application->SetInterval(_interval);
+        application->SetNetDevice(node->GetObject<MeshNetDevice>());
         node->AddApplication(application);
         apps.Add(application);
     }

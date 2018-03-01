@@ -1,5 +1,6 @@
 #include "adsb_sender.h"
 #include <ns3/log.h>
+#include <ns3/packet.h>
 #include <ns3/simulator.h>
 
 NS_LOG_COMPONENT_DEFINE("AdsBSender");
@@ -11,6 +12,11 @@ ns3::TimeValue AdsBSender::GetInterval() const {
 void AdsBSender::SetInterval(const ns3::TimeValue& interval) {
     NS_LOG_FUNCTION(this << interval.Get());
     _interval = interval;
+}
+
+void AdsBSender::SetNetDevice(ns3::Ptr<MeshNetDevice> net_device) {
+    NS_LOG_FUNCTION(this << net_device);
+    _net_device = net_device;
 }
 
 void AdsBSender::StartApplication() {
@@ -26,7 +32,12 @@ void AdsBSender::StopApplication() {
 void AdsBSender::SendMessage() {
     NS_LOG_FUNCTION(this);
     NS_LOG_INFO(ns3::Simulator::Now() << " ADS-B sending message");
-
+    if (_net_device) {
+        const auto packet = ns3::Packet(8);
+        _net_device->Send(packet, IcaoAddress(0xffffff));
+    } else {
+        NS_LOG_WARN("No network device to send on");
+    }
     _send_event = ns3::Simulator::Schedule(_interval.Get(), &AdsBSender::SendMessage, this);
 }
 

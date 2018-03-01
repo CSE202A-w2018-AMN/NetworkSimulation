@@ -9,6 +9,7 @@
 #include "address/icao_address.h"
 #include "device/mesh_net_device.h"
 #include "application/adsb_sender_helper.h"
+#include "ether/ether.h"
 
 #include <ns3/node-container.h>
 #include <ns3/mobility-helper.h>
@@ -51,12 +52,14 @@ ns3::NodeContainer create_aircraft(const std::string& kml_path) {
         // Fill in waypoints
         fill_flight_waypoints(flight, first_departure, ns3::PeekPointer(mobility_model));
 
-        // Address
+        // Address and network device
         const IcaoAddress address(static_cast<std::uint32_t>(i));
         NS_LOG_INFO("Flight " << i << ": address " << address);
         const ns3::Ptr<MeshNetDevice> device = ns3::CreateObject<MeshNetDevice>();
-        device->set_address(address);
+        device->SetAddress(address);
+        device->SetMobilityModel(mobility_model);
         node->AggregateObject(device);
+
     }
 
     return nodes;
@@ -102,11 +105,16 @@ int main(int argc, char** argv) {
     ns3::LogComponentEnable("AircraftMeshSimulation", ns3::LOG_ALL);
     ns3::LogComponentEnable("MeshNetDevice", ns3::LOG_ALL);
     ns3::LogComponentEnable("AdsBSender", ns3::LOG_INFO);
+    ns3::LogComponentEnable("Ether", ns3::LOG_INFO);
 
     auto aircraft = create_aircraft(argv[1]);
     auto ground_stations = create_ground_stations();
 
-
+    // Create ether
+    Ether ether;
+    for (auto iter = aircraft.Begin(); iter != aircraft.End(); ++iter) {
+        ether.AddDevice((*iter)->GetObject<MeshNetDevice>());
+    }
 
     // Create applications
     AdsBSenderHelper sender_helper(ns3::Seconds(10));
