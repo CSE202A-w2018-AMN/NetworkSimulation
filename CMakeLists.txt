@@ -42,6 +42,8 @@ set(SOURCES
     src/application/adsb_sender_helper.cpp
     src/ether/ether.h
     src/ether/ether.cpp
+    src/network/olsr.h
+    src/network/olsr.cpp
 )
 
 add_executable(${TARGET} ${SOURCES})
