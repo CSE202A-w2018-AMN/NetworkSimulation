@@ -17,6 +17,11 @@ public:
     explicit IcaoAddress(std::uint32_t address);
 
     /**
+     * Returns the broadcast address, 0xffffff
+     */
+    static IcaoAddress Broadcast();
+
+    /**
      * Creates a zero address
      */
     IcaoAddress();
@@ -41,6 +46,11 @@ public:
      * Writes an address to a stream
      */
     friend  std::ostream& operator << (std::ostream& stream, const IcaoAddress& address);
+
+    /** Compares addresses */
+    friend bool operator == (const IcaoAddress& a1, const IcaoAddress& a2);
+    /** Compares addresses */
+    friend bool operator < (const IcaoAddress& lhs, const IcaoAddress& rhs);
 
 private:
     /**

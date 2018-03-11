@@ -7,6 +7,8 @@
 /**
  * A mesh packet header
  *
+ * This is a link-layer header, used for individual messages between nodes.
+ * Other headers are used for the network.
  *
  * Header format:
  * Source address, 24 bits, network byte order

@@ -24,6 +24,8 @@ endif()
 set(TARGET simulation)
 set(SOURCES
     src/main.cpp
+    src/util/bits.h
+    src/util/bits.cpp
     src/flight_mobility.h
     src/flight_mobility.cpp
     src/flight_group.h
@@ -42,8 +44,12 @@ set(SOURCES
     src/application/adsb_sender_helper.cpp
     src/ether/ether.h
     src/ether/ether.cpp
-    src/network/olsr.h
-    src/network/olsr.cpp
+    src/network/olsr/olsr.h
+    src/network/olsr/olsr.cpp
+    src/network/olsr/header.h
+    src/network/olsr/header.cpp
+    src/network/olsr/message.h
+    src/network/olsr/message.cpp
 )
 
 add_executable(${TARGET} ${SOURCES})

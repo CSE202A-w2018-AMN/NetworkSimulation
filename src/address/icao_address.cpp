@@ -10,6 +10,10 @@ IcaoAddress::IcaoAddress() :
 {
 }
 
+IcaoAddress IcaoAddress::Broadcast() {
+    return IcaoAddress(0xffffff);
+}
+
 std::uint32_t IcaoAddress::Value() const {
     return _address;
 }
@@ -33,4 +37,12 @@ std::uint8_t IcaoAddress::GetType() {
 std::ostream& operator << (std::ostream& stream, const IcaoAddress& address) {
     stream << std::hex << "0x" << address._address;
     return stream;
+}
+
+bool operator == (const IcaoAddress& a1, const IcaoAddress& a2) {
+    return a1._address == a2._address;
+}
+
+bool operator < (const IcaoAddress& lhs, const IcaoAddress& rhs) {
+    return lhs._address < rhs._address;
 }

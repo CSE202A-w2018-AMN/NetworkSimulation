@@ -1,29 +1,5 @@
 #include "mesh_header.h"
-
-namespace {
-
-/**
- * Reads a 24-bit integer from the provided iterator in network byte order
- * and returns it
- */
-std::uint32_t read_u24_ntoh(ns3::Buffer::Iterator* source) {
-    std::uint32_t bits = 0;
-    bits |= static_cast<std::uint32_t>(source->ReadU8()) << 16;
-    bits |= static_cast<std::uint32_t>(source->ReadU8()) << 8;
-    bits |= static_cast<std::uint32_t>(source->ReadU8());
-    return bits;
-}
-
-/**
- * Writes a 24-bit integer to the provided iterator in network byte order
- */
-void write_u24_ntoh(ns3::Buffer::Iterator* dest, std::uint32_t bits) {
-    dest->WriteU8(static_cast<std::uint8_t>(bits >> 16));
-    dest->WriteU8(static_cast<std::uint8_t>(bits >> 8));
-    dest->WriteU8(static_cast<std::uint8_t>(bits));
-}
-
-}
+#include "util/bits.h"
 
 MeshHeader::MeshHeader() :
     MeshHeader(IcaoAddress(), IcaoAddress())
@@ -60,8 +36,8 @@ void MeshHeader::Print(std::ostream& os) const {
 }
 
 std::uint32_t MeshHeader::Deserialize(ns3::Buffer::Iterator start) {
-    _source = IcaoAddress(read_u24_ntoh(&start));
-    _destination = IcaoAddress(read_u24_ntoh(&start));
+    _source = IcaoAddress(bits::read_u24(&start));
+    _destination = IcaoAddress(bits::read_u24(&start));
     return 6;
 }
 
@@ -70,6 +46,6 @@ std::uint32_t MeshHeader::GetSerializedSize() const {
 }
 
 void MeshHeader::Serialize(ns3::Buffer::Iterator start) const {
-    write_u24_ntoh(&start, _source.Value());
-    write_u24_ntoh(&start, _destination.Value());
+    bits::write_u24(&start, _source.Value());
+    bits::write_u24(&start, _destination.Value());
 }
