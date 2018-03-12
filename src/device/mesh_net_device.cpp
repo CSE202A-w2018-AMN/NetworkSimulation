@@ -27,7 +27,7 @@ void MeshNetDevice::Send(ns3::Packet packet, IcaoAddress destination) {
     MeshHeader header(_address, destination);
     packet.AddHeader(header);
     if (_send_callback) {
-        _send_callback(position, packet);
+        _send_callback(this, position, packet);
     } else {
         NS_LOG_INFO("No send callback set, not sending packet");
     }

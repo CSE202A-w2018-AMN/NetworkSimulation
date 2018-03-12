@@ -12,19 +12,22 @@ Ether::Ether() :
 
 void Ether::AddDevice(ns3::Ptr<MeshNetDevice> device) {
     NS_LOG_FUNCTION(this << device);
-    device->SetSendCallback(std::bind(&Ether::OnSend, this, std::placeholders::_1, std::placeholders::_2));
+    device->SetSendCallback(std::bind(&Ether::OnSend, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     _devices.push_back(device);
 }
 
-void Ether::OnSend(const ns3::Vector& position, ns3::Packet packet) {
+void Ether::OnSend(const MeshNetDevice* sender, const ns3::Vector& position, ns3::Packet packet) {
     NS_LOG_FUNCTION(this << position << packet);
     NS_LOG_INFO("Ether send " << position << packet);
     // Find all devices in range
     for (auto& other_device : _devices) {
-        const auto other_position = other_device->GetMobilityModel()->GetPosition();
-        const auto distance = ns3::CalculateDistance(position, other_position);
-        if (distance <= _range) {
-            other_device->Receive(packet);
+        // Sender does not receive
+        if (other_device != sender) {
+            const auto other_position = other_device->GetMobilityModel()->GetPosition();
+            const auto distance = ns3::CalculateDistance(position, other_position);
+            if (distance <= _range) {
+                other_device->Receive(packet);
+            }
         }
     }
 }

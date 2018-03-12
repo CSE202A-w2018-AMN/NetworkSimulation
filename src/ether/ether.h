@@ -34,7 +34,7 @@ public:
         _devices(start, end)
     {
         for (auto& device : _devices) {
-            device->SetSendCallback(std::bind(&Ether::OnSend, this, std::placeholders::_1, std::placeholders::_2));
+            device->SetSendCallback(std::bind(&Ether::OnSend, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
         }
     }
 
@@ -47,7 +47,7 @@ private:
     /**
      * Called from network devices when messages are sent
      */
-    void OnSend(const ns3::Vector& position, ns3::Packet packet);
+    void OnSend(const MeshNetDevice* sender, const ns3::Vector& position, ns3::Packet packet);
 };
 
 #endif

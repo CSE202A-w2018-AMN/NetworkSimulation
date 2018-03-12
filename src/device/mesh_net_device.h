@@ -19,7 +19,7 @@ public:
      * @param position the position of the sender
      * @param packet the packet that was sent, including mesh headers
      */
-    typedef std::function<void (const ns3::Vector& position, ns3::Packet packet)> send_callback;
+    typedef std::function<void (const MeshNetDevice* sender, const ns3::Vector& position, ns3::Packet packet)> send_callback;
     /**
      * Packet receive callback type
      * @param packet the received packet
