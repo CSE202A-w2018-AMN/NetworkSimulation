@@ -50,6 +50,8 @@ set(SOURCES
     src/network/olsr/header.cpp
     src/network/olsr/message.h
     src/network/olsr/message.cpp
+    src/network/olsr/neighbor_table.h
+    src/network/olsr/neighbor_table.cpp
     src/util/print_container.h
 )
 

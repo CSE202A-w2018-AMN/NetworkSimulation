@@ -3,6 +3,7 @@
 
 #include "device/mesh_net_device.h"
 #include "address/icao_address.h"
+#include "neighbor_table.h"
 #include <ns3/packet.h>
 #include <ns3/nstime.h>
 #include <set>
@@ -32,24 +33,8 @@ private:
      */
     ns3::Time _hello_interval;
 
-    /**
-     * The addresses in the multipoint relay set
-     *
-     * Get a packet from a node not in the multipoint relay set:
-     * Process the packet, but do not retransmit if it is broadcast
-     *
-     *
-     */
-    std::set<IcaoAddress> _multipoint_relays;
-    /**
-     * The neighbors of this node, with a bidirectional connection
-     */
-     std::set<IcaoAddress> _neighbors;
-     /**
-      * The neighbors that have been seen, but that do not have a confirmed
-      * bidirectional connection
-      */
-     std::set<IcaoAddress> _unidirectional_neighbors;
+    /** Neighbor table */
+    NeighborTable _neighbors;
 
     /**
      * Called when the network device receives a packet

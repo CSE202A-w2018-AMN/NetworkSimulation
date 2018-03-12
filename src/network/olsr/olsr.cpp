@@ -11,7 +11,9 @@ namespace olsr {
 
 Olsr::Olsr(ns3::Ptr<MeshNetDevice> net_device) :
     _net_device(net_device),
-    _hello_interval(ns3::Seconds(10))
+    _hello_interval(ns3::Seconds(10)),
+    // Neighbor table TTL
+    _neighbors(ns3::Seconds(120))
 {
     if (_net_device) {
         _net_device->SetReceiveCallback(std::bind(&Olsr::OnPacketReceived, this, std::placeholders::_1));
@@ -52,8 +54,8 @@ void Olsr::SendHello() {
     auto message = Message(MessageType::Hello);
 
     // Add neighbors
-    message.Neighbors() = _neighbors;
-    message.UnidirectionalNeighbors() = _unidirectional_neighbors;
+    message.Neighbors() = _neighbors.Neighbors();
+    message.UnidirectionalNeighbors() = _neighbors.UnidirectionalNeighbors();
 
     packet.AddHeader(Header(message));
     SendPacket(packet, IcaoAddress::Broadcast());
@@ -69,31 +71,33 @@ void Olsr::HandleHello(IcaoAddress sender, const std::set<IcaoAddress>& neighbor
         << ", unidirectional neighbors "
         << print_container::print(unidirectional_neighbors));
 
-    // Handle sender
+    _neighbors.RemoveExpired();
 
-    const auto sender_is_neighbor = _neighbors.find(sender) != _neighbors.end();
-    auto sender_is_unidirectional = _unidirectional_neighbors.find(sender)
-        != _unidirectional_neighbors.end();
-
-    // If sender is not a neighbor or unidirectional neighbor,
-    // it becomes a unidirectional neighbor
-    if (!sender_is_neighbor && !sender_is_unidirectional) {
-        NS_LOG_INFO(local_address << ": adding " << sender << " as unidirectional neighbor");
-        _unidirectional_neighbors.insert(sender);
-        sender_is_unidirectional = true;
-    } else{
-        if ((neighbors.find(local_address) != neighbors.end()
-            || _unidirectional_neighbors.find(local_address)
-            != unidirectional_neighbors.end())
-            && _neighbors.find(sender) == _neighbors.end()) {
-            // If the sender reported this node as a neighbor or unidirectional
-            // neighbor, make the sender a bidirectional neighbor
-            NS_LOG_INFO(local_address << ": upgrading " << sender << " to full neighbor");
-            const auto in_unidirectional = _unidirectional_neighbors.find(sender);
-            if (in_unidirectional != _unidirectional_neighbors.end()) {
-                _unidirectional_neighbors.erase(in_unidirectional);
-            }
-            _neighbors.insert(sender);
+    const auto sender_entry = _neighbors.Find(sender);
+    if (sender_entry != _neighbors.end()) {
+        // Have an entry
+        auto& table_entry = sender_entry->second;
+        // Make bidirectional if not
+        if (table_entry.State() == LinkState::Unidirectional) {
+            NS_LOG_INFO(local_address << ": upgrading neighbor "
+                << sender << " to bidirectional");
+            table_entry.SetState(LinkState::Bidirectional);
+        }
+        table_entry.MarkSeen();
+    } else {
+        // Nothing here
+        if (neighbors.find(local_address) != neighbors.end()
+            || unidirectional_neighbors.find(local_address)
+            != unidirectional_neighbors.end()) {
+            // Other is aware of this, so the link is bidirectional
+            _neighbors.Insert(NeighborTableEntry(sender, LinkState::Bidirectional));
+            NS_LOG_INFO(local_address << ": adding bidirectional neighbor "
+                << sender);
+        } else {
+            // Link is unidirectional
+            _neighbors.Insert(NeighborTableEntry(sender, LinkState::Unidirectional));
+            NS_LOG_INFO(local_address << ": adding unidirectional neighbor "
+                << sender);
         }
     }
 }
