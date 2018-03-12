@@ -119,7 +119,7 @@ int main(int argc, char** argv) {
     // Simulation configuration
     ns3::Time::SetResolution(ns3::Time::NS);
     ns3::LogComponentEnable("AircraftMeshSimulation", ns3::LOG_ALL);
-    ns3::LogComponentEnable("MeshNetDevice", ns3::LOG_ALL);
+    ns3::LogComponentEnable("MeshNetDevice", ns3::LOG_INFO);
     ns3::LogComponentEnable("AdsBSender", ns3::LOG_INFO);
     ns3::LogComponentEnable("Ether", ns3::LOG_INFO);
     ns3::LogComponentEnable("OLSR", ns3::LOG_ALL);

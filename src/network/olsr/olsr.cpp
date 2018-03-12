@@ -63,10 +63,13 @@ void Olsr::SendHello() {
 }
 
 void Olsr::HandleHello(IcaoAddress sender, const std::set<IcaoAddress>& neighbors, const std::set<IcaoAddress>& unidirectional_neighbors) {
-    NS_LOG_INFO("Handling hello from " << sender << " with neighbors " << print_container::print(neighbors) << ", unidirectional neighbors " << print_container::print(unidirectional_neighbors));
+    const auto local_address = _net_device->GetAddress();
+    NS_LOG_INFO(local_address << " handling hello from " << sender
+        << " with neighbors " << print_container::print(neighbors)
+        << ", unidirectional neighbors "
+        << print_container::print(unidirectional_neighbors));
 
     // Handle sender
-    const auto local_address = _net_device->GetAddress();
 
     const auto sender_is_neighbor = _neighbors.find(sender) != _neighbors.end();
     auto sender_is_unidirectional = _unidirectional_neighbors.find(sender)
@@ -78,17 +81,20 @@ void Olsr::HandleHello(IcaoAddress sender, const std::set<IcaoAddress>& neighbor
         NS_LOG_INFO(local_address << ": adding " << sender << " as unidirectional neighbor");
         _unidirectional_neighbors.insert(sender);
         sender_is_unidirectional = true;
-    } else if (neighbors.find(local_address) != neighbors.end()
-        || _unidirectional_neighbors.find(local_address)
-        != unidirectional_neighbors.end()) {
-        // If the sender reported this node as a neighbor or unidirectional
-        // neighbor, make the sender a bidirectional neighbor
-        NS_LOG_INFO(local_address << ": upgrading " << sender << " to full neighbor");
-        const auto in_unidirectional = _unidirectional_neighbors.find(sender);
-        if (in_unidirectional != _unidirectional_neighbors.end()) {
-            _unidirectional_neighbors.erase(in_unidirectional);
+    } else{
+        if ((neighbors.find(local_address) != neighbors.end()
+            || _unidirectional_neighbors.find(local_address)
+            != unidirectional_neighbors.end())
+            && _neighbors.find(sender) == _neighbors.end()) {
+            // If the sender reported this node as a neighbor or unidirectional
+            // neighbor, make the sender a bidirectional neighbor
+            NS_LOG_INFO(local_address << ": upgrading " << sender << " to full neighbor");
+            const auto in_unidirectional = _unidirectional_neighbors.find(sender);
+            if (in_unidirectional != _unidirectional_neighbors.end()) {
+                _unidirectional_neighbors.erase(in_unidirectional);
+            }
+            _neighbors.insert(sender);
         }
-        _neighbors.insert(sender);
     }
 }
 
