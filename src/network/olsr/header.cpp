@@ -75,8 +75,10 @@ void Header::Serialize(ns3::Buffer::Iterator start) const {
     switch (_message.Type()) {
     case MessageType::Hello:
         SerializeHello(start);
+        break;
     case MessageType::None:
         SerializeNone(start);
+        break;
     default:
         throw std::runtime_error("Invalid message type");
     }

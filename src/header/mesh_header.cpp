@@ -12,11 +12,11 @@ MeshHeader::MeshHeader(IcaoAddress source, IcaoAddress destination) :
 {
 }
 
-IcaoAddress MeshHeader::get_source_address() const {
+IcaoAddress MeshHeader::SourceAddress() const {
     return _source;
 }
 
-IcaoAddress MeshHeader::get_destination_address() const {
+IcaoAddress MeshHeader::DestinationAddress() const {
     return _destination;
 }
 

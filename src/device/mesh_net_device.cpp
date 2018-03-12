@@ -23,7 +23,6 @@ void MeshNetDevice::Send(ns3::Packet packet, IcaoAddress destination) {
     NS_LOG_INFO("Sending " << packet.GetSize() << " bytes " << _address << " => " << destination);
 
     const auto position = _mobility->GetPosition();
-    NS_LOG_INFO("Current position: " << position);
 
     MeshHeader header(_address, destination);
     packet.AddHeader(header);
@@ -38,6 +37,11 @@ void MeshNetDevice::SetSendCallback(send_callback callback) {
     _send_callback = callback;
 }
 
+void MeshNetDevice::SetReceiveCallback(receive_callback callback) {
+    NS_LOG_FUNCTION(this << static_cast<bool>(callback));
+    _receive_callback = callback;
+}
+
 void MeshNetDevice::SetMobilityModel(ns3::Ptr<ns3::MobilityModel> mobility) {
     _mobility = mobility;
 }
@@ -49,6 +53,11 @@ ns3::Ptr<ns3::MobilityModel> MeshNetDevice::GetMobilityModel() {
 void MeshNetDevice::Receive(ns3::Packet packet) {
     NS_LOG_FUNCTION(this << packet);
     NS_LOG_INFO("Received packet " << packet);
+    if (_receive_callback) {
+        _receive_callback(packet);
+    } else {
+        NS_LOG_INFO("No receive callback set, not forwarding packet up");
+    }
 }
 
 ns3::TypeId MeshNetDevice::GetTypeId() {

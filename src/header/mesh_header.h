@@ -20,8 +20,8 @@ public:
     MeshHeader(IcaoAddress source, IcaoAddress destination);
     virtual ~MeshHeader() = default;
 
-    IcaoAddress get_source_address() const;
-    IcaoAddress get_destination_address() const;
+    IcaoAddress SourceAddress() const;
+    IcaoAddress DestinationAddress() const;
 
     static ns3::TypeId GetTypeId();
     virtual ns3::TypeId GetInstanceTypeId() const override;

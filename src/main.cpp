@@ -11,6 +11,8 @@
 #include "application/adsb_sender_helper.h"
 #include "ether/ether.h"
 
+#include "network/olsr/olsr.h"
+
 #include <ns3/node-container.h>
 #include <ns3/mobility-helper.h>
 #include <ns3/constant-position-mobility-model.h>
@@ -59,6 +61,12 @@ ns3::NodeContainer create_aircraft(const std::string& kml_path) {
         device->SetAddress(address);
         device->SetMobilityModel(mobility_model);
         node->AggregateObject(device);
+
+        // OLSR
+        auto olsr = ns3::CreateObject<olsr::Olsr>();
+        olsr->SetNetDevice(device);
+        olsr->Start();
+        node->AggregateObject(olsr);
 
     }
 
@@ -114,14 +122,15 @@ int main(int argc, char** argv) {
     ns3::LogComponentEnable("MeshNetDevice", ns3::LOG_ALL);
     ns3::LogComponentEnable("AdsBSender", ns3::LOG_INFO);
     ns3::LogComponentEnable("Ether", ns3::LOG_INFO);
+    ns3::LogComponentEnable("OLSR", ns3::LOG_ALL);
 
     auto aircraft = create_aircraft(argv[1]);
     auto ground_stations = create_ground_stations();
 
     // Create ether
     Ether ether;
-    // 1000 km
-    ether.SetRange(1e6);
+    // 300 km
+    ether.SetRange(300000);
     for (auto iter = aircraft.Begin(); iter != aircraft.End(); ++iter) {
         ether.AddDevice((*iter)->GetObject<MeshNetDevice>());
     }
@@ -130,13 +139,14 @@ int main(int argc, char** argv) {
     }
 
     // Create applications
-    AdsBSenderHelper sender_helper(ns3::Seconds(10));
-    auto adsb_senders = sender_helper.Install(aircraft);
+    // AdsBSenderHelper sender_helper(ns3::Seconds(10));
+    // auto adsb_senders = sender_helper.Install(aircraft);
 
-    adsb_senders.Start(ns3::Seconds(0));
-    adsb_senders.Stop(ns3::Seconds(60));
+    // adsb_senders.Start(ns3::Seconds(0));
+    // adsb_senders.Stop(ns3::Seconds(60));
 
     NS_LOG_INFO("Running simulation");
+    ns3::Simulator::Stop(ns3::Seconds(60));
     ns3::Simulator::Run();
     ns3::Simulator::Destroy();
     return 0;

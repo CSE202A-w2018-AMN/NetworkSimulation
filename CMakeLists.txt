@@ -50,6 +50,7 @@ set(SOURCES
     src/network/olsr/header.cpp
     src/network/olsr/message.h
     src/network/olsr/message.cpp
+    src/util/print_container.h
 )
 
 add_executable(${TARGET} ${SOURCES})

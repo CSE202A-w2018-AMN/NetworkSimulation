@@ -4,6 +4,7 @@
 #include "device/mesh_net_device.h"
 #include "address/icao_address.h"
 #include <ns3/packet.h>
+#include <ns3/nstime.h>
 #include <set>
 
 namespace olsr {
@@ -11,12 +12,25 @@ namespace olsr {
 /**
  * An optimized link-state routing protocol implementation
  */
-class Olsr {
+class Olsr : public ns3::Object {
 public:
+    Olsr(ns3::Ptr<MeshNetDevice> net_device = ns3::Ptr<MeshNetDevice>());
+    /**
+     * Starts sending hello messages and performing other network operations
+     */
+    void Start();
 
+    void SetNetDevice(ns3::Ptr<MeshNetDevice> net_device);
+
+    static ns3::TypeId GetTypeId();
 private:
     /** The network device used for communication */
     ns3::Ptr<MeshNetDevice> _net_device;
+
+    /**
+     * Interval between hello messages
+     */
+    ns3::Time _hello_interval;
 
     /**
      * The addresses in the multipoint relay set
@@ -57,7 +71,7 @@ private:
     /**
      * Handles a Hello message
      */
-    void HandleHello(const std::set<IcaoAddress>& neighbors, const std::set<IcaoAddress>& unidirectional_neighbors);
+    void HandleHello(IcaoAddress sender, const std::set<IcaoAddress>& neighbors, const std::set<IcaoAddress>& unidirectional_neighbors);
 };
 
 }

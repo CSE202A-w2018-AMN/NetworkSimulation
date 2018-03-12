@@ -20,6 +20,11 @@ public:
      * @param packet the packet that was sent, including mesh headers
      */
     typedef std::function<void (const ns3::Vector& position, ns3::Packet packet)> send_callback;
+    /**
+     * Packet receive callback type
+     * @param packet the received packet
+     */
+    typedef std::function<void (ns3::Packet packet)> receive_callback;
 
     /** Creates a nework device */
     MeshNetDevice();
@@ -48,6 +53,7 @@ public:
      * The callback will be given a packet with headers already added.
      */
     void SetSendCallback(send_callback callback);
+    void SetReceiveCallback(receive_callback callback);
     void SetMobilityModel(ns3::Ptr<ns3::MobilityModel> mobility);
     ns3::Ptr<ns3::MobilityModel> GetMobilityModel();
 
@@ -59,6 +65,8 @@ private:
 
     /** The send callback */
     send_callback _send_callback;
+    /** The receive callback */
+    receive_callback _receive_callback;
 
     /**
      * The mobility model of the connected node
