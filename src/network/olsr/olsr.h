@@ -56,7 +56,7 @@ private:
     /**
      * Handles a Hello message
      */
-    void HandleHello(IcaoAddress sender, const std::set<IcaoAddress>& neighbors, const std::set<IcaoAddress>& unidirectional_neighbors);
+    void HandleHello(IcaoAddress sender, const NeighborTable& neighbors);
 };
 
 }

@@ -30,6 +30,13 @@ ns3::Time NeighborTableEntry::LastUpdated () const {
     return _updated;
 }
 
+std::set<IcaoAddress>& NeighborTableEntry::TwoHopNeighbors() {
+    return _two_hop_neighbors;
+}
+const std::set<IcaoAddress>& NeighborTableEntry::TwoHopNeighbors() const {
+    return _two_hop_neighbors;
+}
+
 // NeighborTable
 
 NeighborTable::NeighborTable(ns3::Time ttl) :
@@ -57,12 +64,29 @@ void NeighborTable::RemoveExpired() {
 NeighborTable::iterator NeighborTable::Find(IcaoAddress address) {
     return _table.find(address);
 }
+NeighborTable::const_iterator NeighborTable::Find(IcaoAddress address) const {
+    return _table.find(address);
+}
 
 NeighborTable::iterator NeighborTable::begin() {
     return _table.begin();
 }
 NeighborTable::iterator NeighborTable::end() {
     return _table.end();
+}
+
+NeighborTable::const_iterator NeighborTable::begin() const {
+    return _table.begin();
+}
+NeighborTable::const_iterator NeighborTable::end() const {
+    return _table.end();
+}
+
+std::size_t NeighborTable::size() const {
+    return _table.size();
+}
+void NeighborTable::clear() {
+    _table.clear();
 }
 
 void NeighborTable::Insert(const NeighborTableEntry& entry) {
@@ -90,6 +114,31 @@ std::set<IcaoAddress> NeighborTable::UnidirectionalNeighbors() const {
         }
     }
     return neighbors;
+}
+
+std::ostream& operator << (std::ostream& stream, const LinkState& state) {
+    switch (state) {
+    case LinkState::Unidirectional:
+        stream << "unidirectional";
+        break;
+    case LinkState::Bidirectional:
+        stream << "bidirectional";
+        break;
+    case LinkState::MultiPointRelay:
+        stream << "bidirectional multipoint relay";
+        break;
+    default:
+        stream << "<unknown>";
+        break;
+    }
+    return stream;
+}
+
+std::ostream& operator << (std::ostream& stream, const NeighborTableEntry& entry) {
+    return stream << entry.Address() << ':' << entry.State();
+}
+std::ostream& operator << (std::ostream& stream, const std::pair<const IcaoAddress, olsr::NeighborTableEntry>& entry) {
+    return stream << entry.second;
 }
 
 }

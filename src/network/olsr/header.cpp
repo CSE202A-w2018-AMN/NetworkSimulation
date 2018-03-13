@@ -31,12 +31,9 @@ void Header::Print(std::ostream& os) const {
     switch (_message.Type()) {
     case MessageType::Hello:
         os << " Hello, neighbors {";
-        for (const auto& neighbor : _message.Neighbors()) {
-            os << ' ' << neighbor;
-        }
-        os << "}, unidirectional neighbors {";
-        for (const auto& neighbor : _message.UnidirectionalNeighbors()) {
-            os << ' ' << neighbor;
+        for (const auto& entry : _message.Neighbors()) {
+            const auto& table_entry = entry.second;
+            os << ' ' << table_entry.Address() << ':' << table_entry.State();
         }
         os << '}';
         break;
@@ -63,7 +60,7 @@ std::uint32_t Header::Deserialize(ns3::Buffer::Iterator start) {
 std::uint32_t Header::GetSerializedSize() const {
     switch (_message.Type()) {
     case MessageType::Hello:
-        return 1 + 2 + 3 * _message.Neighbors().size() + 2 + 3 * _message.UnidirectionalNeighbors().size();
+        return 1 + 2 + 4 * _message.Neighbors().size();
     case MessageType::None:
         return 1;
     default:
@@ -92,32 +89,25 @@ void Header::SerializeNone(ns3::Buffer::Iterator start) const {
 void Header::SerializeHello(ns3::Buffer::Iterator start) const {
     start.WriteU8(1);
     start.WriteU16(_message.Neighbors().size());
-    for (const auto& neighbor : _message.Neighbors()) {
-        bits::write_u24(&start, neighbor.Value());
-    }
-    start.WriteU16(_message.UnidirectionalNeighbors().size());
-    for (const auto& neighbor : _message.UnidirectionalNeighbors()) {
-        bits::write_u24(&start, neighbor.Value());
+    for (const auto& entry : _message.Neighbors()) {
+        const auto& table_entry = entry.second;
+        bits::write_u24(&start, table_entry.Address().Value());
+        start.WriteU8(static_cast<std::uint8_t>(table_entry.State()));
     }
 }
 
 std::uint32_t Header::DeserializeHello(ns3::Buffer::Iterator after_type) {
     // Clear old values
     _message.Neighbors().clear();
-    _message.UnidirectionalNeighbors().clear();
 
     const std::uint16_t neighbor_count = after_type.ReadU16();
     for (std::uint16_t i = 0; i < neighbor_count; i++) {
         const auto address = IcaoAddress(bits::read_u24(&after_type));
-        _message.Neighbors().insert(address);
+        const auto state = static_cast<LinkState>(after_type.ReadU8());
+        _message.Neighbors().Insert(NeighborTableEntry(address, state));
     }
-    const std::uint16_t unidirectional_neighbor_count = after_type.ReadU16();
-    for (std::uint16_t i = 0; i < unidirectional_neighbor_count; i++) {
-        const auto address = IcaoAddress(bits::read_u24(&after_type));
-        _message.UnidirectionalNeighbors().insert(address);
-    }
-    return 2 + 3 * static_cast<std::uint32_t>(neighbor_count) + 2 +
-        3 * static_cast<std::uint32_t>(unidirectional_neighbor_count);
+
+    return 2 + 4 * static_cast<std::uint32_t>(neighbor_count);
 }
 
 }

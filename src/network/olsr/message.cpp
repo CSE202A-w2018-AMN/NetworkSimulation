@@ -21,18 +21,12 @@ void Message::SetType(MessageType type) {
     _type = type;
 }
 
-std::set<IcaoAddress>& Message::Neighbors() {
+NeighborTable& Message::Neighbors() {
     return _neighbors;
 }
-const std::set<IcaoAddress>& Message::Neighbors() const {
+const NeighborTable& Message::Neighbors() const {
     return _neighbors;
 }
 
-std::set<IcaoAddress>& Message::UnidirectionalNeighbors() {
-    return _unidirectional_neighbors;
-}
-const std::set<IcaoAddress>& Message::UnidirectionalNeighbors() const {
-    return _unidirectional_neighbors;
-}
 
 }

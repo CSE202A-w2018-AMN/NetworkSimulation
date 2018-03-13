@@ -40,7 +40,7 @@ void Olsr::OnPacketReceived(ns3::Packet packet) {
     Header header;
     packet.RemoveHeader(header);
     if (header.GetMessage().Type() == MessageType::Hello) {
-        HandleHello(mesh_header.SourceAddress(), header.GetMessage().Neighbors(), header.GetMessage().UnidirectionalNeighbors());
+        HandleHello(mesh_header.SourceAddress(), header.GetMessage().Neighbors());
     }
 }
 
@@ -54,8 +54,7 @@ void Olsr::SendHello() {
     auto message = Message(MessageType::Hello);
 
     // Add neighbors
-    message.Neighbors() = _neighbors.Neighbors();
-    message.UnidirectionalNeighbors() = _neighbors.UnidirectionalNeighbors();
+    message.Neighbors() = _neighbors;
 
     packet.AddHeader(Header(message));
     SendPacket(packet, IcaoAddress::Broadcast());
@@ -64,12 +63,10 @@ void Olsr::SendHello() {
     ns3::Simulator::Schedule(_hello_interval, &Olsr::SendHello, this);
 }
 
-void Olsr::HandleHello(IcaoAddress sender, const std::set<IcaoAddress>& neighbors, const std::set<IcaoAddress>& unidirectional_neighbors) {
+void Olsr::HandleHello(IcaoAddress sender, const NeighborTable& sender_neighbors) {
     const auto local_address = _net_device->GetAddress();
     NS_LOG_INFO(local_address << " handling hello from " << sender
-        << " with neighbors " << print_container::print(neighbors)
-        << ", unidirectional neighbors "
-        << print_container::print(unidirectional_neighbors));
+        << " with neighbors " << print_container::print(sender_neighbors));
 
     _neighbors.RemoveExpired();
 
@@ -86,9 +83,7 @@ void Olsr::HandleHello(IcaoAddress sender, const std::set<IcaoAddress>& neighbor
         table_entry.MarkSeen();
     } else {
         // Nothing here
-        if (neighbors.find(local_address) != neighbors.end()
-            || unidirectional_neighbors.find(local_address)
-            != unidirectional_neighbors.end()) {
+        if (sender_neighbors.Find(local_address) != sender_neighbors.end()) {
             // Other is aware of this, so the link is bidirectional
             _neighbors.Insert(NeighborTableEntry(sender, LinkState::Bidirectional));
             NS_LOG_INFO(local_address << ": adding bidirectional neighbor "

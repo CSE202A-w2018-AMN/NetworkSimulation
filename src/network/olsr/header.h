@@ -17,10 +17,9 @@ namespace olsr {
  *
  * Hello message data:
  * Number of neighbors, 2 bytes
- * Neighbor addresses, n * 6 bytes
- * Number of unidirectional neighbors, 2 bytes
- * Neighbor addresses, n * 6 bytes
- *
+ * For each neighbor:
+ *     * Address, 3 bytes
+ *     * Status, 1 byte (1 = unidirectional, 2 = bidirectional, 3 = multipoint relay)
  */
 class Header : public ns3::Header {
 public:
