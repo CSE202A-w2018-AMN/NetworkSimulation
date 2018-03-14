@@ -69,7 +69,7 @@ public:
      * neighbor table entry
      */
     typedef std::map<IcaoAddress, NeighborTableEntry>::iterator iterator;
-   typedef std::map<IcaoAddress, NeighborTableEntry>::const_iterator const_iterator;
+    typedef std::map<IcaoAddress, NeighborTableEntry>::const_iterator const_iterator;
 
     /** Removes entries that have expired */
     void RemoveExpired();

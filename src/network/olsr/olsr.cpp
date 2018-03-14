@@ -14,7 +14,8 @@ Olsr::Olsr(ns3::Ptr<MeshNetDevice> net_device) :
     _net_device(net_device),
     _hello_interval(ns3::Seconds(10)),
     // Neighbor table TTL
-    _neighbors(ns3::Seconds(120))
+    _neighbors(ns3::Seconds(120)),
+    _mpr_table(ns3::Seconds(120))
 {
     if (_net_device) {
         _net_device->SetReceiveCallback(std::bind(&Olsr::OnPacketReceived, this, std::placeholders::_1));
@@ -119,7 +120,22 @@ void Olsr::HandleHello(IcaoAddress sender, const NeighborTable& sender_neighbors
         _neighbors.Insert(entry);
     }
 
+    // Update this node's multipoint relay set
     update_multipoint_relay(&_neighbors);
+
+    // Next part: Update the MPR table
+    const auto self_in_sender_neighbors = sender_neighbors.Find(local_address);
+    if (self_in_sender_neighbors != sender_neighbors.end()) {
+        if (self_in_sender_neighbors->second.State() == LinkState::MultiPointRelay) {
+            // This is a multpoint relay of the sender
+            const auto in_mpr_table = _mpr_table.Find(sender);
+            if (in_mpr_table != _mpr_table.end()) {
+                in_mpr_table->second.MarkSeen();
+            } else {
+                _mpr_table.Insert(sender);
+            }
+        }
+    }
 }
 
 

@@ -4,6 +4,7 @@
 #include "device/mesh_net_device.h"
 #include "address/icao_address.h"
 #include "neighbor_table.h"
+#include "mpr_table.h"
 #include <ns3/packet.h>
 #include <ns3/nstime.h>
 #include <set>
@@ -35,6 +36,8 @@ private:
 
     /** Neighbor table */
     NeighborTable _neighbors;
+    /** Table of neighbors that consider this node in their multipoint relay sets */
+    MprTable _mpr_table;
 
     /**
      * Called when the network device receives a packet
