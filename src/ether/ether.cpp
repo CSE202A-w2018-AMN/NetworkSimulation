@@ -1,8 +1,19 @@
 #include "ether.h"
 #include <ns3/log.h>
+#include <ns3/simulator.h>
 #include <limits>
 
 NS_LOG_COMPONENT_DEFINE("Ether");
+
+namespace {
+
+/** Speed of light, meters/second */
+static const double SPEED_OF_LIGHT = 299792000.0;
+
+/** Bit rate, bits/second */
+static const double BITS_PER_SECOND = 100000;
+
+}
 
 Ether::Ether() :
     _range(std::numeric_limits<double>::infinity())
@@ -18,7 +29,6 @@ void Ether::AddDevice(ns3::Ptr<MeshNetDevice> device) {
 
 void Ether::OnSend(const MeshNetDevice* sender, const ns3::Vector& position, ns3::Packet packet) {
     NS_LOG_FUNCTION(this << position << packet);
-    NS_LOG_INFO("Ether send " << position << packet);
     // Find all devices in range
     for (auto& other_device : _devices) {
         // Sender does not receive
@@ -26,7 +36,12 @@ void Ether::OnSend(const MeshNetDevice* sender, const ns3::Vector& position, ns3
             const auto other_position = other_device->GetMobilityModel()->GetPosition();
             const auto distance = ns3::CalculateDistance(position, other_position);
             if (distance <= _range) {
-                other_device->Receive(packet);
+                // Calculate propagation time and transmission time
+                const double propagation_seconds = distance / SPEED_OF_LIGHT;
+                const double sending_seconds = static_cast<double>(packet.GetSize()) / BITS_PER_SECOND;
+                const auto receive_delay = ns3::Time::FromDouble(propagation_seconds + sending_seconds, ns3::Time::Unit::S);
+                NS_LOG_INFO("Receive delay " << sender->GetAddress() << " -> " << other_device->GetAddress() << ": " << receive_delay);
+                ns3::Simulator::Schedule(receive_delay, &MeshNetDevice::Receive, other_device, packet);
             }
         }
     }

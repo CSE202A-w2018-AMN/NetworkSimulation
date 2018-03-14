@@ -20,8 +20,6 @@ void MeshNetDevice::Send(ns3::Packet packet, IcaoAddress destination) {
         NS_LOG_ERROR("Mobility model missing, cannot send packet");
         return;
     }
-    NS_LOG_INFO("Sending " << packet.GetSize() << " bytes " << _address << " => " << destination);
-
     const auto position = _mobility->GetPosition();
 
     MeshHeader header(_address, destination);
