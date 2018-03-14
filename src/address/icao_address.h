@@ -48,9 +48,25 @@ public:
     friend  std::ostream& operator << (std::ostream& stream, const IcaoAddress& address);
 
     /** Compares addresses */
-    friend bool operator == (const IcaoAddress& a1, const IcaoAddress& a2);
+    friend inline bool operator == (const IcaoAddress& a1, const IcaoAddress& a2) {
+        return a1._address == a2._address;
+    }
+    friend inline bool operator != (const IcaoAddress& a1, const IcaoAddress& a2) {
+        return a1._address != a2._address;
+    }
     /** Compares addresses */
-    friend bool operator < (const IcaoAddress& lhs, const IcaoAddress& rhs);
+    friend inline bool operator < (const IcaoAddress& lhs, const IcaoAddress& rhs) {
+        return lhs._address < rhs._address;
+    }
+    friend inline bool operator <= (const IcaoAddress& lhs, const IcaoAddress& rhs) {
+        return lhs._address <= rhs._address;
+    }
+    friend inline bool operator > (const IcaoAddress& lhs, const IcaoAddress& rhs) {
+        return lhs._address > rhs._address;
+    }
+    friend inline bool operator >= (const IcaoAddress& lhs, const IcaoAddress& rhs) {
+        return lhs._address >= rhs._address;
+    }
 
 private:
     /**
