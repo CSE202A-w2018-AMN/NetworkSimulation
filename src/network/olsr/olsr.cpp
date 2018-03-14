@@ -1,5 +1,6 @@
 #include "olsr.h"
 #include "header.h"
+#include "multipoint_relay.h"
 #include "util/print_container.h"
 #include "header/mesh_header.h"
 #include <ns3/log.h>
@@ -95,6 +96,7 @@ void Olsr::HandleHello(IcaoAddress sender, const NeighborTable& sender_neighbors
                 << sender);
         }
     }
+    update_multipoint_relay(&_neighbors);
 }
 
 

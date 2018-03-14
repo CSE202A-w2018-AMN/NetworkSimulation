@@ -52,6 +52,8 @@ set(SOURCES
     src/network/olsr/message.cpp
     src/network/olsr/neighbor_table.h
     src/network/olsr/neighbor_table.cpp
+    src/network/olsr/multipoint_relay.h
+    src/network/olsr/multipoint_relay.cpp
     src/util/print_container.h
 )
 
