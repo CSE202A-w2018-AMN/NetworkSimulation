@@ -37,7 +37,7 @@ private:
     /** Neighbor table */
     NeighborTable _neighbors;
     /** Table of neighbors that consider this node in their multipoint relay sets */
-    MprTable _mpr_table;
+    MprTable _mpr_selector;
 
     /**
      * Called when the network device receives a packet
