@@ -52,11 +52,17 @@ ns3::Ptr<ns3::MobilityModel> MeshNetDevice::GetMobilityModel() {
 
 void MeshNetDevice::Receive(ns3::Packet packet) {
     NS_LOG_FUNCTION(this << packet);
-    NS_LOG_INFO("Received packet " << packet);
-    if (_receive_callback) {
-        _receive_callback(packet);
-    } else {
-        NS_LOG_INFO("No receive callback set, not forwarding packet up");
+    // Filter by address
+    MeshHeader header;
+    packet.PeekHeader(header);
+    if (header.DestinationAddress() == _address
+        || header.DestinationAddress() == IcaoAddress::Broadcast()) {
+        NS_LOG_INFO("Received packet " << packet);
+        if (_receive_callback) {
+            _receive_callback(packet);
+        } else {
+            NS_LOG_INFO("No receive callback set, not forwarding packet up");
+        }
     }
 }
 
