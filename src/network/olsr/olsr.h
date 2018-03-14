@@ -60,6 +60,8 @@ private:
      * Handles a Hello message
      */
     void HandleHello(IcaoAddress sender, const NeighborTable& neighbors);
+    void UpdateNeighbors(IcaoAddress sender, const NeighborTable& sender_neighbors);
+    void UpdateMprSelector(IcaoAddress sender, const NeighborTable& sender_neighbors);
 };
 
 }

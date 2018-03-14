@@ -66,6 +66,11 @@ void Olsr::SendHello() {
 }
 
 void Olsr::HandleHello(IcaoAddress sender, const NeighborTable& sender_neighbors) {
+    UpdateNeighbors(sender, sender_neighbors);
+    UpdateMprSelector(sender, sender_neighbors);
+}
+
+void Olsr::UpdateNeighbors(IcaoAddress sender, const NeighborTable& sender_neighbors) {
     const auto local_address = _net_device->GetAddress();
     NS_LOG_INFO(local_address << " handling hello from " << sender
         << " with neighbors " << print_container::print(sender_neighbors));
@@ -122,8 +127,10 @@ void Olsr::HandleHello(IcaoAddress sender, const NeighborTable& sender_neighbors
 
     // Update this node's multipoint relay set
     update_multipoint_relay(&_neighbors);
+}
 
-    // Next part: Update the MPR table
+void Olsr::UpdateMprSelector(IcaoAddress sender, const NeighborTable& sender_neighbors) {
+    const auto local_address = _net_device->GetAddress();
     const auto self_in_sender_neighbors = sender_neighbors.Find(local_address);
     if (self_in_sender_neighbors != sender_neighbors.end()) {
         if (self_in_sender_neighbors->second.State() == LinkState::MultiPointRelay) {
@@ -137,7 +144,6 @@ void Olsr::HandleHello(IcaoAddress sender, const NeighborTable& sender_neighbors
         }
     }
 }
-
 
 
 ns3::TypeId Olsr::GetTypeId() {
