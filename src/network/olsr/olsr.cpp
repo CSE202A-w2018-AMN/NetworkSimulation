@@ -68,6 +68,7 @@ void Olsr::SendHello() {
 void Olsr::HandleHello(IcaoAddress sender, const NeighborTable& sender_neighbors) {
     UpdateNeighbors(sender, sender_neighbors);
     UpdateMprSelector(sender, sender_neighbors);
+    NS_LOG_INFO(DumpState(*this));
 }
 
 void Olsr::UpdateNeighbors(IcaoAddress sender, const NeighborTable& sender_neighbors) {
@@ -130,6 +131,9 @@ void Olsr::UpdateNeighbors(IcaoAddress sender, const NeighborTable& sender_neigh
 }
 
 void Olsr::UpdateMprSelector(IcaoAddress sender, const NeighborTable& sender_neighbors) {
+    // Remove old entries
+    _mpr_selector.RemoveExpired();
+
     const auto local_address = _net_device->GetAddress();
     const auto self_in_sender_neighbors = sender_neighbors.Find(local_address);
     if (self_in_sender_neighbors != sender_neighbors.end()) {
@@ -140,9 +144,30 @@ void Olsr::UpdateMprSelector(IcaoAddress sender, const NeighborTable& sender_nei
                 in_mpr_selector->second.MarkSeen();
             } else {
                 _mpr_selector.Insert(sender);
+                _mpr_selector.IncrementSequence();
             }
         }
     }
+}
+
+Olsr::DumpState::DumpState(const Olsr& olsr) :
+    _olsr(olsr)
+{
+}
+
+std::ostream& operator << (std::ostream& stream, const Olsr::DumpState& state) {
+    const auto& olsr = state._olsr;
+    stream << "OLSR {\n";
+    stream << "Neighbors: {\n";
+    for (const auto& entry : olsr.Neighbors()) {
+        stream << "    " << entry.second << '\n';
+    }
+    stream << "}\nMPR selector: sequence " << std::dec << static_cast<unsigned int>(olsr.MprSelector().Sequence()) << " {\n";
+    for (const auto& entry : olsr.MprSelector()) {
+        stream << "    " << entry.second << '\n';
+    }
+    stream << '}';
+    return stream;
 }
 
 

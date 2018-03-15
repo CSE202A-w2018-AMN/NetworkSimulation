@@ -21,7 +21,12 @@ void MprTable::Entry::MarkSeen() {
     _last_updated = ns3::Simulator::Now();
 }
 
+std::ostream& operator << (std::ostream& stream, const MprTable::Entry& entry) {
+    return stream << entry._address;
+}
+
 MprTable::MprTable(ns3::Time ttl) :
+    _sequence(0),
     _ttl(ttl)
 {
 }
@@ -32,6 +37,7 @@ void MprTable::Insert(IcaoAddress address) {
 
 void MprTable::RemoveExpired() {
     const auto now = ns3::Simulator::Now();
+    auto any_removed = false;
     for (auto iter = _table.begin(); iter != _table.end(); /* nothing */) {
         const auto updated = iter->second.LastUpdated();
         if (now - updated > _ttl) {
@@ -39,10 +45,18 @@ void MprTable::RemoveExpired() {
             const auto to_remove = iter;
             ++iter;
             _table.erase(to_remove);
+            any_removed = true;
         } else {
             ++iter;
         }
     }
+    if (any_removed) {
+        IncrementSequence();
+    }
+}
+
+void MprTable::IncrementSequence() {
+    _sequence += 1;
 }
 
 }

@@ -20,6 +20,7 @@ bool compare_two_hop_neighbors(const NeighborTableEntry& e1, const NeighborTable
 }
 
 void update_multipoint_relay(NeighborTable* table) {
+    NS_LOG_FUNCTION(table);
     assert(table);
     // General idea:
     // Choose a subset of bidirectional neighbors that provide access
@@ -38,9 +39,9 @@ void update_multipoint_relay(NeighborTable* table) {
             bidir_neighbors.push_back(table_entry);
         }
     }
-    NS_LOG_LOGIC("Bidirectional neighbors: " << print_container::print(bidir_neighbors));
     // Part 2: Sort by number of 2-hop neighbors, greatest to least
     std::sort(bidir_neighbors.begin(), bidir_neighbors.end(), compare_two_hop_neighbors);
+    NS_LOG_LOGIC("Bidirectional neighbors sorted: " << print_container::print(bidir_neighbors));
 
     std::set<IcaoAddress> two_hop_neighbors;
     std::set<IcaoAddress> multipoint_relay;

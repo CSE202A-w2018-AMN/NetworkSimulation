@@ -123,6 +123,7 @@ int main(int argc, char** argv) {
     ns3::LogComponentEnable("AdsBSender", ns3::LOG_INFO);
     ns3::LogComponentEnable("Ether", ns3::LOG_INFO);
     ns3::LogComponentEnable("OLSR", ns3::LOG_ALL);
+    ns3::LogComponentEnable("olsr::multipoint_relay", ns3::LOG_ALL);
 
     auto aircraft = create_aircraft(argv[1]);
     auto ground_stations = create_ground_stations();

@@ -8,6 +8,7 @@
 #include <ns3/packet.h>
 #include <ns3/nstime.h>
 #include <set>
+#include <ostream>
 
 namespace olsr {
 
@@ -25,6 +26,22 @@ public:
     void SetNetDevice(ns3::Ptr<MeshNetDevice> net_device);
 
     static ns3::TypeId GetTypeId();
+
+    inline const NeighborTable& Neighbors() const {
+        return _neighbors;
+    }
+    inline const MprTable& MprSelector() const {
+        return _mpr_selector;
+    }
+
+    /** A wrapper that dumps the state of an OLSR instance */
+    class DumpState {
+    private:
+        const Olsr& _olsr;
+    public:
+        DumpState(const Olsr& olsr);
+        friend std::ostream& operator << (std::ostream& stream, const DumpState& state);
+    };
 private:
     /** The network device used for communication */
     ns3::Ptr<MeshNetDevice> _net_device;
