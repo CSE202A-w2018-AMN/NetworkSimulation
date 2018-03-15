@@ -1,5 +1,6 @@
 #include "header.h"
 #include "util/bits.h"
+#include "util/print_container.h"
 
 namespace olsr {
 
@@ -37,6 +38,11 @@ void Header::Print(std::ostream& os) const {
         }
         os << '}';
         break;
+    case MessageType::TopologyControl:
+        os << "Topology control, sequence "
+            << std::dec << _message.MprSelector().Sequence()
+            << ", MPR selector " << print_container::print(_message.MprSelector());
+        break;
     default:
         break;
     }
@@ -48,6 +54,9 @@ std::uint32_t Header::Deserialize(ns3::Buffer::Iterator start) {
     case 1:
         _message.SetType(MessageType::Hello);
         return 1 + DeserializeHello(start);
+    case 2:
+        _message.SetType(MessageType::TopologyControl);
+        return 1 + DeserializeTopologyControl(start);
     case 0:
         _message.SetType(MessageType::None);
         // Nothing else
@@ -61,6 +70,8 @@ std::uint32_t Header::GetSerializedSize() const {
     switch (_message.Type()) {
     case MessageType::Hello:
         return 1 + 2 + 4 * _message.Neighbors().size();
+    case MessageType::TopologyControl:
+        return 1 + 1 + 2 + 3 * _message.MprSelector().size();
     case MessageType::None:
         return 1;
     default:
@@ -72,6 +83,9 @@ void Header::Serialize(ns3::Buffer::Iterator start) const {
     switch (_message.Type()) {
     case MessageType::Hello:
         SerializeHello(start);
+        break;
+    case MessageType::TopologyControl:
+        SerializeTopologyControl(start);
         break;
     case MessageType::None:
         SerializeNone(start);
@@ -108,6 +122,28 @@ std::uint32_t Header::DeserializeHello(ns3::Buffer::Iterator after_type) {
     }
 
     return 2 + 4 * static_cast<std::uint32_t>(neighbor_count);
+}
+
+void Header::SerializeTopologyControl(ns3::Buffer::Iterator start) const {
+    const auto& mpr_selector = _message.MprSelector();
+    start.WriteU8(mpr_selector.Sequence());
+    start.WriteU16(static_cast<std::uint16_t>(mpr_selector.size()));
+    for (const auto& entry : mpr_selector) {
+        bits::write_u24(&start, entry.second.Address().Value());
+    }
+}
+
+std::uint32_t Header::DeserializeTopologyControl(ns3::Buffer::Iterator after_type) {
+    auto& mpr_selector = _message.MprSelector();
+    mpr_selector.clear();
+    const auto sequence = after_type.ReadU8();
+    mpr_selector.SetSequence(sequence);
+    const auto count = after_type.ReadU16();
+    for (std::uint16_t i = 0; i < count; i++) {
+        const auto address = bits::read_u24(&after_type);
+        mpr_selector.Insert(IcaoAddress(address));
+    }
+    return 1 + 2 + 3 * static_cast<std::uint32_t>(count);
 }
 
 }

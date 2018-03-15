@@ -10,7 +10,7 @@ namespace olsr {
  * An OLSR header
  *
  * Header format:
- * 8-bit message type (None = 0, Hello = 1)
+ * 8-bit message type (None = 0, Hello = 1, TopologyControl = 2)
  * Message-type-specific data
  *
  * None message data: (empty)
@@ -20,6 +20,12 @@ namespace olsr {
  * For each neighbor:
  *     * Address, 3 bytes
  *     * Status, 1 byte (1 = unidirectional, 2 = bidirectional, 3 = multipoint relay)
+ *
+ * TopologyControl message data:
+ * * MPR selector sequence number, 1 byte
+ * * Number of MPR selector addresses, 1 byte
+ * * For each MPR selector:
+ *     * Address, 3 bytes
  */
 class Header : public ns3::Header {
 public:
@@ -43,8 +49,10 @@ private:
 
     void SerializeNone(ns3::Buffer::Iterator start) const;
     void SerializeHello(ns3::Buffer::Iterator start) const;
+    void SerializeTopologyControl(ns3::Buffer::Iterator start) const;
 
     std::uint32_t DeserializeHello(ns3::Buffer::Iterator after_type);
+    std::uint32_t DeserializeTopologyControl(ns3::Buffer::Iterator after_type);
 };
 
 }

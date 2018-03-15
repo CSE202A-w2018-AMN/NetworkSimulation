@@ -3,6 +3,7 @@
 
 #include "address/icao_address.h"
 #include "neighbor_table.h"
+#include "mpr_table.h"
 #include <set>
 
 namespace olsr {
@@ -13,6 +14,8 @@ enum class MessageType {
     None,
     /** A hello message */
     Hello,
+    /** A topology control message */
+    TopologyControl,
 };
 
 /**
@@ -30,12 +33,20 @@ public:
 
     NeighborTable& Neighbors();
     const NeighborTable& Neighbors() const;
+    inline MprTable& MprSelector() {
+        return _mpr_selector;
+    }
+    inline const MprTable& MprSelector() const {
+        return _mpr_selector;
+    }
 private:
     MessageType _type;
 
     // Hello message
     /** Neighbors (used for Hello messages) */
     NeighborTable _neighbors;
+    // TopologyControl message
+    MprTable _mpr_selector;
 };
 
 }

@@ -35,6 +35,10 @@ void MprTable::Insert(IcaoAddress address) {
     _table.insert(std::make_pair(address, Entry(address)));
 }
 
+void MprTable::clear() {
+    _table.clear();
+}
+
 void MprTable::RemoveExpired() {
     const auto now = ns3::Simulator::Now();
     auto any_removed = false;
@@ -57,6 +61,10 @@ void MprTable::RemoveExpired() {
 
 void MprTable::IncrementSequence() {
     _sequence += 1;
+}
+
+std::ostream& operator << (std::ostream& stream, const std::pair<IcaoAddress, MprTable::Entry>& entry) {
+    return stream << entry.second;
 }
 
 }

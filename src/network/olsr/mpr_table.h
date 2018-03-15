@@ -3,6 +3,7 @@
 #include <ns3/nstime.h>
 #include "address/icao_address.h"
 #include <map>
+#include <ostream>
 
 namespace olsr {
 
@@ -41,7 +42,7 @@ public:
     typedef std::map<IcaoAddress, Entry>::iterator iterator;
     typedef std::map<IcaoAddress, Entry>::const_iterator const_iterator;
 
-    MprTable(ns3::Time ttl);
+    MprTable(ns3::Time ttl = ns3::Time());
 
     inline std::size_t size() const {
         return _table.size();
@@ -61,6 +62,7 @@ public:
     inline iterator Find(IcaoAddress address) {
         return _table.find(address);
     }
+    void clear();
 
     void Insert(IcaoAddress address);
     void RemoveExpired();
@@ -68,8 +70,14 @@ public:
     inline std::uint8_t Sequence() const {
         return _sequence;
     }
+    inline void SetSequence(std::uint8_t sequence) {
+        _sequence = sequence;
+    }
     void IncrementSequence();
 };
+
+std::ostream& operator << (std::ostream& stream, const MprTable::Entry& entry);
+std::ostream& operator << (std::ostream& stream, const std::pair<IcaoAddress, MprTable::Entry>& entry);
 
 }
 
