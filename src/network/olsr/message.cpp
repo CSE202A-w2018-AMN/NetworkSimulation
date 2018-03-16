@@ -4,12 +4,13 @@
 namespace olsr {
 
 Message::Message() :
-    Message(MessageType::None)
+    Message(MessageType::None, 0)
 {
 }
 
-Message::Message(MessageType type) :
-    _type(type)
+Message::Message(MessageType type, std::uint8_t ttl) :
+    _type(type),
+    _ttl(ttl)
 {
 }
 
@@ -26,6 +27,12 @@ NeighborTable& Message::Neighbors() {
 }
 const NeighborTable& Message::Neighbors() const {
     return _neighbors;
+}
+
+void Message::DecrementTtl() {
+    if (_ttl > 0) {
+        _ttl = _ttl - 1;
+    }
 }
 
 

@@ -26,7 +26,7 @@ public:
     /** Creates an empty message */
     Message();
     /** Creates a message with the provided type */
-    Message(MessageType type);
+    Message(MessageType type, std::uint8_t ttl = 0);
 
     MessageType Type() const;
     void SetType(MessageType type);
@@ -39,8 +39,18 @@ public:
     inline const MprTable& MprSelector() const {
         return _mpr_selector;
     }
+    inline std::uint8_t Ttl() const {
+        return _ttl;
+    }
+    inline void SetTtl(std::uint8_t ttl) {
+        _ttl = ttl;
+    }
+    /** Decrements the TTL of this message if it is greater than zero */
+    void DecrementTtl();
 private:
     MessageType _type;
+    /** Time to live */
+    std::uint8_t _ttl;
 
     // Hello message
     /** Neighbors (used for Hello messages) */

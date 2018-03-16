@@ -28,10 +28,10 @@ ns3::TypeId Header::GetInstanceTypeId() const {
 }
 
 void Header::Print(std::ostream& os) const {
-    os << "OLSR";
+    os << "OLSR, TTL " << _message.Ttl();
     switch (_message.Type()) {
     case MessageType::Hello:
-        os << " Hello, neighbors {";
+        os << ", Hello, neighbors {";
         for (const auto& entry : _message.Neighbors()) {
             const auto& table_entry = entry.second;
             os << ' ' << table_entry.Address() << ':' << table_entry.State();
@@ -39,7 +39,7 @@ void Header::Print(std::ostream& os) const {
         os << '}';
         break;
     case MessageType::TopologyControl:
-        os << "Topology control, sequence "
+        os << ", Topology control, sequence "
             << std::dec << _message.MprSelector().Sequence()
             << ", MPR selector " << print_container::print(_message.MprSelector());
         break;
@@ -49,6 +49,8 @@ void Header::Print(std::ostream& os) const {
 }
 
 std::uint32_t Header::Deserialize(ns3::Buffer::Iterator start) {
+    const auto ttl = start.ReadU8();
+    _message.SetTtl(ttl);
     const auto type_key = start.ReadU8();
     switch (type_key) {
     case 1:
@@ -69,17 +71,18 @@ std::uint32_t Header::Deserialize(ns3::Buffer::Iterator start) {
 std::uint32_t Header::GetSerializedSize() const {
     switch (_message.Type()) {
     case MessageType::Hello:
-        return 1 + 2 + 4 * _message.Neighbors().size();
+        return 1 + 1 + 2 + 4 * _message.Neighbors().size();
     case MessageType::TopologyControl:
-        return 1 + 1 + 2 + 3 * _message.MprSelector().size();
+        return 1 + 1 + 1 + 2 + 3 * _message.MprSelector().size();
     case MessageType::None:
-        return 1;
+        return 1 + 1;
     default:
         throw std::runtime_error("Invalid message type");
     }
 }
 
 void Header::Serialize(ns3::Buffer::Iterator start) const {
+    start.WriteU8(_message.Ttl());
     switch (_message.Type()) {
     case MessageType::Hello:
         SerializeHello(start);

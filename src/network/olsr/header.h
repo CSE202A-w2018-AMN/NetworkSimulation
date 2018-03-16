@@ -10,6 +10,7 @@ namespace olsr {
  * An OLSR header
  *
  * Header format:
+ * 8-bit time to live
  * 8-bit message type (None = 0, Hello = 1, TopologyControl = 2)
  * Message-type-specific data
  *

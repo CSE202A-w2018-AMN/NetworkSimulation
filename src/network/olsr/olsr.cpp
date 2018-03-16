@@ -13,6 +13,8 @@ namespace olsr {
 Olsr::Olsr(ns3::Ptr<MeshNetDevice> net_device) :
     _net_device(net_device),
     _hello_interval(ns3::Seconds(10)),
+    _topology_control_interval(ns3::Seconds(20)),
+    _default_ttl(16),
     // Neighbor table TTL
     _neighbors(ns3::Seconds(120)),
     _mpr_selector(ns3::Seconds(120))
@@ -31,6 +33,7 @@ void Olsr::SetNetDevice(ns3::Ptr<MeshNetDevice> net_device) {
 
 void Olsr::Start() {
     ns3::Simulator::Schedule(_hello_interval, &Olsr::SendHello, this);
+    ns3::Simulator::Schedule(_topology_control_interval, &Olsr::SendTopologyControl, this);
 }
 
 void Olsr::OnPacketReceived(ns3::Packet packet) {
@@ -43,6 +46,9 @@ void Olsr::OnPacketReceived(ns3::Packet packet) {
     packet.RemoveHeader(header);
     if (header.GetMessage().Type() == MessageType::Hello) {
         HandleHello(mesh_header.SourceAddress(), header.GetMessage().Neighbors());
+    }
+    if (header.GetMessage().Type() == MessageType::TopologyControl) {
+        HandleTopologyControl(mesh_header.SourceAddress(), std::move(header.GetMessage()));
     }
 }
 
@@ -63,6 +69,35 @@ void Olsr::SendHello() {
 
     // Schedule next
     ns3::Simulator::Schedule(_hello_interval, &Olsr::SendHello, this);
+}
+
+void Olsr::SendTopologyControl() {
+    NS_LOG_INFO("Sending topology control");
+
+    auto packet = ns3::Packet();
+    // Non-zero TTL for flooding
+    auto message = Message(MessageType::TopologyControl, _default_ttl);
+    message.MprSelector() = _mpr_selector;
+    packet.AddHeader(Header(message));
+    SendPacket(packet, IcaoAddress::Broadcast());
+
+    ns3::Simulator::Schedule(_topology_control_interval, &Olsr::SendTopologyControl, this);
+}
+
+void Olsr::HandleTopologyControl(IcaoAddress sender, Message&& message) {
+    if (message.Ttl() > 0) {
+        message.DecrementTtl();
+        // Resend to each of the multipoint relay neighbors
+        for (const auto& entry : _neighbors) {
+            const auto& neighbor_entry = entry.second;
+            if (neighbor_entry.State() == LinkState::MultiPointRelay) {
+                NS_LOG_LOGIC("Forwarding topology control message to " << neighbor_entry.Address());
+                ns3::Packet packet;
+                packet.AddHeader(Header(message));
+                SendPacket(packet, neighbor_entry.Address());
+            }
+        }
+    }
 }
 
 void Olsr::HandleHello(IcaoAddress sender, const NeighborTable& sender_neighbors) {

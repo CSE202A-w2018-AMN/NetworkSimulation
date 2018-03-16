@@ -12,6 +12,8 @@
 
 namespace olsr {
 
+class Message;
+
 /**
  * An optimized link-state routing protocol implementation
  */
@@ -50,6 +52,14 @@ private:
      * Interval between hello messages
      */
     ns3::Time _hello_interval;
+    /**
+     * Interval between topology control messages
+     */
+    ns3::Time _topology_control_interval;
+    /**
+     * Default TTL to use when sending non-local messages
+     */
+    std::uint8_t _default_ttl;
 
     /** Neighbor table */
     NeighborTable _neighbors;
@@ -74,11 +84,18 @@ private:
     void SendHello();
 
     /**
+     * Sends a topology control message
+     */
+    void SendTopologyControl();
+
+    /**
      * Handles a Hello message
      */
     void HandleHello(IcaoAddress sender, const NeighborTable& neighbors);
     void UpdateNeighbors(IcaoAddress sender, const NeighborTable& sender_neighbors);
     void UpdateMprSelector(IcaoAddress sender, const NeighborTable& sender_neighbors);
+
+    void HandleTopologyControl(IcaoAddress sender, Message&& message);
 };
 
 }
