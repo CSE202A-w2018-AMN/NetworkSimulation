@@ -79,7 +79,7 @@ void Olsr::OnPacketReceived(ns3::Packet packet) {
     } else if (message_type == MessageType::TopologyControl) {
         HandleTopologyControl(mesh_header.SourceAddress(), std::move(header.GetMessage()));
     } else if (message_type == MessageType::Data) {
-        HandleData(std::move(header.GetMessage()));
+        // HandleData(std::move(header.GetMessage()));
     } else {
         NS_LOG_WARN("Got a message with an uknown type " << static_cast<unsigned int>(message_type));
     }

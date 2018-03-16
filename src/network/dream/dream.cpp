@@ -1,0 +1,90 @@
+#include "dream.h"
+#include <cassert>
+#include <limits>
+#include <ns3/log.h>
+#include <ns3/simulator.h>
+
+NS_LOG_COMPONENT_DEFINE("DREAM");
+
+namespace dream {
+
+Dream::Dream(ns3::Ptr<MeshNetDevice> net_device) :
+    _net_device(net_device)
+{
+    if (_net_device) {
+        _net_device->SetReceiveCallback(std::bind(&Dream::OnPacketReceived, this, std::placeholders::_1));
+    }
+}
+
+void Dream::SetNetDevice(ns3::Ptr<MeshNetDevice> net_device) {
+    _net_device = net_device;
+    if (_net_device) {
+        _net_device->SetReceiveCallback(std::bind(&Dream::OnPacketReceived, this, std::placeholders::_1));
+    }
+}
+
+void Dream::Start() {
+    // ns3::Simulator::Schedule(_hello_interval, &Dream::SendHello, this);
+    // ns3::Simulator::Schedule(_topology_control_interval, &Dream::SendTopologyControl, this);
+}
+
+void Dream::Send(ns3::Packet packet, IcaoAddress destination) {
+    NS_LOG_FUNCTION(this << packet << destination);
+    assert(_net_device);
+    const auto local_address(_net_device->GetAddress());
+    //
+    // // Check length
+    // if (packet.GetSize() > static_cast<std::uint32_t>(std::numeric_limits<std::uint16_t>::max())) {
+    //     NS_LOG_WARN("Can't send packet more than 65536 bytes long");
+    //     return;
+    // }
+    //
+    // // Look up route
+    // const auto route = _routing.Find(destination);
+    // if (route != _routing.end()) {
+    //     NS_LOG_LOGIC("Found route via next hop " << route->NextHop() << " to " << destination);
+    //
+    //     const auto message(Message::Data(local_address, destination, _default_ttl, static_cast<std::uint16_t>(packet.GetSize())));
+    //     packet.AddHeader(Header(message));
+    //     // Send over first hop
+    //     SendPacket(packet, route->NextHop());
+    // } else {
+    //     NS_LOG_WARN("At " << _net_device->GetAddress() << ", no route to " << destination);
+    // }
+}
+
+void Dream::OnPacketReceived(ns3::Packet packet) {
+    NS_LOG_FUNCTION(this << packet);
+
+    // MeshHeader mesh_header;
+    // packet.RemoveHeader(mesh_header);
+    //
+    // Header header;
+    // packet.RemoveHeader(header);
+    // const auto message_type = header.GetMessage().Type();
+    // if (message_type == MessageType::Hello) {
+    //     HandleHello(mesh_header.SourceAddress(), header.GetMessage().Neighbors());
+    // } else if (message_type == MessageType::TopologyControl) {
+    //     HandleTopologyControl(mesh_header.SourceAddress(), std::move(header.GetMessage()));
+    // } else if (message_type == MessageType::Data) {
+    //     HandleData(std::move(header.GetMessage()));
+    // } else {
+    //     NS_LOG_WARN("Got a message with an uknown type " << static_cast<unsigned int>(message_type));
+    // }
+}
+
+void Dream::SendPacket(ns3::Packet packet, IcaoAddress address) {
+    NS_LOG_FUNCTION(this << packet << address);
+    assert(_net_device);
+    _net_device->Send(packet, address);
+}
+
+
+ns3::TypeId Dream::GetTypeId() {
+    static ns3::TypeId id = ns3::TypeId("dream::Dream")
+        .SetParent<Object>()
+        .AddConstructor<Dream>();
+    return id;
+}
+
+}
