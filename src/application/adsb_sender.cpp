@@ -14,9 +14,9 @@ void AdsBSender::SetInterval(const ns3::TimeValue& interval) {
     _interval = interval;
 }
 
-void AdsBSender::SetNetDevice(ns3::Ptr<MeshNetDevice> net_device) {
-    NS_LOG_FUNCTION(this << net_device);
-    _net_device = net_device;
+void AdsBSender::SetSendOperation(send_operation operation) {
+    NS_LOG_FUNCTION(this);
+    _send_operation = operation;
 }
 
 void AdsBSender::StartApplication() {
@@ -31,12 +31,12 @@ void AdsBSender::StopApplication() {
 
 void AdsBSender::SendMessage() {
     NS_LOG_FUNCTION(this);
-    NS_LOG_INFO(ns3::Simulator::Now() << " ADS-B sending message");
-    if (_net_device) {
+    NS_LOG_INFO("ADS-B sending message");
+    if (_send_operation) {
         const auto packet = ns3::Packet(reinterpret_cast<const std::uint8_t*>("ADSB"), 4);
-        _net_device->Send(packet, IcaoAddress(0xffffff));
+        _send_operation(packet);
     } else {
-        NS_LOG_WARN("No network device to send on");
+        NS_LOG_WARN("No send operation");
     }
     _send_event = ns3::Simulator::Schedule(_interval.Get(), &AdsBSender::SendMessage, this);
 }

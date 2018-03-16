@@ -140,11 +140,10 @@ int main(int argc, char** argv) {
     }
 
     // Create applications
-    // AdsBSenderHelper sender_helper(ns3::Seconds(10));
-    // auto adsb_senders = sender_helper.Install(aircraft);
+    AdsBSenderHelper sender_helper(ns3::Seconds(10));
+    auto adsb_senders = sender_helper.Install(aircraft);
 
-    // adsb_senders.Start(ns3::Seconds(0));
-    // adsb_senders.Stop(ns3::Seconds(60));
+    adsb_senders.Start(ns3::Seconds(0));
 
     NS_LOG_INFO("Running simulation");
     ns3::Simulator::Stop(ns3::Seconds(60));

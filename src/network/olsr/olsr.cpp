@@ -43,26 +43,36 @@ void Olsr::Start() {
 void Olsr::Send(ns3::Packet packet, IcaoAddress destination) {
     NS_LOG_FUNCTION(this << packet << destination);
     assert(_net_device);
-    const auto local_address(_net_device->GetAddress());
-
     // Check length
     if (packet.GetSize() > static_cast<std::uint32_t>(std::numeric_limits<std::uint16_t>::max())) {
         NS_LOG_WARN("Can't send packet more than 65536 bytes long");
         return;
     }
+    const auto local_address(_net_device->GetAddress());
+    const auto message(Message::Data(local_address, destination, _default_ttl, static_cast<std::uint16_t>(packet.GetSize())));
+    packet.AddHeader(Header(message));
+    SendWithHeader(packet, destination);
+}
 
-    // Look up route
-    const auto route = _routing.Find(destination);
-    if (route != _routing.end()) {
-        NS_LOG_LOGIC("Found route via next hop " << route->NextHop() << " to " << destination);
-
-        const auto message(Message::Data(local_address, destination, _default_ttl, static_cast<std::uint16_t>(packet.GetSize())));
-        packet.AddHeader(Header(message));
-        // Send over first hop
-        SendPacket(packet, route->NextHop());
+void Olsr::SendWithHeader(ns3::Packet packet, IcaoAddress destination) {
+    // Special case for broadcast: Forward to multipoint relay neighbors
+    if (destination == IcaoAddress::Broadcast()) {
+        SendMultipointRelay(packet);
     } else {
-        NS_LOG_WARN("At " << _net_device->GetAddress() << ", no route to " << destination);
+        // Look up route
+        const auto route = _routing.Find(destination);
+        if (route != _routing.end()) {
+            NS_LOG_LOGIC("Found route via next hop " << route->NextHop() << " to " << destination);
+            // Send over next hop
+            SendPacket(packet, route->NextHop());
+        } else {
+            NS_LOG_WARN("At " << _net_device->GetAddress() << ", no route to " << destination);
+        }
     }
+}
+
+void Olsr::SetReceiveCallback(receive_callback callback) {
+    _receive_callback = callback;
 }
 
 void Olsr::OnPacketReceived(ns3::Packet packet) {
@@ -79,16 +89,36 @@ void Olsr::OnPacketReceived(ns3::Packet packet) {
     } else if (message_type == MessageType::TopologyControl) {
         HandleTopologyControl(mesh_header.SourceAddress(), std::move(header.GetMessage()));
     } else if (message_type == MessageType::Data) {
-        HandleData(std::move(header.GetMessage()));
+        HandleData(packet, std::move(header.GetMessage()));
     } else {
         NS_LOG_WARN("Got a message with an uknown type " << static_cast<unsigned int>(message_type));
     }
 }
 
-void Olsr::SendPacket(ns3::Packet packet, IcaoAddress address) {
-    NS_LOG_FUNCTION(this << packet << address);
+void Olsr::SendPacket(ns3::Packet packet, IcaoAddress destination) {
+    NS_LOG_FUNCTION(this << packet << destination);
     assert(_net_device);
-    _net_device->Send(packet, address);
+    _net_device->Send(packet, destination);
+}
+
+void Olsr::HandleData(ns3::Packet packet, Message&& message) {
+    NS_LOG_FUNCTION(this << packet);
+    const auto local_address = _net_device->GetAddress();
+    if (message.Destination() == local_address) {
+        NS_LOG_LOGIC("Data arrived at " << local_address << " from " << message.Origin());
+        if (_receive_callback) {
+            _receive_callback(packet);
+        } else {
+            NS_LOG_WARN("No receive callback set");
+        }
+    } else if (message.Ttl() > 0) {
+        NS_LOG_LOGIC("Forwarding data");
+        message.DecrementTtl();
+        packet.AddHeader(Header(message));
+        SendWithHeader(packet, message.Destination());
+    } else {
+        NS_LOG_WARN("Data with destination " << message.Destination() << " died at " << local_address);
+    }
 }
 
 void Olsr::SendHello() {
@@ -156,21 +186,29 @@ void Olsr::HandleTopologyControl(IcaoAddress sender, Message&& message) {
     if (message.Ttl() > 0) {
         message.DecrementTtl();
         // Resend to each of the multipoint relay neighbors
-        for (const auto& entry : _neighbors) {
-            const auto& neighbor_entry = entry.second;
-            if (neighbor_entry.State() == LinkState::MultiPointRelay) {
-                NS_LOG_LOGIC("Forwarding topology control message to " << neighbor_entry.Address());
-                ns3::Packet packet;
-                packet.AddHeader(Header(message));
-                SendPacket(packet, neighbor_entry.Address());
-            }
-        }
+        ns3::Packet packet;
+        packet.AddHeader(Header(message));
+        SendMultipointRelay(packet);
     }
 
     // Update all the routing
     calculate_routes(&_routing, _neighbors, _topology);
     NS_LOG_INFO(_net_device->GetAddress() << " routing table:");
     NS_LOG_INFO(RoutingTable::PrintTable(_routing));
+}
+
+void Olsr::SendMultipointRelay(ns3::Packet packet) {
+    auto sent = false;
+    for (const auto& entry : _neighbors) {
+        const auto& neighbor_entry = entry.second;
+        if (neighbor_entry.State() == LinkState::MultiPointRelay) {
+            sent = true;
+            SendPacket(packet, neighbor_entry.Address());
+        }
+    }
+    if (!sent) {
+        NS_LOG_INFO("No multipoint relay neighbors to send to");
+    }
 }
 
 void Olsr::HandleHello(IcaoAddress sender, const NeighborTable& sender_neighbors) {
