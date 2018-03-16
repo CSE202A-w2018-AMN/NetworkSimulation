@@ -11,7 +11,7 @@ namespace olsr {
  *
  * Header format:
  * 8-bit time to live
- * 8-bit message type (None = 0, Hello = 1, TopologyControl = 2)
+ * 8-bit message type (None = 0, Hello = 1, TopologyControl = 2, Data = 3)
  * Message-type-specific data
  *
  * None message data: (empty)
@@ -28,6 +28,12 @@ namespace olsr {
  * * Number of MPR selector addresses, 1 byte
  * * For each MPR selector:
  *     * Address, 3 bytes
+ *
+ * Data message data:
+ * * Origin address, 3 bytes
+ * * Destination address, 3 bytes
+ * * Data length, 2 bytes
+ * (Data are in the packet, outside this header)
  */
 class Header : public ns3::Header {
 public:
@@ -52,9 +58,11 @@ private:
     void SerializeNone(ns3::Buffer::Iterator start) const;
     void SerializeHello(ns3::Buffer::Iterator start) const;
     void SerializeTopologyControl(ns3::Buffer::Iterator start) const;
+    void SerializeData(ns3::Buffer::Iterator start) const;
 
     std::uint32_t DeserializeHello(ns3::Buffer::Iterator after_type);
     std::uint32_t DeserializeTopologyControl(ns3::Buffer::Iterator after_type);
+    std::uint32_t DeserializeData(ns3::Buffer::Iterator after_type);
 };
 
 }

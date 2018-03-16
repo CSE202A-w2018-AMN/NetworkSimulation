@@ -4,7 +4,7 @@
 #include "address/icao_address.h"
 #include "neighbor_table.h"
 #include "mpr_table.h"
-#include <set>
+#include <vector>
 
 namespace olsr {
 
@@ -16,6 +16,8 @@ enum class MessageType {
     Hello,
     /** A topology control message */
     TopologyControl,
+    /** A data message */
+    Data,
 };
 
 /**
@@ -27,6 +29,9 @@ public:
     Message();
     /** Creates a message with the provided type */
     Message(MessageType type, std::uint8_t ttl = 0);
+
+    /** Convenience constructor for a Data message */
+    static Message Data(IcaoAddress origin, IcaoAddress destination, std::uint8_t ttl, std::uint16_t data_length);
 
     MessageType Type() const;
     void SetType(MessageType type);
@@ -53,6 +58,25 @@ public:
     }
     /** Decrements the TTL of this message if it is greater than zero */
     void DecrementTtl();
+
+    IcaoAddress Origin() const {
+        return _origin;
+    }
+    void SetOrigin(IcaoAddress origin) {
+        _origin = origin;
+    }
+    IcaoAddress Destination() const {
+        return _destination;
+    }
+    void SetDestination(IcaoAddress destination) {
+        _destination = destination;
+    }
+    std::uint16_t DataLength() const {
+        return _data_length;
+    }
+    void SetDataLength(std::uint16_t data_length) {
+        _data_length = data_length;
+    }
 private:
     MessageType _type;
     /** Time to live */
@@ -66,6 +90,14 @@ private:
     IcaoAddress _originator;
     /** MPR selector table */
     MprTable _mpr_selector;
+
+    // Data message
+    /** Sender address */
+    IcaoAddress _origin;
+    /** Destination address */
+    IcaoAddress _destination;
+    /** Length of data, bytes */
+    std::uint16_t _data_length;
 };
 
 }

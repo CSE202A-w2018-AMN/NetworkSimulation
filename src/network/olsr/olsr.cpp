@@ -4,6 +4,8 @@
 #include "routing_calc.h"
 #include "util/print_container.h"
 #include "header/mesh_header.h"
+#include <cassert>
+#include <limits>
 #include <ns3/log.h>
 #include <ns3/simulator.h>
 
@@ -38,6 +40,31 @@ void Olsr::Start() {
     ns3::Simulator::Schedule(_topology_control_interval, &Olsr::SendTopologyControl, this);
 }
 
+void Olsr::Send(ns3::Packet packet, IcaoAddress destination) {
+    NS_LOG_FUNCTION(this << packet << destination);
+    assert(_net_device);
+    const auto local_address(_net_device->GetAddress());
+
+    // Check length
+    if (packet.GetSize() > static_cast<std::uint32_t>(std::numeric_limits<std::uint16_t>::max())) {
+        NS_LOG_WARN("Can't send packet more than 65536 bytes long");
+        return;
+    }
+
+    // Look up route
+    const auto route = _routing.Find(destination);
+    if (route != _routing.end()) {
+        NS_LOG_LOGIC("Found route via next hop " << route->NextHop() << " to " << destination);
+
+        const auto message(Message::Data(local_address, destination, _default_ttl, static_cast<std::uint16_t>(packet.GetSize())));
+        packet.AddHeader(Header(message));
+        // Send over first hop
+        SendPacket(packet, route->NextHop());
+    } else {
+        NS_LOG_WARN("At " << _net_device->GetAddress() << ", no route to " << destination);
+    }
+}
+
 void Olsr::OnPacketReceived(ns3::Packet packet) {
     NS_LOG_FUNCTION(this << packet);
 
@@ -51,12 +78,16 @@ void Olsr::OnPacketReceived(ns3::Packet packet) {
         HandleHello(mesh_header.SourceAddress(), header.GetMessage().Neighbors());
     } else if (message_type == MessageType::TopologyControl) {
         HandleTopologyControl(mesh_header.SourceAddress(), std::move(header.GetMessage()));
+    } else if (message_type == MessageType::Data) {
+        HandleData(std::move(header.GetMessage()));
     } else {
         NS_LOG_WARN("Got a message with an uknown type " << static_cast<unsigned int>(message_type));
     }
 }
 
 void Olsr::SendPacket(ns3::Packet packet, IcaoAddress address) {
+    NS_LOG_FUNCTION(this << packet << address);
+    assert(_net_device);
     _net_device->Send(packet, address);
 }
 
@@ -243,7 +274,7 @@ std::ostream& operator << (std::ostream& stream, const Olsr::DumpState& state) {
     for (const auto& entry : olsr.MprSelector()) {
         stream << "    " << entry.second << '\n';
     }
-    stream << '}';
+    stream << "}\nRouting table:\n" << RoutingTable::PrintTable(olsr.Routing()) << "\n}";
     return stream;
 }
 

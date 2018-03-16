@@ -56,14 +56,17 @@ std::uint32_t Header::Deserialize(ns3::Buffer::Iterator start) {
     switch (type_key) {
     case 1:
         _message.SetType(MessageType::Hello);
-        return 1 + DeserializeHello(start);
+        return 2 + DeserializeHello(start);
     case 2:
         _message.SetType(MessageType::TopologyControl);
-        return 1 + DeserializeTopologyControl(start);
+        return 2 + DeserializeTopologyControl(start);
+    case 3:
+        _message.SetType(MessageType::Data);
+        return 2 + DeserializeData(start);
     case 0:
         _message.SetType(MessageType::None);
         // Nothing else
-        return 1;
+        return 2;
     default:
         throw std::runtime_error("Invalid message type");
     }
@@ -75,6 +78,8 @@ std::uint32_t Header::GetSerializedSize() const {
         return 1 + 1 + 2 + 4 * _message.Neighbors().size();
     case MessageType::TopologyControl:
         return 1 + 1 + 3 + 1 + 2 + 3 * _message.MprSelector().size();
+    case MessageType::Data:
+        return 1 + 1 + 3 + 3 + 2;
     case MessageType::None:
         return 1 + 1;
     default:
@@ -90,6 +95,9 @@ void Header::Serialize(ns3::Buffer::Iterator start) const {
         break;
     case MessageType::TopologyControl:
         SerializeTopologyControl(start);
+        break;
+    case MessageType::Data:
+        SerializeData(start);
         break;
     case MessageType::None:
         SerializeNone(start);
@@ -153,5 +161,21 @@ std::uint32_t Header::DeserializeTopologyControl(ns3::Buffer::Iterator after_typ
     }
     return 1 + 2 + 3 * static_cast<std::uint32_t>(count);
 }
+
+void Header::SerializeData(ns3::Buffer::Iterator start) const {
+    start.WriteU8(3);
+    bits::write_u24(&start, _message.Origin().Value());
+    bits::write_u24(&start, _message.Destination().Value());
+    start.WriteU16(_message.DataLength());
+}
+
+std::uint32_t Header::DeserializeData(ns3::Buffer::Iterator after_type) {
+    _message.SetOrigin(IcaoAddress(bits::read_u24(&after_type)));
+    _message.SetDestination(IcaoAddress(bits::read_u24(&after_type)));
+    const auto length = after_type.ReadU16();
+    _message.SetDataLength(length);
+    return 2;
+}
+
 
 }

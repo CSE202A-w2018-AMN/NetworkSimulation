@@ -27,6 +27,11 @@ public:
      */
     void Start();
 
+    /**
+     * Sends a packet to the specified destination
+     */
+    void Send(ns3::Packet packet, IcaoAddress destination);
+
     void SetNetDevice(ns3::Ptr<MeshNetDevice> net_device);
 
     static ns3::TypeId GetTypeId();
@@ -36,6 +41,9 @@ public:
     }
     inline const MprTable& MprSelector() const {
         return _mpr_selector;
+    }
+    inline const RoutingTable& Routing() const {
+        return _routing;
     }
 
     /** A wrapper that dumps the state of an OLSR instance */
@@ -81,6 +89,9 @@ private:
 
     /**
      * Sends a packet to a destination address
+     *
+     * Unlike Send(), this does not do any routing. It simply forwards the
+     * packet to the network interface.
      */
     void SendPacket(ns3::Packet packet, IcaoAddress address);
 

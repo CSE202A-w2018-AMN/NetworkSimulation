@@ -14,6 +14,14 @@ Message::Message(MessageType type, std::uint8_t ttl) :
 {
 }
 
+Message Message::Data(IcaoAddress origin, IcaoAddress destination, std::uint8_t ttl, std::uint16_t data_length) {
+    Message message(MessageType::Data, ttl);
+    message.SetOrigin(origin);
+    message.SetDestination(destination);
+    message.SetDataLength(data_length);
+    return message;
+}
+
 MessageType Message::Type() const {
     return _type;
 }
