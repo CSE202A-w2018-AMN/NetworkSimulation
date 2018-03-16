@@ -1,6 +1,7 @@
 #include "olsr.h"
 #include "header.h"
 #include "multipoint_relay.h"
+#include "routing_calc.h"
 #include "util/print_container.h"
 #include "header/mesh_header.h"
 #include <ns3/log.h>
@@ -132,6 +133,9 @@ void Olsr::HandleTopologyControl(IcaoAddress sender, Message&& message) {
             }
         }
     }
+
+    // Update all the routing
+    calculate_routes(&_routing, _neighbors, _topology);
 }
 
 void Olsr::HandleHello(IcaoAddress sender, const NeighborTable& sender_neighbors) {

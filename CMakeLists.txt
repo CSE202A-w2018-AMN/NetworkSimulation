@@ -60,6 +60,10 @@ set(SOURCES
     src/network/olsr/mpr_table.cpp
     src/network/olsr/topology_table.h
     src/network/olsr/topology_table.cpp
+    src/network/olsr/routing_table.h
+    src/network/olsr/routing_table.cpp
+    src/network/olsr/routing_calc.h
+    src/network/olsr/routing_calc.cpp
 )
 
 add_executable(${TARGET} ${SOURCES})

@@ -6,6 +6,7 @@
 #include "neighbor_table.h"
 #include "mpr_table.h"
 #include "topology_table.h"
+#include "routing_table.h"
 #include <ns3/packet.h>
 #include <ns3/nstime.h>
 #include <set>
@@ -68,6 +69,8 @@ private:
     MprTable _mpr_selector;
     /** Topology table */
     TopologyTable _topology;
+    /** Routing table */
+    RoutingTable _routing;
 
     /**
      * Called when the network device receives a packet
