@@ -17,4 +17,19 @@ void RoutingTable::Insert(Entry entry) {
 }
 
 
+
+RoutingTable::PrintTable::PrintTable(const RoutingTable& table) :
+    _table(table)
+{
+}
+
+std::ostream& operator << (std::ostream& stream, const RoutingTable::PrintTable& pt) {
+    stream << "| Destination | Next hop | Distance |\n";
+    for (const auto& entry : pt._table) {
+        stream << "|    " << entry.Destination() << " | "
+            << entry.NextHop() << " |  " << entry.Distance() << " |\n";
+    }
+    return stream;
+}
+
 }

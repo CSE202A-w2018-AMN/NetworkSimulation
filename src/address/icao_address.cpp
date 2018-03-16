@@ -1,4 +1,5 @@
 #include "icao_address.h"
+#include <iomanip>
 
 IcaoAddress::IcaoAddress(std::uint32_t address) :
     _address(address & 0xffffff)
@@ -35,6 +36,10 @@ std::uint8_t IcaoAddress::GetType() {
 }
 
 std::ostream& operator << (std::ostream& stream, const IcaoAddress& address) {
-    stream << std::hex << "0x" << address._address;
+    // Save flags for later restoration
+    const auto flags(stream.flags());
+    stream << "0x" << std::hex << std::nouppercase << std::setw(6) << std::right << std::setfill('0')
+        << address._address;
+    stream.flags(flags);
     return stream;
 }

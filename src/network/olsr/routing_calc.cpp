@@ -1,6 +1,9 @@
 #include "routing_calc.h"
 #include <cassert>
 #include <limits>
+#include <ns3/log.h>
+
+NS_LOG_COMPONENT_DEFINE("olsr::calculate_routes");
 
 namespace olsr {
 
@@ -14,13 +17,14 @@ void calculate_routes(RoutingTable* routing, const NeighborTable& neighbors, con
         const auto address = neighbor_entry.Address();
         const auto state = neighbor_entry.State();
         if (state == LinkState::Bidirectional || state == LinkState::MultiPointRelay) {
+            NS_LOG_LOGIC("Adding 1-hop route to neighbor " << address);
             // Add a 1-hop route to this neighbor
             RoutingTable::Entry entry(address, address, 1);
             routing->Insert(entry);
         }
     }
     // Part 3: Non-neighbors
-    for (std::uint16_t h = 1; h != std::numeric_limits<std::uint16_t>::max() - 1; ++h) {
+    for (std::uint16_t h = 1; h != std::numeric_limits<std::uint16_t>::max(); ++h) {
         auto entry_added = false;
 
         // Look in the topology table
@@ -32,6 +36,7 @@ void calculate_routes(RoutingTable* routing, const NeighborTable& neighbors, con
                 if (last_hop_in_routing != routing->end()) {
                     if (last_hop_in_routing->Distance() == h) {
                         // This is a new segment
+                        NS_LOG_LOGIC("Adding " << h + 1 << " distance route, next " << last_hop_in_routing->NextHop() << " to " << topology_entry.Destination());
                         RoutingTable::Entry entry{
                             topology_entry.Destination(),
                             last_hop_in_routing->NextHop(),

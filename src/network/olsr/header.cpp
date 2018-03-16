@@ -129,6 +129,7 @@ std::uint32_t Header::DeserializeHello(ns3::Buffer::Iterator after_type) {
 }
 
 void Header::SerializeTopologyControl(ns3::Buffer::Iterator start) const {
+    start.WriteU8(2);
     const auto& mpr_selector = _message.MprSelector();
     bits::write_u24(&start, _message.Originator().Value());
     start.WriteU8(mpr_selector.Sequence());

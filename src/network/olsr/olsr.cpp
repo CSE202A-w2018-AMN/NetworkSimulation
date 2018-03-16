@@ -46,11 +46,13 @@ void Olsr::OnPacketReceived(ns3::Packet packet) {
 
     Header header;
     packet.RemoveHeader(header);
-    if (header.GetMessage().Type() == MessageType::Hello) {
+    const auto message_type = header.GetMessage().Type();
+    if (message_type == MessageType::Hello) {
         HandleHello(mesh_header.SourceAddress(), header.GetMessage().Neighbors());
-    }
-    if (header.GetMessage().Type() == MessageType::TopologyControl) {
+    } else if (message_type == MessageType::TopologyControl) {
         HandleTopologyControl(mesh_header.SourceAddress(), std::move(header.GetMessage()));
+    } else {
+        NS_LOG_WARN("Got a message with an uknown type " << static_cast<unsigned int>(message_type));
     }
 }
 
@@ -136,6 +138,8 @@ void Olsr::HandleTopologyControl(IcaoAddress sender, Message&& message) {
 
     // Update all the routing
     calculate_routes(&_routing, _neighbors, _topology);
+    NS_LOG_INFO(_net_device->GetAddress() << " routing table:");
+    NS_LOG_INFO(RoutingTable::PrintTable(_routing));
 }
 
 void Olsr::HandleHello(IcaoAddress sender, const NeighborTable& sender_neighbors) {

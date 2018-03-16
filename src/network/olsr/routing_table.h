@@ -34,10 +34,21 @@ public:
             return _distance;
         }
     };
+
+    /** An adapter that prints the routing table to a stream */
+    class PrintTable {
+    private:
+        const RoutingTable& _table;
+    public:
+        PrintTable(const RoutingTable& table);
+        friend std::ostream& operator << (std::ostream& stream, const PrintTable& pt);
+    };
 private:
     typedef std::map<IcaoAddress, Entry>::iterator underlying_iterator;
+    typedef std::map<IcaoAddress, Entry>::const_iterator underlying_const_iterator;
 public:
     typedef util::ValueIterator<underlying_iterator> iterator;
+    typedef util::ConstValueIterator<underlying_const_iterator> const_iterator;
 
     inline std::size_t size() const {
         return _table.size();
@@ -48,6 +59,12 @@ public:
     }
     inline iterator end() {
         return iterator(_table.end());
+    }
+    inline const_iterator begin() const {
+        return const_iterator(_table.begin());
+    }
+    inline const_iterator end() const {
+        return const_iterator(_table.end());
     }
     inline void clear() {
         _table.clear();
