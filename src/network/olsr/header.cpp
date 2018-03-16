@@ -39,7 +39,8 @@ void Header::Print(std::ostream& os) const {
         os << '}';
         break;
     case MessageType::TopologyControl:
-        os << ", Topology control, sequence "
+        os << ", Topology control originating at "
+            << _message.Originator() << ", sequence "
             << std::dec << _message.MprSelector().Sequence()
             << ", MPR selector " << print_container::print(_message.MprSelector());
         break;
@@ -73,7 +74,7 @@ std::uint32_t Header::GetSerializedSize() const {
     case MessageType::Hello:
         return 1 + 1 + 2 + 4 * _message.Neighbors().size();
     case MessageType::TopologyControl:
-        return 1 + 1 + 1 + 2 + 3 * _message.MprSelector().size();
+        return 1 + 1 + 3 + 1 + 2 + 3 * _message.MprSelector().size();
     case MessageType::None:
         return 1 + 1;
     default:
@@ -129,6 +130,7 @@ std::uint32_t Header::DeserializeHello(ns3::Buffer::Iterator after_type) {
 
 void Header::SerializeTopologyControl(ns3::Buffer::Iterator start) const {
     const auto& mpr_selector = _message.MprSelector();
+    bits::write_u24(&start, _message.Originator().Value());
     start.WriteU8(mpr_selector.Sequence());
     start.WriteU16(static_cast<std::uint16_t>(mpr_selector.size()));
     for (const auto& entry : mpr_selector) {
@@ -137,6 +139,8 @@ void Header::SerializeTopologyControl(ns3::Buffer::Iterator start) const {
 }
 
 std::uint32_t Header::DeserializeTopologyControl(ns3::Buffer::Iterator after_type) {
+    const auto originator = IcaoAddress(bits::read_u24(&after_type));
+    _message.SetOriginator(originator);
     auto& mpr_selector = _message.MprSelector();
     mpr_selector.clear();
     const auto sequence = after_type.ReadU8();

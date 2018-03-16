@@ -26,6 +26,8 @@ set(SOURCES
     src/main.cpp
     src/util/bits.h
     src/util/bits.cpp
+    src/util/print_container.h
+    src/util/value_iterator.h
     src/flight_mobility.h
     src/flight_mobility.cpp
     src/flight_group.h
@@ -56,7 +58,8 @@ set(SOURCES
     src/network/olsr/multipoint_relay.cpp
     src/network/olsr/mpr_table.h
     src/network/olsr/mpr_table.cpp
-    src/util/print_container.h
+    src/network/olsr/topology_table.h
+    src/network/olsr/topology_table.cpp
 )
 
 add_executable(${TARGET} ${SOURCES})

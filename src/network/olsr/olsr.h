@@ -5,6 +5,7 @@
 #include "address/icao_address.h"
 #include "neighbor_table.h"
 #include "mpr_table.h"
+#include "topology_table.h"
 #include <ns3/packet.h>
 #include <ns3/nstime.h>
 #include <set>
@@ -65,6 +66,8 @@ private:
     NeighborTable _neighbors;
     /** Table of neighbors that consider this node in their multipoint relay sets */
     MprTable _mpr_selector;
+    /** Topology table */
+    TopologyTable _topology;
 
     /**
      * Called when the network device receives a packet

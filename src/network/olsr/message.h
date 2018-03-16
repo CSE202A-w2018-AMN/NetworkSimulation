@@ -39,6 +39,12 @@ public:
     inline const MprTable& MprSelector() const {
         return _mpr_selector;
     }
+    inline IcaoAddress Originator() const {
+        return _originator;
+    }
+    inline void SetOriginator(IcaoAddress originator) {
+        _originator = originator;
+    }
     inline std::uint8_t Ttl() const {
         return _ttl;
     }
@@ -56,6 +62,9 @@ private:
     /** Neighbors (used for Hello messages) */
     NeighborTable _neighbors;
     // TopologyControl message
+    /** Originator address */
+    IcaoAddress _originator;
+    /** MPR selector table */
     MprTable _mpr_selector;
 };
 

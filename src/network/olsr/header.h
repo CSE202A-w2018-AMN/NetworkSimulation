@@ -23,6 +23,7 @@ namespace olsr {
  *     * Status, 1 byte (1 = unidirectional, 2 = bidirectional, 3 = multipoint relay)
  *
  * TopologyControl message data:
+ * * Originator address, 3 bytes
  * * MPR selector sequence number, 1 byte
  * * Number of MPR selector addresses, 1 byte
  * * For each MPR selector:

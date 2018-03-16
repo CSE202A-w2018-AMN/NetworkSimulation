@@ -17,7 +17,8 @@ Olsr::Olsr(ns3::Ptr<MeshNetDevice> net_device) :
     _default_ttl(16),
     // Neighbor table TTL
     _neighbors(ns3::Seconds(120)),
-    _mpr_selector(ns3::Seconds(120))
+    _mpr_selector(ns3::Seconds(120)),
+    _topology(ns3::Seconds(120))
 {
     if (_net_device) {
         _net_device->SetReceiveCallback(std::bind(&Olsr::OnPacketReceived, this, std::placeholders::_1));
@@ -78,6 +79,7 @@ void Olsr::SendTopologyControl() {
     // Non-zero TTL for flooding
     auto message = Message(MessageType::TopologyControl, _default_ttl);
     message.MprSelector() = _mpr_selector;
+    message.SetOriginator(_net_device->GetAddress());
     packet.AddHeader(Header(message));
     SendPacket(packet, IcaoAddress::Broadcast());
 
@@ -85,6 +87,38 @@ void Olsr::SendTopologyControl() {
 }
 
 void Olsr::HandleTopologyControl(IcaoAddress sender, Message&& message) {
+    _topology.RemoveExpired();
+    const auto& message_table = message.MprSelector();
+    auto in_table = _topology.Find(message.Originator());
+    if (in_table != _topology.end()) {
+        // Check sequence number
+        if (in_table->Sequence() > message_table.Sequence()) {
+            // Message is out of order, ignore
+            return;
+        } else if (in_table->Sequence() == message_table.Sequence()) {
+            // This message replaces the old entry
+            _topology.Remove(in_table);
+        }
+    }
+
+    for (auto& entry : message_table) {
+        auto& mpr_entry = entry.second;
+        auto in_table = _topology.Find(mpr_entry.Address());
+        if (in_table != _topology.end()) {
+            if (in_table->LastHop() == message.Originator()) {
+                in_table->MarkSeen();
+            } else {
+                // Update last hop
+                in_table->SetLastHop(message.Originator());
+                in_table->MarkSeen();
+            }
+        } else {
+            // Not in table, insert
+            _topology.Insert(TopologyTable::Entry(mpr_entry.Address(), message.Originator(), message_table.Sequence()));
+        }
+    }
+
+    // Forward message
     if (message.Ttl() > 0) {
         message.DecrementTtl();
         // Resend to each of the multipoint relay neighbors
