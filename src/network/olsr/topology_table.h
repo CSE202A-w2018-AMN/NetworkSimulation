@@ -41,17 +41,25 @@ public:
     };
 private:
     typedef std::map<IcaoAddress, Entry>::iterator underlying_iterator;
+    typedef std::map<IcaoAddress, Entry>::const_iterator underlying_const_iterator;
 public:
 
     typedef util::ValueIterator<underlying_iterator> iterator;
+    typedef util::ConstValueIterator<underlying_const_iterator> const_iterator;
 
     TopologyTable(ns3::Time ttl = ns3::Minutes(5));
 
     inline iterator begin() {
-        return util::ValueIterator<underlying_iterator>(_table.begin());
+        return iterator(_table.begin());
     }
     inline iterator end() {
-        return util::ValueIterator<underlying_iterator>(_table.end());
+        return iterator(_table.end());
+    }
+    inline const_iterator begin() const {
+        return const_iterator(_table.begin());
+    }
+    inline const_iterator end() const {
+        return const_iterator(_table.end());
     }
     inline std::size_t size() const {
         return _table.size();

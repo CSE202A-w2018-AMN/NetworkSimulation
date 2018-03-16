@@ -22,7 +22,7 @@ TopologyTable::TopologyTable(ns3::Time ttl) :
 }
 
 TopologyTable::iterator TopologyTable::Find(IcaoAddress destination) {
-    return _table.find(destination);
+    return iterator(_table.find(destination));
 }
 
 void TopologyTable::Insert(Entry entry) {

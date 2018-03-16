@@ -15,7 +15,7 @@ private:
 public:
     typedef decltype(_iter->second) item;
 
-    ValueIterator(I iter) :
+    explicit ValueIterator(I iter) :
         _iter(iter)
     {
     }
@@ -36,7 +36,13 @@ public:
     item& operator * () {
         return _iter->second;
     }
+    const item& operator * () const {
+        return _iter->second;
+    }
     item* operator -> () {
+        return &_iter->second;
+    }
+    const item* operator -> () const {
         return &_iter->second;
     }
 
@@ -44,6 +50,47 @@ public:
         return this->_iter == other._iter;
     }
     bool operator != (const ValueIterator& other) const {
+        return this->_iter != other._iter;
+    }
+};
+
+template <typename I>
+class ConstValueIterator {
+private:
+    /** The underlying iterator that yields pairs */
+    I _iter;
+public:
+    typedef decltype(_iter->second) item;
+
+    explicit ConstValueIterator(I iter) :
+        _iter(iter)
+    {
+    }
+
+    I inner() const {
+        return _iter;
+    }
+
+    ConstValueIterator& operator ++ () {
+        _iter++;
+        return *this;
+    }
+    ConstValueIterator& operator -- () {
+        _iter--;
+        return *this;
+    }
+
+    const item& operator * () const {
+        return _iter->second;
+    }
+    const item* operator -> () const {
+        return &_iter->second;
+    }
+
+    bool operator == (const ConstValueIterator& other) const {
+        return this->_iter == other._iter;
+    }
+    bool operator != (const ConstValueIterator& other) const {
         return this->_iter != other._iter;
     }
 };

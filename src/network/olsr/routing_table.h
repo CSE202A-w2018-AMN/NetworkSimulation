@@ -24,13 +24,13 @@ public:
         std::uint16_t _distance;
     public:
         Entry(IcaoAddress destination, IcaoAddress next_hop, std::uint16_t distance);
-        inline IcaoAddress Destination() {
+        inline IcaoAddress Destination() const {
             return _destination;
         }
-        inline IcaoAddress NextHop() {
+        inline IcaoAddress NextHop() const {
             return _next_hop;
         }
-        inline std::uint16_t Distance() {
+        inline std::uint16_t Distance() const {
             return _distance;
         }
     };
