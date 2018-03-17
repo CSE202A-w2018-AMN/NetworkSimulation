@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 11)
 # Main package
 
 # NS3
-find_package(NS3 3.26 REQUIRED COMPONENTS core network internet point-to-point applications mobility csma)
+find_package(NS3 3.26 REQUIRED COMPONENTS core network applications mobility)
 # Boost
 find_package(Boost REQUIRED COMPONENTS filesystem)
 
@@ -28,6 +28,8 @@ set(SOURCES
     src/util/bits.cpp
     src/util/print_container.h
     src/util/value_iterator.h
+    src/log/log.h
+    src/log/log.cpp
     src/flight_mobility.h
     src/flight_mobility.cpp
     src/flight_group.h

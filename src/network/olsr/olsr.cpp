@@ -25,6 +25,7 @@ Olsr::Olsr(ns3::Ptr<MeshNetDevice> net_device) :
 {
     if (_net_device) {
         _net_device->SetReceiveCallback(std::bind(&Olsr::OnPacketReceived, this, std::placeholders::_1));
+        _log.SetAddress(_net_device->GetAddress());
     }
 }
 
@@ -32,6 +33,7 @@ void Olsr::SetNetDevice(ns3::Ptr<MeshNetDevice> net_device) {
     _net_device = net_device;
     if (_net_device) {
         _net_device->SetReceiveCallback(std::bind(&Olsr::OnPacketReceived, this, std::placeholders::_1));
+        _log.SetAddress(_net_device->GetAddress());
     }
 }
 
@@ -41,7 +43,7 @@ void Olsr::Start() {
 }
 
 void Olsr::Send(ns3::Packet packet, IcaoAddress destination) {
-    NS_LOG_FUNCTION(this << packet << destination);
+    _log << "Olsr::Send packet " << packet << " to " << destination << '\n';
     assert(_net_device);
     // Check length
     if (packet.GetSize() > static_cast<std::uint32_t>(std::numeric_limits<std::uint16_t>::max())) {
@@ -55,6 +57,7 @@ void Olsr::Send(ns3::Packet packet, IcaoAddress destination) {
 }
 
 void Olsr::SendWithHeader(ns3::Packet packet, IcaoAddress destination) {
+    _log << "Olrsr::SendWithHeader " << packet << " to " << destination << '\n';
     // Special case for broadcast: Forward to multipoint relay neighbors
     if (destination == IcaoAddress::Broadcast()) {
         SendMultipointRelay(packet);
@@ -62,11 +65,11 @@ void Olsr::SendWithHeader(ns3::Packet packet, IcaoAddress destination) {
         // Look up route
         const auto route = _routing.Find(destination);
         if (route != _routing.end()) {
-            NS_LOG_LOGIC("Found route via next hop " << route->NextHop() << " to " << destination);
+            _log << "Found route via next hop " << route->NextHop() << " to " << destination << '\n';
             // Send over next hop
             SendPacket(packet, route->NextHop());
         } else {
-            NS_LOG_WARN("At " << _net_device->GetAddress() << ", no route to " << destination);
+            _log << "At " << _net_device->GetAddress() << ", no route to " << destination << '\n';
         }
     }
 }
@@ -96,7 +99,7 @@ void Olsr::OnPacketReceived(ns3::Packet packet) {
 }
 
 void Olsr::SendPacket(ns3::Packet packet, IcaoAddress destination) {
-    NS_LOG_FUNCTION(this << packet << destination);
+    _log << "Olsr::SendPacket " << packet << " to " << destination << '\n';
     assert(_net_device);
     _net_device->Send(packet, destination);
 }
@@ -105,14 +108,14 @@ void Olsr::HandleData(ns3::Packet packet, Message&& message) {
     NS_LOG_FUNCTION(this << packet);
     const auto local_address = _net_device->GetAddress();
     if (message.Destination() == local_address) {
-        NS_LOG_LOGIC("Data arrived at " << local_address << " from " << message.Origin());
+        _log << "Data arrived at " << local_address << " from " << message.Origin() << '\n';
         if (_receive_callback) {
             _receive_callback(packet);
         } else {
             NS_LOG_WARN("No receive callback set");
         }
     } else if (message.Ttl() > 0) {
-        NS_LOG_LOGIC("Forwarding data");
+        _log << "Forwarding data\n";
         message.DecrementTtl();
         packet.AddHeader(Header(message));
         SendWithHeader(packet, message.Destination());
@@ -122,7 +125,7 @@ void Olsr::HandleData(ns3::Packet packet, Message&& message) {
 }
 
 void Olsr::SendHello() {
-    NS_LOG_INFO("Sending hello");
+    _log << "Sending hello\n";
     auto packet = ns3::Packet();
     auto message = Message(MessageType::Hello);
 
@@ -137,7 +140,7 @@ void Olsr::SendHello() {
 }
 
 void Olsr::SendTopologyControl() {
-    NS_LOG_INFO("Sending topology control");
+    _log << "Sending topology control\n";
 
     auto packet = ns3::Packet();
     // Non-zero TTL for flooding
@@ -193,8 +196,7 @@ void Olsr::HandleTopologyControl(IcaoAddress sender, Message&& message) {
 
     // Update all the routing
     calculate_routes(&_routing, _neighbors, _topology);
-    NS_LOG_INFO(_net_device->GetAddress() << " routing table:");
-    NS_LOG_INFO(RoutingTable::PrintTable(_routing));
+    _log << "Routing table:\n" << RoutingTable::PrintTable(_routing) << '\n';
 }
 
 void Olsr::SendMultipointRelay(ns3::Packet packet) {
@@ -207,20 +209,20 @@ void Olsr::SendMultipointRelay(ns3::Packet packet) {
         }
     }
     if (!sent) {
-        NS_LOG_INFO("No multipoint relay neighbors to send to");
+        _log << "No multipoint relay neighbors to send to\n";
     }
 }
 
 void Olsr::HandleHello(IcaoAddress sender, const NeighborTable& sender_neighbors) {
     UpdateNeighbors(sender, sender_neighbors);
     UpdateMprSelector(sender, sender_neighbors);
-    NS_LOG_INFO(DumpState(*this));
+    _log << DumpState(*this) << '\n';
 }
 
 void Olsr::UpdateNeighbors(IcaoAddress sender, const NeighborTable& sender_neighbors) {
     const auto local_address = _net_device->GetAddress();
-    NS_LOG_INFO(local_address << " handling hello from " << sender
-        << " with neighbors " << print_container::print(sender_neighbors));
+    _log << local_address << " handling hello from " << sender
+        << " with neighbors " << print_container::print(sender_neighbors) << '\n';
 
     _neighbors.RemoveExpired();
 
@@ -231,8 +233,8 @@ void Olsr::UpdateNeighbors(IcaoAddress sender, const NeighborTable& sender_neigh
         auto& table_entry = sender_entry->second;
         // Make bidirectional if not
         if (table_entry.State() == LinkState::Unidirectional) {
-            NS_LOG_INFO(local_address << ": upgrading neighbor "
-                << sender << " to bidirectional");
+            _log << local_address << ": upgrading neighbor "
+                << sender << " to bidirectional\n";
             table_entry.SetState(LinkState::Bidirectional);
         }
 
@@ -252,13 +254,13 @@ void Olsr::UpdateNeighbors(IcaoAddress sender, const NeighborTable& sender_neigh
         if (sender_neighbors.Find(local_address) != sender_neighbors.end()) {
             // Other is aware of this, so the link is bidirectional
             new_link_state = LinkState::Bidirectional;
-            NS_LOG_INFO(local_address << ": adding bidirectional neighbor "
-                << sender);
+            _log << local_address << ": adding bidirectional neighbor "
+                << sender << '\n';
         } else {
             // Link is unidirectional
             new_link_state = LinkState::Unidirectional;
-            NS_LOG_INFO(local_address << ": adding unidirectional neighbor "
-                << sender);
+            _log << local_address << ": adding unidirectional neighbor "
+                << sender << '\n';
         }
         // Build an entry containing the 2-hop neighbors
         auto entry = NeighborTableEntry(sender, new_link_state);
@@ -322,6 +324,11 @@ ns3::TypeId Olsr::GetTypeId() {
         .SetParent<Object>()
         .AddConstructor<Olsr>();
     return id;
+}
+
+void Olsr::DoDispose() {
+    _log.Flush();
+    ns3::Object::DoDispose();
 }
 
 }
