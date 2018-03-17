@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+    <name>FlightAware ✈ SKW5444 ✈ 15-Mar-2018  ✈ KSAN - KLAX</name>
+    <Placemark>
+        <name>KSAN Airport</name>
+        <description><![CDATA[San Diego Intl <br> San Diego, CA<br><br><a href='http://flightaware.com/live/airport/KSAN'>KSAN airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KSAN'>KSAN airport information</a>]]></description>
+        <Point>
+            <coordinates>-117.1896667,32.7335556,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>KLAX Airport</name>
+        <description><![CDATA[Los Angeles Intl <br> Los Angeles, CA<br><br><a href='http://flightaware.com/live/airport/KLAX'>KLAX airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KLAX'>KLAX airport information</a>]]></description>
+        <Point>
+            <coordinates>-118.4080472,33.9424944,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>SKW5444</name>
+        <description>KSAN - KLAX</description>
+        <gx:Track>
+            <extrude>1</extrude>
+            <tessellate>1</tessellate>
+            <altitudeMode>absolute</altitudeMode>
+            <when>2018-03-16T04:11:27Z</when>
+            <when>2018-03-16T04:12:21Z</when>
+            <when>2018-03-16T04:13:19Z</when>
+            <when>2018-03-16T04:13:40Z</when>
+            <when>2018-03-16T04:15:18Z</when>
+            <when>2018-03-16T04:16:46Z</when>
+            <when>2018-03-16T04:18:25Z</when>
+            <when>2018-03-16T04:19:29Z</when>
+            <when>2018-03-16T04:19:55Z</when>
+            <when>2018-03-16T04:20:36Z</when>
+            <when>2018-03-16T04:21:27Z</when>
+            <when>2018-03-16T04:21:57Z</when>
+            <when>2018-03-16T04:23:22Z</when>
+            <when>2018-03-16T04:24:30Z</when>
+            <when>2018-03-16T04:24:47Z</when>
+            <when>2018-03-16T04:25:33Z</when>
+            <when>2018-03-16T04:25:49Z</when>
+            <when>2018-03-16T04:26:23Z</when>
+            <when>2018-03-16T04:27:43Z</when>
+            <when>2018-03-16T04:28:17Z</when>
+            <when>2018-03-16T04:29:23Z</when>
+            <when>2018-03-16T04:30:29Z</when>
+            <when>2018-03-16T04:31:52Z</when>
+            <when>2018-03-16T04:32:54Z</when>
+            <when>2018-03-16T04:33:56Z</when>
+            <when>2018-03-16T04:34:58Z</when>
+            <gx:coord>-117.21667 32.73333 396</gx:coord>
+            <gx:coord>-117.26667 32.76667 914</gx:coord>
+            <gx:coord>-117.31868 32.79982 1585</gx:coord>
+            <gx:coord>-117.34133 32.81449 1920</gx:coord>
+            <gx:coord>-117.45695 32.88889 2987</gx:coord>
+            <gx:coord>-117.58930 32.97099 3018</gx:coord>
+            <gx:coord>-117.74000 33.07389 3048</gx:coord>
+            <gx:coord>-117.83366 33.15861 3018</gx:coord>
+            <gx:coord>-117.84311 33.17322 3018</gx:coord>
+            <gx:coord>-117.87882 33.24049 3018</gx:coord>
+            <gx:coord>-117.90410 33.32852 3018</gx:coord>
+            <gx:coord>-117.90993 33.37521 3018</gx:coord>
+            <gx:coord>-117.95000 33.50000 2743</gx:coord>
+            <gx:coord>-117.97451 33.56630 2438</gx:coord>
+            <gx:coord>-117.97892 33.57790 2408</gx:coord>
+            <gx:coord>-117.99831 33.63050 2408</gx:coord>
+            <gx:coord>-118.00472 33.64759 2347</gx:coord>
+            <gx:coord>-118.01783 33.68120 2103</gx:coord>
+            <gx:coord>-118.04889 33.77111 2134</gx:coord>
+            <gx:coord>-118.06667 33.80000 2134</gx:coord>
+            <gx:coord>-118.06667 33.86666 1859</gx:coord>
+            <gx:coord>-118.08689 33.92220 1494</gx:coord>
+            <gx:coord>-118.16417 33.95639 1250</gx:coord>
+            <gx:coord>-118.23750 33.95306 853</gx:coord>
+            <gx:coord>-118.29444 33.94695 549</gx:coord>
+            <gx:coord>-118.33750 33.94222 305</gx:coord>
+        </gx:Track>
+    </Placemark>
+    <ScreenOverlay>
+        <name>FlightAware</name>
+        <Icon>
+            <href>http://flightaware.com/images/logo_ge.png</href>
+        </Icon>
+        <overlayXY x="1" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+    </ScreenOverlay>
+</Document>
+
+</kml>

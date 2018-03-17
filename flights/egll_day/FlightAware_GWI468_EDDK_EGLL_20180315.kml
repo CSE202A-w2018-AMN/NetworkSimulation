@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+    <name>FlightAware ✈ GWI468 ✈ 15-Mar-2018  ✈ CGN / EDDK - LHR / EGLL</name>
+    <Placemark>
+        <name>EDDK Airport</name>
+        <description><![CDATA[Cologne Bonn <br> Cologne/Bonn<br><br><a href='http://flightaware.com/live/airport/EDDK'>EDDK airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/EDDK'>EDDK airport information</a>]]></description>
+        <Point>
+            <coordinates>7.142744,50.865917,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>EGLL Airport</name>
+        <description><![CDATA[London Heathrow <br> London, England<br><br><a href='http://flightaware.com/live/airport/EGLL'>EGLL airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/EGLL'>EGLL airport information</a>]]></description>
+        <Point>
+            <coordinates>-0.461389,51.4775,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>GWI468</name>
+        <description>EDDK - EGLL</description>
+        <gx:Track>
+            <extrude>1</extrude>
+            <tessellate>1</tessellate>
+            <altitudeMode>absolute</altitudeMode>
+            <when>2018-03-15T18:43:43Z</when>
+            <when>2018-03-15T18:45:02Z</when>
+            <when>2018-03-15T18:46:10Z</when>
+            <when>2018-03-15T18:46:41Z</when>
+            <when>2018-03-15T18:47:11Z</when>
+            <when>2018-03-15T18:47:43Z</when>
+            <when>2018-03-15T18:48:50Z</when>
+            <when>2018-03-15T18:49:54Z</when>
+            <when>2018-03-15T18:50:56Z</when>
+            <when>2018-03-15T18:51:37Z</when>
+            <when>2018-03-15T18:51:54Z</when>
+            <when>2018-03-15T18:54:04Z</when>
+            <when>2018-03-15T18:56:04Z</when>
+            <when>2018-03-15T18:57:04Z</when>
+            <when>2018-03-15T18:59:06Z</when>
+            <when>2018-03-15T19:01:22Z</when>
+            <when>2018-03-15T19:01:47Z</when>
+            <when>2018-03-15T19:02:15Z</when>
+            <when>2018-03-15T19:07:49Z</when>
+            <when>2018-03-15T19:09:05Z</when>
+            <when>2018-03-15T19:10:39Z</when>
+            <when>2018-03-15T19:11:20Z</when>
+            <when>2018-03-15T19:12:21Z</when>
+            <when>2018-03-15T19:13:07Z</when>
+            <when>2018-03-15T19:13:43Z</when>
+            <when>2018-03-15T19:14:13Z</when>
+            <when>2018-03-15T19:14:43Z</when>
+            <gx:coord>3.28989 51.37367 9754</gx:coord>
+            <gx:coord>3.03379 51.43272 9754</gx:coord>
+            <gx:coord>2.79283 51.48747 9754</gx:coord>
+            <gx:coord>2.67398 51.51439 9754</gx:coord>
+            <gx:coord>2.54753 51.54273 9632</gx:coord>
+            <gx:coord>2.44102 51.56666 9388</gx:coord>
+            <gx:coord>2.20016 51.61991 8809</gx:coord>
+            <gx:coord>1.97628 51.66888 8260</gx:coord>
+            <gx:coord>1.77559 51.71213 7711</gx:coord>
+            <gx:coord>1.63780 51.74016 7254</gx:coord>
+            <gx:coord>1.55405 51.74327 6980</gx:coord>
+            <gx:coord>1.15201 51.71741 5486</gx:coord>
+            <gx:coord>0.78568 51.69221 4176</gx:coord>
+            <gx:coord>0.62462 51.68085 3780</gx:coord>
+            <gx:coord>0.34473 51.66046 3048</gx:coord>
+            <gx:coord>0.06851 51.65003 2957</gx:coord>
+            <gx:coord>0.02301 51.65103 2865</gx:coord>
+            <gx:coord>-0.03081 51.65213 2743</gx:coord>
+            <gx:coord>-0.64381 51.61125 2286</gx:coord>
+            <gx:coord>-0.77283 51.59464 2012</gx:coord>
+            <gx:coord>-0.88516 51.55600 1615</gx:coord>
+            <gx:coord>-0.92331 51.52839 1463</gx:coord>
+            <gx:coord>-0.87456 51.49623 1402</gx:coord>
+            <gx:coord>-0.82301 51.47827 1433</gx:coord>
+            <gx:coord>-0.76786 51.47630 1280</gx:coord>
+            <gx:coord>-0.72693 51.47644 1128</gx:coord>
+            <gx:coord>-0.69183 51.47658 1006</gx:coord>
+        </gx:Track>
+    </Placemark>
+    <ScreenOverlay>
+        <name>FlightAware</name>
+        <Icon>
+            <href>http://flightaware.com/images/logo_ge.png</href>
+        </Icon>
+        <overlayXY x="1" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+    </ScreenOverlay>
+</Document>
+
+</kml>

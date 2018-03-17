@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+    <name>FlightAware ✈ N76ZA ✈ 16-Mar-2018  ✈ KTEB - KJFK</name>
+    <Placemark>
+        <name>KTEB Airport</name>
+        <description><![CDATA[Teterboro <br> Teterboro, NJ<br><br><a href='http://flightaware.com/live/airport/KTEB'>KTEB airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KTEB'>KTEB airport information</a>]]></description>
+        <Point>
+            <coordinates>-74.0608333,40.8501111,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>KJFK Airport</name>
+        <description><![CDATA[John F Kennedy Intl <br> New York, NY<br><br><a href='http://flightaware.com/live/airport/KJFK'>KJFK airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KJFK'>KJFK airport information</a>]]></description>
+        <Point>
+            <coordinates>-73.778695,40.6399257,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>N76ZA</name>
+        <description>KTEB - KJFK</description>
+        <gx:Track>
+            <extrude>1</extrude>
+            <tessellate>1</tessellate>
+            <altitudeMode>absolute</altitudeMode>
+            <when>2018-03-16T14:19:46Z</when>
+            <when>2018-03-16T14:20:14Z</when>
+            <when>2018-03-16T14:20:52Z</when>
+            <when>2018-03-16T14:21:15Z</when>
+            <when>2018-03-16T14:21:53Z</when>
+            <when>2018-03-16T14:22:23Z</when>
+            <when>2018-03-16T14:22:41Z</when>
+            <when>2018-03-16T14:22:59Z</when>
+            <when>2018-03-16T14:23:17Z</when>
+            <when>2018-03-16T14:23:36Z</when>
+            <when>2018-03-16T14:23:57Z</when>
+            <when>2018-03-16T14:24:13Z</when>
+            <when>2018-03-16T14:24:29Z</when>
+            <when>2018-03-16T14:28:30Z</when>
+            <when>2018-03-16T14:28:46Z</when>
+            <when>2018-03-16T14:29:08Z</when>
+            <when>2018-03-16T14:29:26Z</when>
+            <when>2018-03-16T14:29:48Z</when>
+            <when>2018-03-16T14:30:12Z</when>
+            <when>2018-03-16T14:30:29Z</when>
+            <when>2018-03-16T14:30:45Z</when>
+            <when>2018-03-16T14:31:01Z</when>
+            <when>2018-03-16T14:31:19Z</when>
+            <when>2018-03-16T14:31:46Z</when>
+            <when>2018-03-16T14:32:16Z</when>
+            <when>2018-03-16T14:32:59Z</when>
+            <when>2018-03-16T14:33:29Z</when>
+            <when>2018-03-16T14:33:53Z</when>
+            <when>2018-03-16T14:34:09Z</when>
+            <when>2018-03-16T14:34:25Z</when>
+            <gx:coord>-74.05728 40.85140 213</gx:coord>
+            <gx:coord>-74.04698 40.84456 396</gx:coord>
+            <gx:coord>-74.02704 40.82904 488</gx:coord>
+            <gx:coord>-74.01410 40.81911 457</gx:coord>
+            <gx:coord>-73.99061 40.80262 518</gx:coord>
+            <gx:coord>-73.97198 40.79192 518</gx:coord>
+            <gx:coord>-73.95715 40.78569 518</gx:coord>
+            <gx:coord>-73.94501 40.78093 457</gx:coord>
+            <gx:coord>-73.94223 40.77282 427</gx:coord>
+            <gx:coord>-73.94654 40.76719 396</gx:coord>
+            <gx:coord>-73.95490 40.75760 305</gx:coord>
+            <gx:coord>-73.96046 40.75118 244</gx:coord>
+            <gx:coord>-73.96368 40.74504 183</gx:coord>
+            <gx:coord>-73.97057 40.73586 183</gx:coord>
+            <gx:coord>-73.96995 40.73018 244</gx:coord>
+            <gx:coord>-73.97211 40.72073 335</gx:coord>
+            <gx:coord>-73.97382 40.71304 335</gx:coord>
+            <gx:coord>-73.97001 40.70393 366</gx:coord>
+            <gx:coord>-73.96710 40.69318 366</gx:coord>
+            <gx:coord>-73.96497 40.68805 366</gx:coord>
+            <gx:coord>-73.95227 40.68082 335</gx:coord>
+            <gx:coord>-73.94037 40.68169 366</gx:coord>
+            <gx:coord>-73.92822 40.68279 366</gx:coord>
+            <gx:coord>-73.90734 40.68051 366</gx:coord>
+            <gx:coord>-73.88730 40.67781 366</gx:coord>
+            <gx:coord>-73.84904 40.67050 366</gx:coord>
+            <gx:coord>-73.82629 40.66292 366</gx:coord>
+            <gx:coord>-73.80877 40.65626 335</gx:coord>
+            <gx:coord>-73.80072 40.65137 305</gx:coord>
+            <gx:coord>-73.80565 40.64830 183</gx:coord>
+        </gx:Track>
+    </Placemark>
+    <ScreenOverlay>
+        <name>FlightAware</name>
+        <Icon>
+            <href>http://flightaware.com/images/logo_ge.png</href>
+        </Icon>
+        <overlayXY x="1" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+    </ScreenOverlay>
+</Document>
+
+</kml>

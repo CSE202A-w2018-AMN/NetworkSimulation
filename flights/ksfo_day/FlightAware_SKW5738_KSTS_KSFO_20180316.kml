@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+    <name>FlightAware ✈ SKW5738 ✈ 16-Mar-2018  ✈ KSTS - KSFO</name>
+    <Placemark>
+        <name>KSTS Airport</name>
+        <description><![CDATA[Schulz-Sonoma County <br> Santa Rosa, CA<br><br><a href='http://flightaware.com/live/airport/KSTS'>KSTS airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KSTS'>KSTS airport information</a>]]></description>
+        <Point>
+            <coordinates>-122.8128889,38.5096944,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>KSFO Airport</name>
+        <description><![CDATA[San Francisco Intl <br> San Francisco, CA<br><br><a href='http://flightaware.com/live/airport/KSFO'>KSFO airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KSFO'>KSFO airport information</a>]]></description>
+        <Point>
+            <coordinates>-122.3754167,37.6188056,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>SKW5738</name>
+        <description>KSTS - KSFO</description>
+        <gx:Track>
+            <extrude>1</extrude>
+            <tessellate>1</tessellate>
+            <altitudeMode>absolute</altitudeMode>
+            <when>2018-03-16T23:30:07Z</when>
+            <when>2018-03-16T23:31:28Z</when>
+            <when>2018-03-16T23:32:29Z</when>
+            <when>2018-03-16T23:33:31Z</when>
+            <when>2018-03-16T23:33:31Z</when>
+            <when>2018-03-16T23:34:32Z</when>
+            <when>2018-03-16T23:35:34Z</when>
+            <when>2018-03-16T23:36:36Z</when>
+            <when>2018-03-16T23:37:37Z</when>
+            <when>2018-03-16T23:38:39Z</when>
+            <when>2018-03-16T23:39:41Z</when>
+            <when>2018-03-16T23:40:42Z</when>
+            <when>2018-03-16T23:41:44Z</when>
+            <when>2018-03-16T23:42:56Z</when>
+            <when>2018-03-16T23:43:55Z</when>
+            <when>2018-03-16T23:44:55Z</when>
+            <when>2018-03-16T23:45:55Z</when>
+            <when>2018-03-16T23:47:53Z</when>
+            <when>2018-03-16T23:48:55Z</when>
+            <when>2018-03-16T23:50:06Z</when>
+            <when>2018-03-16T23:51:02Z</when>
+            <when>2018-03-16T23:52:02Z</when>
+            <when>2018-03-16T23:53:01Z</when>
+            <gx:coord>-122.85769 38.55168 1189</gx:coord>
+            <gx:coord>-122.93083 38.59555 2652</gx:coord>
+            <gx:coord>-123.01833 38.56167 3383</gx:coord>
+            <gx:coord>-123.08378 38.46409 3383</gx:coord>
+            <gx:coord>-123.04694 38.48056 3353</gx:coord>
+            <gx:coord>-122.99111 38.38778 3353</gx:coord>
+            <gx:coord>-122.93694 38.30500 3353</gx:coord>
+            <gx:coord>-122.88306 38.22222 3353</gx:coord>
+            <gx:coord>-122.83139 38.14167 3353</gx:coord>
+            <gx:coord>-122.77944 38.06111 3353</gx:coord>
+            <gx:coord>-122.72722 37.98083 3353</gx:coord>
+            <gx:coord>-122.66306 37.88805 3353</gx:coord>
+            <gx:coord>-122.59000 37.82056 3353</gx:coord>
+            <gx:coord>-122.50000 37.73333 3383</gx:coord>
+            <gx:coord>-122.40000 37.70000 3383</gx:coord>
+            <gx:coord>-122.31667 37.68333 2896</gx:coord>
+            <gx:coord>-122.23333 37.66667 2316</gx:coord>
+            <gx:coord>-122.11972 37.58861 1128</gx:coord>
+            <gx:coord>-122.14972 37.54917 792</gx:coord>
+            <gx:coord>-122.22191 37.56983 610</gx:coord>
+            <gx:coord>-122.26667 37.58333 579</gx:coord>
+            <gx:coord>-122.30000 37.60000 396</gx:coord>
+            <gx:coord>-122.33583 37.60333 152</gx:coord>
+        </gx:Track>
+    </Placemark>
+    <ScreenOverlay>
+        <name>FlightAware</name>
+        <Icon>
+            <href>http://flightaware.com/images/logo_ge.png</href>
+        </Icon>
+        <overlayXY x="1" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+    </ScreenOverlay>
+</Document>
+
+</kml>

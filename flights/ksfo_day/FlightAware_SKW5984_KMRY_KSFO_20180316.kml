@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+    <name>FlightAware ✈ SKW5984 ✈ 16-Mar-2018  ✈ KMRY - KSFO</name>
+    <Placemark>
+        <name>KMRY Airport</name>
+        <description><![CDATA[Monterey Rgnl <br> Monterey, CA<br><br><a href='http://flightaware.com/live/airport/KMRY'>KMRY airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KMRY'>KMRY airport information</a>]]></description>
+        <Point>
+            <coordinates>-121.8427831,36.5869522,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>KSFO Airport</name>
+        <description><![CDATA[San Francisco Intl <br> San Francisco, CA<br><br><a href='http://flightaware.com/live/airport/KSFO'>KSFO airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KSFO'>KSFO airport information</a>]]></description>
+        <Point>
+            <coordinates>-122.3754167,37.6188056,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>SKW5984</name>
+        <description>KMRY - KSFO</description>
+        <gx:Track>
+            <extrude>1</extrude>
+            <tessellate>1</tessellate>
+            <altitudeMode>absolute</altitudeMode>
+            <when>2018-03-16T23:47:49Z</when>
+            <when>2018-03-16T23:49:06Z</when>
+            <when>2018-03-16T23:49:19Z</when>
+            <when>2018-03-16T23:49:22Z</when>
+            <when>2018-03-16T23:50:19Z</when>
+            <when>2018-03-16T23:50:25Z</when>
+            <when>2018-03-16T23:51:19Z</when>
+            <when>2018-03-16T23:52:19Z</when>
+            <when>2018-03-16T23:53:19Z</when>
+            <when>2018-03-16T23:54:28Z</when>
+            <when>2018-03-16T23:55:29Z</when>
+            <when>2018-03-16T23:56:31Z</when>
+            <when>2018-03-16T23:57:33Z</when>
+            <when>2018-03-16T23:58:34Z</when>
+            <when>2018-03-16T23:59:36Z</when>
+            <when>2018-03-17T00:00:38Z</when>
+            <when>2018-03-17T00:01:20Z</when>
+            <when>2018-03-17T00:02:41Z</when>
+            <when>2018-03-17T00:03:20Z</when>
+            <when>2018-03-17T00:04:20Z</when>
+            <when>2018-03-17T00:05:20Z</when>
+            <when>2018-03-17T00:06:48Z</when>
+            <when>2018-03-17T00:07:49Z</when>
+            <when>2018-03-17T00:08:51Z</when>
+            <when>2018-03-17T00:09:52Z</when>
+            <when>2018-03-17T00:12:17Z</when>
+            <gx:coord>-121.85000 36.60000 427</gx:coord>
+            <gx:coord>-121.88405 36.66110 1798</gx:coord>
+            <gx:coord>-121.88333 36.66667 1859</gx:coord>
+            <gx:coord>-121.89253 36.67697 1951</gx:coord>
+            <gx:coord>-121.93333 36.73333 2469</gx:coord>
+            <gx:coord>-121.93358 36.74718 2591</gx:coord>
+            <gx:coord>-121.95000 36.81667 3048</gx:coord>
+            <gx:coord>-121.98333 36.90000 3048</gx:coord>
+            <gx:coord>-122.00000 36.98333 3048</gx:coord>
+            <gx:coord>-122.06389 37.07028 3048</gx:coord>
+            <gx:coord>-122.12889 37.11083 3048</gx:coord>
+            <gx:coord>-122.18972 37.14667 3048</gx:coord>
+            <gx:coord>-122.25027 37.18417 3048</gx:coord>
+            <gx:coord>-122.31333 37.22000 3048</gx:coord>
+            <gx:coord>-122.34972 37.26778 2896</gx:coord>
+            <gx:coord>-122.31944 37.33111 2560</gx:coord>
+            <gx:coord>-122.28333 37.38334 2195</gx:coord>
+            <gx:coord>-122.17667 37.38389 1829</gx:coord>
+            <gx:coord>-122.11667 37.40000 1798</gx:coord>
+            <gx:coord>-122.08334 37.45000 1402</gx:coord>
+            <gx:coord>-122.11667 37.48333 1250</gx:coord>
+            <gx:coord>-122.17083 37.53695 975</gx:coord>
+            <gx:coord>-122.23833 37.56000 640</gx:coord>
+            <gx:coord>-122.28833 37.58167 396</gx:coord>
+            <gx:coord>-122.32584 37.59750 183</gx:coord>
+            <gx:coord>-122.40689 37.56791 183</gx:coord>
+        </gx:Track>
+    </Placemark>
+    <ScreenOverlay>
+        <name>FlightAware</name>
+        <Icon>
+            <href>http://flightaware.com/images/logo_ge.png</href>
+        </Icon>
+        <overlayXY x="1" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+    </ScreenOverlay>
+</Document>
+
+</kml>

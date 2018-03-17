@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+    <name>FlightAware ✈ RSP788 ✈ 15-Mar-2018  ✈ KBUR - KLAX</name>
+    <Placemark>
+        <name>KBUR Airport</name>
+        <description><![CDATA[Bob Hope <br> Burbank, CA<br><br><a href='http://flightaware.com/live/airport/KBUR'>KBUR airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KBUR'>KBUR airport information</a>]]></description>
+        <Point>
+            <coordinates>-118.3586667,34.2006944,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>KLAX Airport</name>
+        <description><![CDATA[Los Angeles Intl <br> Los Angeles, CA<br><br><a href='http://flightaware.com/live/airport/KLAX'>KLAX airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KLAX'>KLAX airport information</a>]]></description>
+        <Point>
+            <coordinates>-118.4080472,33.9424944,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>RSP788</name>
+        <description>KBUR - KLAX</description>
+        <gx:Track>
+            <extrude>1</extrude>
+            <tessellate>1</tessellate>
+            <altitudeMode>absolute</altitudeMode>
+            <when>2018-03-16T07:00:44Z</when>
+            <when>2018-03-16T07:01:26Z</when>
+            <when>2018-03-16T07:02:20Z</when>
+            <when>2018-03-16T07:03:13Z</when>
+            <when>2018-03-16T07:05:08Z</when>
+            <when>2018-03-16T07:07:15Z</when>
+            <when>2018-03-16T07:08:17Z</when>
+            <when>2018-03-16T07:09:18Z</when>
+            <when>2018-03-16T07:10:18Z</when>
+            <when>2018-03-16T07:11:19Z</when>
+            <gx:coord>-118.33334 34.20000 640</gx:coord>
+            <gx:coord>-118.31667 34.18333 1158</gx:coord>
+            <gx:coord>-118.26667 34.15000 1524</gx:coord>
+            <gx:coord>-118.24277 34.11722 1524</gx:coord>
+            <gx:coord>-118.13333 34.06667 1311</gx:coord>
+            <gx:coord>-118.16666 33.98333 792</gx:coord>
+            <gx:coord>-118.22195 33.95639 792</gx:coord>
+            <gx:coord>-118.27417 33.94806 701</gx:coord>
+            <gx:coord>-118.31611 33.94389 427</gx:coord>
+            <gx:coord>-118.35083 33.94111 213</gx:coord>
+        </gx:Track>
+    </Placemark>
+    <ScreenOverlay>
+        <name>FlightAware</name>
+        <Icon>
+            <href>http://flightaware.com/images/logo_ge.png</href>
+        </Icon>
+        <overlayXY x="1" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+    </ScreenOverlay>
+</Document>
+
+</kml>
