@@ -39,6 +39,14 @@ public:
         }
         void MarkSeen();
     };
+    /** An adapter that displays the topology table */
+    class PrintTable {
+    private:
+        const TopologyTable& _table;
+    public:
+        PrintTable(const TopologyTable& table);
+        friend std::ostream& operator << (std::ostream& stream, const PrintTable& pt);
+    };
 private:
     typedef std::map<IcaoAddress, Entry>::iterator underlying_iterator;
     typedef std::map<IcaoAddress, Entry>::const_iterator underlying_const_iterator;

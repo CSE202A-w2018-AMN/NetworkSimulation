@@ -11,21 +11,23 @@
 
 NS_LOG_COMPONENT_DEFINE("OLSR");
 
+#define ADDR_LOG_INFO(items) NS_LOG_INFO('[' << _net_device->GetAddress() << "] " << items)
+#define ADDR_LOG_WARN(items) NS_LOG_WARN('[' << _net_device->GetAddress() << "] " << items)
+
 namespace olsr {
 
 Olsr::Olsr(ns3::Ptr<MeshNetDevice> net_device) :
     _net_device(net_device),
-    _hello_interval(ns3::Seconds(10)),
-    _topology_control_interval(ns3::Seconds(20)),
-    _default_ttl(16),
+    _hello_interval(ns3::Minutes(10)),
+    _topology_control_interval(ns3::Minutes(10)),
+    _default_ttl(8),
     // Neighbor table TTL
-    _neighbors(ns3::Seconds(120)),
-    _mpr_selector(ns3::Seconds(120)),
-    _topology(ns3::Seconds(120))
+    _neighbors(ns3::Minutes(30)),
+    _mpr_selector(ns3::Minutes(30)),
+    _topology(ns3::Minutes(30))
 {
     if (_net_device) {
         _net_device->SetReceiveCallback(std::bind(&Olsr::OnPacketReceived, this, std::placeholders::_1));
-        _log.SetAddress(_net_device->GetAddress());
     }
 }
 
@@ -33,7 +35,6 @@ void Olsr::SetNetDevice(ns3::Ptr<MeshNetDevice> net_device) {
     _net_device = net_device;
     if (_net_device) {
         _net_device->SetReceiveCallback(std::bind(&Olsr::OnPacketReceived, this, std::placeholders::_1));
-        _log.SetAddress(_net_device->GetAddress());
     }
 }
 
@@ -43,11 +44,11 @@ void Olsr::Start() {
 }
 
 void Olsr::Send(ns3::Packet packet, IcaoAddress destination) {
-    _log << "Olsr::Send packet " << packet << " to " << destination << '\n';
+    ADDR_LOG_INFO("Olsr::Send packet " << packet << " to " << destination);
     assert(_net_device);
     // Check length
     if (packet.GetSize() > static_cast<std::uint32_t>(std::numeric_limits<std::uint16_t>::max())) {
-        NS_LOG_WARN("Can't send packet more than 65536 bytes long");
+        ADDR_LOG_WARN("Can't send packet more than 65536 bytes long");
         return;
     }
     const auto local_address(_net_device->GetAddress());
@@ -57,7 +58,7 @@ void Olsr::Send(ns3::Packet packet, IcaoAddress destination) {
 }
 
 void Olsr::SendWithHeader(ns3::Packet packet, IcaoAddress destination) {
-    _log << "Olrsr::SendWithHeader " << packet << " to " << destination << '\n';
+    ADDR_LOG_INFO("Olrsr::SendWithHeader " << packet << " to " << destination);
     // Special case for broadcast: Forward to multipoint relay neighbors
     if (destination == IcaoAddress::Broadcast()) {
         SendMultipointRelay(packet);
@@ -65,11 +66,11 @@ void Olsr::SendWithHeader(ns3::Packet packet, IcaoAddress destination) {
         // Look up route
         const auto route = _routing.Find(destination);
         if (route != _routing.end()) {
-            _log << "Found route via next hop " << route->NextHop() << " to " << destination << '\n';
+            ADDR_LOG_INFO("Found route via next hop " << route->NextHop() << " to " << destination);
             // Send over next hop
             SendPacket(packet, route->NextHop());
         } else {
-            _log << "At " << _net_device->GetAddress() << ", no route to " << destination << '\n';
+            ADDR_LOG_INFO("At " << _net_device->GetAddress() << ", no route to " << destination);
         }
     }
 }
@@ -94,38 +95,38 @@ void Olsr::OnPacketReceived(ns3::Packet packet) {
     } else if (message_type == MessageType::Data) {
         HandleData(packet, std::move(header.GetMessage()));
     } else {
-        NS_LOG_WARN("Got a message with an uknown type " << static_cast<unsigned int>(message_type));
+        ADDR_LOG_WARN("Got a message with an uknown type " << static_cast<unsigned int>(message_type));
     }
 }
 
 void Olsr::SendPacket(ns3::Packet packet, IcaoAddress destination) {
-    _log << "Olsr::SendPacket " << packet << " to " << destination << '\n';
+    ADDR_LOG_INFO("Olsr::SendPacket " << packet << " to " << destination);
     assert(_net_device);
     _net_device->Send(packet, destination);
 }
 
 void Olsr::HandleData(ns3::Packet packet, Message&& message) {
-    NS_LOG_FUNCTION(this << packet);
+    ADDR_LOG_INFO("HandleData origin " << message.Origin() << " destination " << message.Destination());
     const auto local_address = _net_device->GetAddress();
     if (message.Destination() == local_address) {
-        _log << "Data arrived at " << local_address << " from " << message.Origin() << '\n';
+        ADDR_LOG_INFO("Data arrived at " << local_address << " from " << message.Origin());
         if (_receive_callback) {
             _receive_callback(packet);
         } else {
-            NS_LOG_WARN("No receive callback set");
+            ADDR_LOG_WARN("No receive callback set");
         }
     } else if (message.Ttl() > 0) {
-        _log << "Forwarding data\n";
+        ADDR_LOG_INFO("Forwarding data");
         message.DecrementTtl();
         packet.AddHeader(Header(message));
         SendWithHeader(packet, message.Destination());
     } else {
-        NS_LOG_WARN("Data with destination " << message.Destination() << " died at " << local_address);
+        ADDR_LOG_WARN("Data with destination " << message.Destination() << " died at " << local_address);
     }
 }
 
 void Olsr::SendHello() {
-    _log << "Sending hello\n";
+    ADDR_LOG_INFO("Sending hello");
     auto packet = ns3::Packet();
     auto message = Message(MessageType::Hello);
 
@@ -140,7 +141,7 @@ void Olsr::SendHello() {
 }
 
 void Olsr::SendTopologyControl() {
-    _log << "Sending topology control\n";
+    ADDR_LOG_INFO("Sending topology control");
 
     auto packet = ns3::Packet();
     // Non-zero TTL for flooding
@@ -154,16 +155,22 @@ void Olsr::SendTopologyControl() {
 }
 
 void Olsr::HandleTopologyControl(IcaoAddress sender, Message&& message) {
+    ADDR_LOG_INFO("HandleTopologyControl originating from " << message.Originator());
+    ADDR_LOG_INFO("Message MPR table:");
+
     _topology.RemoveExpired();
     const auto& message_table = message.MprSelector();
     auto in_table = _topology.Find(message.Originator());
     if (in_table != _topology.end()) {
+        ADDR_LOG_INFO("Originator is in topology table");
         // Check sequence number
         if (in_table->Sequence() > message_table.Sequence()) {
             // Message is out of order, ignore
+            ADDR_LOG_INFO("Out-of-order topology control message");
             return;
         } else if (in_table->Sequence() == message_table.Sequence()) {
             // This message replaces the old entry
+            ADDR_LOG_INFO("Removing old topology entry");
             _topology.Remove(in_table);
         }
     }
@@ -173,17 +180,22 @@ void Olsr::HandleTopologyControl(IcaoAddress sender, Message&& message) {
         auto in_table = _topology.Find(mpr_entry.Address());
         if (in_table != _topology.end()) {
             if (in_table->LastHop() == message.Originator()) {
+                ADDR_LOG_INFO("Marking entry seen");
                 in_table->MarkSeen();
             } else {
                 // Update last hop
+                ADDR_LOG_INFO("Updating last hop to " << in_table->Destination() << ": old " << in_table->LastHop() << ", new " << message.Originator());
                 in_table->SetLastHop(message.Originator());
                 in_table->MarkSeen();
             }
         } else {
             // Not in table, insert
+            ADDR_LOG_INFO("Inserting into topology table: destination " << mpr_entry.Address() << ", next hop " << message.Originator() << ", sequence " << message_table.Sequence());
             _topology.Insert(TopologyTable::Entry(mpr_entry.Address(), message.Originator(), message_table.Sequence()));
         }
     }
+
+    ADDR_LOG_INFO("Updated topology table:\n" << TopologyTable::PrintTable(_topology));
 
     // Forward message
     if (message.Ttl() > 0) {
@@ -196,7 +208,7 @@ void Olsr::HandleTopologyControl(IcaoAddress sender, Message&& message) {
 
     // Update all the routing
     calculate_routes(&_routing, _neighbors, _topology);
-    _log << "Routing table:\n" << RoutingTable::PrintTable(_routing) << '\n';
+    ADDR_LOG_INFO("Routing table:\n" << RoutingTable::PrintTable(_routing));
 }
 
 void Olsr::SendMultipointRelay(ns3::Packet packet) {
@@ -209,20 +221,20 @@ void Olsr::SendMultipointRelay(ns3::Packet packet) {
         }
     }
     if (!sent) {
-        _log << "No multipoint relay neighbors to send to\n";
+        ADDR_LOG_INFO("No multipoint relay neighbors to send to");
     }
 }
 
 void Olsr::HandleHello(IcaoAddress sender, const NeighborTable& sender_neighbors) {
     UpdateNeighbors(sender, sender_neighbors);
     UpdateMprSelector(sender, sender_neighbors);
-    _log << DumpState(*this) << '\n';
+    ADDR_LOG_INFO(DumpState(*this));
 }
 
 void Olsr::UpdateNeighbors(IcaoAddress sender, const NeighborTable& sender_neighbors) {
     const auto local_address = _net_device->GetAddress();
-    _log << local_address << " handling hello from " << sender
-        << " with neighbors " << print_container::print(sender_neighbors) << '\n';
+    ADDR_LOG_INFO(local_address << " handling hello from " << sender
+        << " with neighbors " << print_container::print(sender_neighbors));
 
     _neighbors.RemoveExpired();
 
@@ -233,8 +245,8 @@ void Olsr::UpdateNeighbors(IcaoAddress sender, const NeighborTable& sender_neigh
         auto& table_entry = sender_entry->second;
         // Make bidirectional if not
         if (table_entry.State() == LinkState::Unidirectional) {
-            _log << local_address << ": upgrading neighbor "
-                << sender << " to bidirectional\n";
+            ADDR_LOG_INFO(local_address << ": upgrading neighbor "
+                << sender << " to bidirectional");
             table_entry.SetState(LinkState::Bidirectional);
         }
 
@@ -254,13 +266,13 @@ void Olsr::UpdateNeighbors(IcaoAddress sender, const NeighborTable& sender_neigh
         if (sender_neighbors.Find(local_address) != sender_neighbors.end()) {
             // Other is aware of this, so the link is bidirectional
             new_link_state = LinkState::Bidirectional;
-            _log << local_address << ": adding bidirectional neighbor "
-                << sender << '\n';
+            ADDR_LOG_INFO(local_address << ": adding bidirectional neighbor "
+                << sender);
         } else {
             // Link is unidirectional
             new_link_state = LinkState::Unidirectional;
-            _log << local_address << ": adding unidirectional neighbor "
-                << sender << '\n';
+            ADDR_LOG_INFO(local_address << ": adding unidirectional neighbor "
+                << sender);
         }
         // Build an entry containing the 2-hop neighbors
         auto entry = NeighborTableEntry(sender, new_link_state);
@@ -314,7 +326,9 @@ std::ostream& operator << (std::ostream& stream, const Olsr::DumpState& state) {
     for (const auto& entry : olsr.MprSelector()) {
         stream << "    " << entry.second << '\n';
     }
-    stream << "}\nRouting table:\n" << RoutingTable::PrintTable(olsr.Routing()) << "\n}";
+    stream << "}\n";
+    stream << "Topology table:\n" << TopologyTable::PrintTable(olsr.Topology()) << '\n';
+    stream << "Routing table:\n" << RoutingTable::PrintTable(olsr.Routing()) << "\n}";
     return stream;
 }
 
@@ -324,11 +338,6 @@ ns3::TypeId Olsr::GetTypeId() {
         .SetParent<Object>()
         .AddConstructor<Olsr>();
     return id;
-}
-
-void Olsr::DoDispose() {
-    _log.Flush();
-    ns3::Object::DoDispose();
 }
 
 }

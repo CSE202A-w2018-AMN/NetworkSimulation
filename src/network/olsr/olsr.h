@@ -7,7 +7,6 @@
 #include "mpr_table.h"
 #include "topology_table.h"
 #include "routing_table.h"
-#include "log/log.h"
 #include <ns3/packet.h>
 #include <ns3/nstime.h>
 #include <functional>
@@ -51,6 +50,9 @@ public:
     inline const RoutingTable& Routing() const {
         return _routing;
     }
+    inline const TopologyTable& Topology() const {
+        return _topology;
+    }
 
     /** A wrapper that dumps the state of an OLSR instance */
     class DumpState {
@@ -88,9 +90,6 @@ private:
 
     /** Data receive callback */
     receive_callback _receive_callback;
-
-    /** Node-specific logger */
-    logger::NodeLogger _log;
 
     /**
      * Called when the network device receives a packet
@@ -138,8 +137,6 @@ private:
     void HandleTopologyControl(IcaoAddress sender, Message&& message);
     void HandleData(ns3::Packet packet, Message&& message);
 
-protected:
-    virtual void DoDispose() override;
 };
 
 }

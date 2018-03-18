@@ -27,7 +27,7 @@ ns3::ApplicationContainer AdsBSenderHelper::Install(ns3::NodeContainer nodes) {
         // Send operation uses OLSR
         auto olsr = node->GetObject<olsr::Olsr>();
         assert(olsr);
-        application->SetSendOperation([olsr](ns3::Packet packet) { olsr->Send(packet, IcaoAddress::Broadcast()); });
+        application->SetSendOperation([olsr](ns3::Packet packet) { olsr->Send(packet, IcaoAddress(0)); });
         node->AddApplication(application);
         apps.Add(application);
     }

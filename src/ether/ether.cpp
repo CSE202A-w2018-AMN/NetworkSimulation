@@ -35,12 +35,13 @@ void Ether::OnSend(const MeshNetDevice* sender, const ns3::Vector& position, ns3
         if (other_device != sender) {
             const auto other_position = other_device->GetMobilityModel()->GetPosition();
             const auto distance = ns3::CalculateDistance(position, other_position);
+            NS_LOG_LOGIC("Distance between nodes " << sender->GetAddress() << " and " << other_device->GetAddress() << ": " << distance << " m");
             if (distance <= _range) {
                 // Calculate propagation time and transmission time
                 const double propagation_seconds = distance / SPEED_OF_LIGHT;
                 const double sending_seconds = static_cast<double>(packet.GetSize()) / BITS_PER_SECOND;
                 const auto receive_delay = ns3::Time::FromDouble(propagation_seconds + sending_seconds, ns3::Time::Unit::S);
-                NS_LOG_INFO("Receive delay " << sender->GetAddress() << " -> " << other_device->GetAddress() << ": " << receive_delay);
+                NS_LOG_LOGIC("Receive delay " << sender->GetAddress() << " -> " << other_device->GetAddress() << ": " << receive_delay);
                 ns3::Simulator::Schedule(receive_delay, &MeshNetDevice::Receive, other_device, packet);
             }
         }

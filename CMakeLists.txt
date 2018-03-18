@@ -28,8 +28,6 @@ set(SOURCES
     src/util/bits.cpp
     src/util/print_container.h
     src/util/value_iterator.h
-    src/log/log.h
-    src/log/log.cpp
     src/flight_mobility.h
     src/flight_mobility.cpp
     src/flight_group.h
