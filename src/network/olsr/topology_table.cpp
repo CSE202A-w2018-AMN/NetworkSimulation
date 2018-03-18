@@ -55,7 +55,9 @@ std::ostream& operator << (std::ostream& stream, const TopologyTable::PrintTable
     const auto& table = pt._table;
     stream << "| Destination | Last hop | Sequence |\n";
     for (const auto& entry : table) {
-        stream << " " << entry.Destination() << " | " << entry.LastHop() << " | " << entry.Sequence() << " |\n";
+        stream << " " << entry.Destination()
+            << " | " << entry.LastHop()
+            << " | " << static_cast<unsigned int>(entry.Sequence()) << " |\n";
     }
     return stream;
 }

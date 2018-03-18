@@ -334,6 +334,10 @@ std::ostream& operator << (std::ostream& stream, const Olsr::DumpState& state) {
     return stream;
 }
 
+IcaoAddress Olsr::Address() const {
+    assert(_net_device);
+    return _net_device->GetAddress();
+}
 
 ns3::TypeId Olsr::GetTypeId() {
     static ns3::TypeId id = ns3::TypeId("olsr::Olsr")

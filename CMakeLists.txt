@@ -64,6 +64,12 @@ set(SOURCES
     src/network/olsr/routing_table.cpp
     src/network/olsr/routing_calc.h
     src/network/olsr/routing_calc.cpp
+    src/recorder/record.h
+    src/recorder/record.cpp
+    src/recorder/session.h
+    src/recorder/session.cpp
+    src/recorder/session_recorder.h
+    src/recorder/session_recorder.cpp
 )
 
 add_executable(${TARGET} ${SOURCES})

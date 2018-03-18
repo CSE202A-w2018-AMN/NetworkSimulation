@@ -39,6 +39,8 @@ public:
 
     void SetNetDevice(ns3::Ptr<MeshNetDevice> net_device);
 
+    IcaoAddress Address() const;
+
     static ns3::TypeId GetTypeId();
 
     inline const NeighborTable& Neighbors() const {
