@@ -44,7 +44,7 @@ void Olsr::Start() {
 }
 
 void Olsr::Send(ns3::Packet packet, IcaoAddress destination) {
-    ADDR_LOG_INFO("Olsr::Send packet " << packet << " to " << destination);
+    // ADDR_LOG_INFO("Olsr::Send packet " << packet << " to " << destination);
     assert(_net_device);
     // Check length
     if (packet.GetSize() > static_cast<std::uint32_t>(std::numeric_limits<std::uint16_t>::max())) {
@@ -58,7 +58,7 @@ void Olsr::Send(ns3::Packet packet, IcaoAddress destination) {
 }
 
 void Olsr::SendWithHeader(ns3::Packet packet, IcaoAddress destination) {
-    ADDR_LOG_INFO("Olrsr::SendWithHeader " << packet << " to " << destination);
+    // ADDR_LOG_INFO("Olrsr::SendWithHeader " << packet << " to " << destination);
     // Special case for broadcast: Forward to multipoint relay neighbors
     if (destination == IcaoAddress::Broadcast()) {
         SendMultipointRelay(packet);
@@ -80,7 +80,7 @@ void Olsr::SetReceiveCallback(receive_callback callback) {
 }
 
 void Olsr::OnPacketReceived(ns3::Packet packet) {
-    NS_LOG_FUNCTION(this << packet);
+    // NS_LOG_FUNCTION(this << packet);
 
     MeshHeader mesh_header;
     packet.RemoveHeader(mesh_header);
@@ -126,7 +126,7 @@ void Olsr::HandleData(ns3::Packet packet, Message&& message) {
 }
 
 void Olsr::SendHello() {
-    ADDR_LOG_INFO("Sending hello");
+    // ADDR_LOG_INFO("Sending hello");
     auto packet = ns3::Packet();
     auto message = Message(MessageType::Hello);
 
@@ -141,16 +141,18 @@ void Olsr::SendHello() {
 }
 
 void Olsr::SendTopologyControl() {
-    ADDR_LOG_INFO("Sending topology control");
+    if (!_mpr_selector.empty()) {
+        ADDR_LOG_INFO("Sending topology control");
 
-    auto packet = ns3::Packet();
-    // Non-zero TTL for flooding
-    auto message = Message(MessageType::TopologyControl, _default_ttl);
-    message.MprSelector() = _mpr_selector;
-    message.SetOriginator(_net_device->GetAddress());
-    packet.AddHeader(Header(message));
-    SendPacket(packet, IcaoAddress::Broadcast());
+        auto packet = ns3::Packet();
+        // Non-zero TTL for flooding
+        auto message = Message(MessageType::TopologyControl, _default_ttl);
+        message.MprSelector() = _mpr_selector;
+        message.SetOriginator(_net_device->GetAddress());
+        packet.AddHeader(Header(message));
+        SendPacket(packet, IcaoAddress::Broadcast());
 
+    }
     ns3::Simulator::Schedule(_topology_control_interval, &Olsr::SendTopologyControl, this);
 }
 
