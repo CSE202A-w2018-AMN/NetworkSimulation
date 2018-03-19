@@ -3,6 +3,7 @@
 
 #include "device/mesh_net_device.h"
 #include "address/icao_address.h"
+#include "network/olsr/routing_table.h"
 #include <ns3/packet.h>
 #include <ns3/nstime.h>
 #include <ostream>
@@ -30,6 +31,10 @@ public:
 
     static ns3::TypeId GetTypeId();
 
+//    inline const RoutingTable& Routing() const {
+//        return _routing;
+//    }
+
 private:
     /** The network device used for communication */
     ns3::Ptr<MeshNetDevice> _net_device;
@@ -53,6 +58,9 @@ private:
      * packet to the network interface.
      */
     void SendPacket(ns3::Packet packet, IcaoAddress address);
+
+    /** Routing table */
+    RoutingTable _routing;
 };
 
 }
