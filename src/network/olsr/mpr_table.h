@@ -59,6 +59,9 @@ public:
     inline const_iterator end() const {
         return _table.end();
     }
+    inline bool empty() const {
+        return _table.empty();
+    }
     inline iterator Find(IcaoAddress address) {
         return _table.find(address);
     }

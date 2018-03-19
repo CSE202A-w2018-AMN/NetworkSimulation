@@ -31,13 +31,16 @@ public:
 
     static ns3::TypeId GetTypeId();
 
-//    inline const RoutingTable& Routing() const {
-//        return _routing;
-//    }
+    inline const RoutingTable& Routing() const {
+        return _routing;
+    }
 
 private:
     /** The network device used for communication */
     ns3::Ptr<MeshNetDevice> _net_device;
+
+    /** Routing table */
+    RoutingTable _routing;
 
     /**
      * Interval between hello messages
@@ -58,9 +61,6 @@ private:
      * packet to the network interface.
      */
     void SendPacket(ns3::Packet packet, IcaoAddress address);
-
-    /** Routing table */
-    RoutingTable _routing;
 };
 
 }

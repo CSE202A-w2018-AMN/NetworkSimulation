@@ -9,8 +9,9 @@
 #include "routing_table.h"
 #include <ns3/packet.h>
 #include <ns3/nstime.h>
-#include <set>
+#include <functional>
 #include <ostream>
+#include <memory>
 
 namespace olsr {
 
@@ -21,6 +22,8 @@ class Message;
  */
 class Olsr : public ns3::Object {
 public:
+    typedef std::function<void(ns3::Packet)> receive_callback;
+
     Olsr(ns3::Ptr<MeshNetDevice> net_device = ns3::Ptr<MeshNetDevice>());
     /**
      * Starts sending hello messages and performing other network operations
@@ -32,7 +35,11 @@ public:
      */
     void Send(ns3::Packet packet, IcaoAddress destination);
 
+    void SetReceiveCallback(receive_callback callback);
+
     void SetNetDevice(ns3::Ptr<MeshNetDevice> net_device);
+
+    IcaoAddress Address() const;
 
     static ns3::TypeId GetTypeId();
 
@@ -44,6 +51,9 @@ public:
     }
     inline const RoutingTable& Routing() const {
         return _routing;
+    }
+    inline const TopologyTable& Topology() const {
+        return _topology;
     }
 
     /** A wrapper that dumps the state of an OLSR instance */
@@ -80,6 +90,9 @@ private:
     /** Routing table */
     RoutingTable _routing;
 
+    /** Data receive callback */
+    receive_callback _receive_callback;
+
     /**
      * Called when the network device receives a packet
      *
@@ -93,7 +106,7 @@ private:
      * Unlike Send(), this does not do any routing. It simply forwards the
      * packet to the network interface.
      */
-    void SendPacket(ns3::Packet packet, IcaoAddress address);
+    void SendPacket(ns3::Packet packet, IcaoAddress destination);
 
     /**
      * Sends a Hello message with the current peers
@@ -106,6 +119,17 @@ private:
     void SendTopologyControl();
 
     /**
+     * Sends a packet to all of this node's multipoint relay neighbors
+     * @param packet the packet to send, with an OLSR header already present
+     */
+    void SendMultipointRelay(ns3::Packet packet);
+
+    /**
+     * Sends a packet with an OLSR header already installed
+     */
+    void SendWithHeader(ns3::Packet packet, IcaoAddress destination);
+
+    /**
      * Handles a Hello message
      */
     void HandleHello(IcaoAddress sender, const NeighborTable& neighbors);
@@ -113,6 +137,8 @@ private:
     void UpdateMprSelector(IcaoAddress sender, const NeighborTable& sender_neighbors);
 
     void HandleTopologyControl(IcaoAddress sender, Message&& message);
+    void HandleData(ns3::Packet packet, Message&& message);
+
 };
 
 }
