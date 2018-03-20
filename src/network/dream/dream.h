@@ -3,7 +3,8 @@
 
 #include "device/mesh_net_device.h"
 #include "address/icao_address.h"
-#include "network/olsr/routing_table.h"
+#include "routing_table.h"
+#include "neighbor_table.h"
 #include <ns3/packet.h>
 #include <ns3/nstime.h>
 #include <ostream>
@@ -31,8 +32,12 @@ public:
 
     static ns3::TypeId GetTypeId();
 
-    inline const RoutingTable& Routing() const {
+    inline const dream::RoutingTable& Routing() const {
         return _routing;
+    }
+
+    inline const NeighborTable& Neighbors() const {
+        return _neighbors;
     }
 
 private:
@@ -40,7 +45,9 @@ private:
     ns3::Ptr<MeshNetDevice> _net_device;
 
     /** Routing table */
-    RoutingTable _routing;
+    dream::RoutingTable _routing;
+
+    dream::NeighborTable _neighbors;
 
     /**
      * Interval between hello messages

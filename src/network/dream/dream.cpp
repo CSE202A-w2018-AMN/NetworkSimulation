@@ -56,10 +56,10 @@ void Dream::Send(ns3::Packet packet, IcaoAddress destination) {
     }
 
     //D for calculating alpha
-    const auto SenderCoor = _net_device->GetMobilityModel()->GetPosition();->GetCoordination();
-    const auto ReceiverCoor = receiver_info->GetCoordination();
-    const float r = Distance(SenderCoor, ReceiverCoor);      //D distance between the device and the destination
-    const float x = receiver_info->velocity() * (ns3::Simulator::Now() - receiver_info->last_time());        //D maximum distance that the receiver can travel during the time
+    const auto SenderCoor = _net_device->GetMobilityModel()->GetPosition();
+    const auto ReceiverCoor = receiver_info->Location();
+    const float r = ns3::CalculateDistance(SenderCoor, ReceiverCoor);       //D Distance(SenderCoor, ReceiverCoor);      //D distance between the device and the destination
+    const float x = receiver_info->Velocity().GetLength() * (ns3::Simulator::Now().GetSeconds()-receiver_info->Last_Time().GetSeconds());        //D maximum distance that the receiver can travel during the time
 
     if (x < r)
     {
@@ -68,19 +68,19 @@ void Dream::Send(ns3::Packet packet, IcaoAddress destination) {
         for (auto iter = _neighbors.begin(); iter != _neighbors.end(); iter++)
         {
             //D calculate the angle between vector (sender, receiver) and (sender, neighbor) using the law of Cosine
-            float a = Distance(SenderCoor, ReceiverCoor);
-            float b = Distance(SenderCoor, iter->GetCoordination);
-            float c = Distance(ReceiverCoor, iter->GetCoordination);
+            float a = ns3::CalculateDistance(SenderCoor, ReceiverCoor);
+            float b = ns3::CalculateDistance(SenderCoor, iter->second.Location());
+            float c = ns3::CalculateDistance(ReceiverCoor, iter->second.Location());
             float angle_C = fabs(acos((a*a + b*b - c*c)/(2*a*b)));
             if (alpha >= angle_C)
-                SendPacket(packet, iter->GetAddress);
+                SendPacket(packet, iter->second.Address());
         }
     }
     else        //D the destination can be every direction! need to send the packet to all neighbors
     {
         for (auto iter = _neighbors.begin(); iter != _neighbors.end(); iter++)
         {
-            SendPacket(packet, iter->GetAddress);
+            SendPacket(packet, iter->second.Address());
         }
     }
 

@@ -66,6 +66,10 @@ set(SOURCES
     src/network/olsr/routing_calc.cpp
     src/network/dream/dream.h
     src/network/dream/dream.cpp
+    src/network/dream/routing_table.cpp
+    src/network/dream/routing_table.h
+    src/network/dream/neighbor_table.h
+    src/network/dream/neighbor_table.cpp
 )
 
 add_executable(${TARGET} ${SOURCES})
