@@ -3,10 +3,14 @@
 #include <ns3/simulator.h>
 #include <ns3/mobility-model.h>
 #include <ns3/node.h>
+#include <ns3/log.h>
 #include <ns3/geographic-positions.h>
 #include <cmath>
 #include <fstream>
+#include <iostream>
 #include <boost/math/constants/constants.hpp>
+
+NS_LOG_COMPONENT_DEFINE("record::SessionRecorder");
 
 namespace record {
 
@@ -63,6 +67,7 @@ void SessionRecorder::Start() {
 }
 
 void SessionRecorder::RecordRecord() {
+    NS_LOG_INFO(ns3::Simulator::Now().GetHours() << " hours, recording status");
     const auto time = NowRealTime();
     auto record = Record(time);
     for (auto iter = _nodes.Begin(); iter != _nodes.End(); ++iter) {

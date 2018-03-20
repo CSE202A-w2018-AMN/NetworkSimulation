@@ -124,6 +124,7 @@ int main(int argc, char** argv) {
     // Simulation configuration
     ns3::Time::SetResolution(ns3::Time::NS);
     ns3::LogComponentEnable("AircraftMeshSimulation", ns3::LOG_ALL);
+    ns3::LogComponentEnable("record::SessionRecorder", ns3::LOG_INFO);
     // ns3::LogComponentEnable("MeshNetDevice", ns3::LOG_INFO);
     // ns3::LogComponentEnable("AdsBSender", ns3::LOG_INFO);
     // ns3::LogComponentEnable("Ether", ns3::LOG_LOGIC);
@@ -138,8 +139,8 @@ int main(int argc, char** argv) {
     // Create ether and container of all nodes
     ns3::NodeContainer all_nodes(aircraft, ground_stations);
     Ether ether;
-    // 1000 km
-    ether.SetRange(1000000);
+    // 300 km
+    ether.SetRange(300000);
     for (auto iter = all_nodes.Begin(); iter != all_nodes.End(); ++iter) {
         ether.AddDevice((*iter)->GetObject<MeshNetDevice>());
     }
@@ -149,13 +150,13 @@ int main(int argc, char** argv) {
     auto adsb_senders = sender_helper.Install(aircraft);
 
     // Create recorder
-    record::SessionRecorder recorder(flights.first_departure_time(), ns3::Hours(1), std::move(all_nodes));
+    record::SessionRecorder recorder(flights.first_departure_time(), ns3::Minutes(10), std::move(all_nodes));
     recorder.Start();
 
     adsb_senders.Start(ns3::Seconds(0));
 
     NS_LOG_INFO("Running simulation");
-    ns3::Simulator::Stop(ns3::Hours(10));
+    ns3::Simulator::Stop(ns3::Hours(36));
     ns3::Simulator::Run();
     ns3::Simulator::Destroy();
     NS_LOG_INFO("Destroyed simulation");
