@@ -76,6 +76,8 @@ private:
      * Interval between topology control messages
      */
     ns3::Time _topology_control_interval;
+    /** Interval between Cleanup() calls */
+    ns3::Time _cleanup_interval;
     /**
      * Default TTL to use when sending non-local messages
      */
@@ -128,6 +130,11 @@ private:
      * Sends a packet with an OLSR header already installed
      */
     void SendWithHeader(ns3::Packet packet, IcaoAddress destination);
+
+    /**
+     * Cleans up expired entries and recalculates routes
+     */
+    void Cleanup();
 
     /**
      * Handles a Hello message

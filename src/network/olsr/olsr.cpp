@@ -20,11 +20,12 @@ Olsr::Olsr(ns3::Ptr<MeshNetDevice> net_device) :
     _net_device(net_device),
     _hello_interval(ns3::Minutes(10)),
     _topology_control_interval(ns3::Minutes(10)),
+    _cleanup_interval(ns3::Minutes(10)),
     _default_ttl(8),
     // Neighbor table TTL
-    _neighbors(ns3::Minutes(30)),
-    _mpr_selector(ns3::Minutes(30)),
-    _topology(ns3::Minutes(30))
+    _neighbors(ns3::Minutes(21)),
+    _mpr_selector(ns3::Minutes(21)),
+    _topology(ns3::Minutes(21))
 {
     if (_net_device) {
         _net_device->SetReceiveCallback(std::bind(&Olsr::OnPacketReceived, this, std::placeholders::_1));
@@ -41,6 +42,7 @@ void Olsr::SetNetDevice(ns3::Ptr<MeshNetDevice> net_device) {
 void Olsr::Start() {
     ns3::Simulator::Schedule(_hello_interval, &Olsr::SendHello, this);
     ns3::Simulator::Schedule(_topology_control_interval, &Olsr::SendTopologyControl, this);
+    ns3::Simulator::Schedule(_cleanup_interval, &Olsr::Cleanup, this);
 }
 
 void Olsr::Send(ns3::Packet packet, IcaoAddress destination) {
@@ -158,9 +160,7 @@ void Olsr::SendTopologyControl() {
 
 void Olsr::HandleTopologyControl(IcaoAddress sender, Message&& message) {
     ADDR_LOG_INFO("HandleTopologyControl originating from " << message.Originator());
-    ADDR_LOG_INFO("Message MPR table:");
 
-    _topology.RemoveExpired();
     const auto& message_table = message.MprSelector();
     auto in_table = _topology.Find(message.Originator());
     if (in_table != _topology.end()) {
@@ -207,10 +207,6 @@ void Olsr::HandleTopologyControl(IcaoAddress sender, Message&& message) {
         packet.AddHeader(Header(message));
         SendMultipointRelay(packet);
     }
-
-    // Update all the routing
-    calculate_routes(&_routing, _neighbors, _topology);
-    ADDR_LOG_INFO("Routing table:\n" << RoutingTable::PrintTable(_routing));
 }
 
 void Olsr::SendMultipointRelay(ns3::Packet packet) {
@@ -237,8 +233,6 @@ void Olsr::UpdateNeighbors(IcaoAddress sender, const NeighborTable& sender_neigh
     const auto local_address = _net_device->GetAddress();
     ADDR_LOG_INFO(local_address << " handling hello from " << sender
         << " with neighbors " << print_container::print(sender_neighbors));
-
-    _neighbors.RemoveExpired();
 
     // Update neighbors of this
     const auto sender_entry = _neighbors.Find(sender);
@@ -293,9 +287,6 @@ void Olsr::UpdateNeighbors(IcaoAddress sender, const NeighborTable& sender_neigh
 }
 
 void Olsr::UpdateMprSelector(IcaoAddress sender, const NeighborTable& sender_neighbors) {
-    // Remove old entries
-    _mpr_selector.RemoveExpired();
-
     const auto local_address = _net_device->GetAddress();
     const auto self_in_sender_neighbors = sender_neighbors.Find(local_address);
     if (self_in_sender_neighbors != sender_neighbors.end()) {
@@ -310,6 +301,17 @@ void Olsr::UpdateMprSelector(IcaoAddress sender, const NeighborTable& sender_nei
             }
         }
     }
+}
+
+void Olsr::Cleanup() {
+    NS_LOG_FUNCTION(this);
+    _neighbors.RemoveExpired();
+    _mpr_selector.RemoveExpired();
+    _topology.RemoveExpired();
+    // Update all the routing
+    calculate_routes(&_routing, _neighbors, _topology);
+    ADDR_LOG_INFO("Routing table:\n" << RoutingTable::PrintTable(_routing));
+    ns3::Simulator::Schedule(_cleanup_interval, &Olsr::Cleanup, this);
 }
 
 Olsr::DumpState::DumpState(const Olsr& olsr) :

@@ -1,5 +1,8 @@
 #include "neighbor_table.h"
 #include <ns3/simulator.h>
+#include <ns3/log.h>
+
+NS_LOG_COMPONENT_DEFINE("olsr::NeighborTable");
 
 namespace olsr {
 
@@ -48,10 +51,12 @@ void NeighborTable::RemoveExpired() {
     const auto now = ns3::Simulator::Now();
     for (auto iter = _table.begin(); iter != _table.end(); /* none */) {
         const auto& table_entry = iter->second;
-        if (now - table_entry.LastUpdated() > _ttl) {
+        const auto age = now - table_entry.LastUpdated();
+        if (age > _ttl) {
             // Delete
             // This invalidates the iterator to the removed element,
             // but not to other elements
+            NS_LOG_LOGIC("Deleting expired neighbor " << table_entry);
             const auto to_remove = iter;
             iter = ++iter;
             _table.erase(to_remove);

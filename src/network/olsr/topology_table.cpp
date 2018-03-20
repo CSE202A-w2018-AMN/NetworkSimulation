@@ -1,5 +1,8 @@
 #include "topology_table.h"
 #include <ns3/simulator.h>
+#include <ns3/log.h>
+
+NS_LOG_COMPONENT_DEFINE("olsr::TopologyTable");
 
 namespace olsr {
 
@@ -38,6 +41,7 @@ void TopologyTable::RemoveExpired() {
     for (auto iter = _table.begin(); iter != _table.end(); /* nothing */) {
         const auto age = now - iter->second.Updated();
         if (age > _ttl) {
+            NS_LOG_LOGIC("TopologyTable removing expired entry to " << iter->second.Destination());
             const auto to_remove = iter;
             ++iter;
             _table.erase(to_remove);
