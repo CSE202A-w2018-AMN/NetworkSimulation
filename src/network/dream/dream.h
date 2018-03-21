@@ -3,6 +3,7 @@
 
 #include "device/mesh_net_device.h"
 #include "address/icao_address.h"
+#include "message.h"
 #include "routing_table.h"
 #include "neighbor_table.h"
 #include <ns3/packet.h>
@@ -68,6 +69,10 @@ private:
      * packet to the network interface.
      */
     void SendPacket(ns3::Packet packet, IcaoAddress address);
+
+    void HandleHello(IcaoAddress sender, const ns3::Vector& position, const ns3::Vector& velocity);
+    void HandlePosition(Message&& message);
+    void HandleData(Message&& message);
 };
 
 }

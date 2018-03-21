@@ -86,7 +86,7 @@ std::uint32_t Header::Deserialize(ns3::Buffer::Iterator start) {
 std::uint32_t Header::GetSerializedSize() const {
     switch (_message.GetType()) {
     case Message::Type::Hello:
-        return 1 + 1 + 3 + 24 + 24;
+        return 1 + 1 + 24 + 24;
     case Message::Type::Position:
         return 1 + 1 + 3 + 24 + 24 + 8;
     case Message::Type::Data:
@@ -125,16 +125,14 @@ void Header::SerializeNone(ns3::Buffer::Iterator start) const {
 
 void Header::SerializeHello(ns3::Buffer::Iterator start) const {
     start.WriteU8(1);
-    bits::write_u24(&start, _message.Origin().Value());
     write_vector(&start, _message.Position());
     write_vector(&start, _message.Velocity());
 }
 
 std::uint32_t Header::DeserializeHello(ns3::Buffer::Iterator after_type) {
-    _message.SetOrigin(IcaoAddress(bits::read_u24(&after_type)));
     _message.SetPosition(read_vector(&after_type));
     _message.SetVelocity(read_vector(&after_type));
-    return 3 + 24 + 24;
+    return 24 + 24;
 }
 
 void Header::SerializePosition(ns3::Buffer::Iterator start) const {

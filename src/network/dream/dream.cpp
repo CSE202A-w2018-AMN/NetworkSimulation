@@ -2,6 +2,8 @@
 #include <cassert>
 #include <limits>
 #include "network/olsr/routing_calc.h"
+#include "header/mesh_header.h"
+#include "header.h"
 #include <ns3/log.h>
 #include <ns3/simulator.h>
 #include <cmath>
@@ -98,28 +100,37 @@ void Dream::Send(ns3::Packet packet, IcaoAddress destination) {
 
 void Dream::OnPacketReceived(ns3::Packet packet) {
     NS_LOG_FUNCTION(this << packet);
+    MeshHeader mesh_header;
+    packet.RemoveHeader(mesh_header);
 
-    // MeshHeader mesh_header;
-    // packet.RemoveHeader(mesh_header);
-    //
-    // Header header;
-    // packet.RemoveHeader(header);
-    // const auto message_type = header.GetMessage().Type();
-    // if (message_type == MessageType::Hello) {
-    //     HandleHello(mesh_header.SourceAddress(), header.GetMessage().Neighbors());
-    // } else if (message_type == MessageType::TopologyControl) {
-    //     HandleTopologyControl(mesh_header.SourceAddress(), std::move(header.GetMessage()));
-    // } else if (message_type == MessageType::Data) {
-    //     HandleData(std::move(header.GetMessage()));
-    // } else {
-    //     NS_LOG_WARN("Got a message with an uknown type " << static_cast<unsigned int>(message_type));
-    // }
+    Header header;
+    packet.RemoveHeader(header);
+    const auto message_type = header.GetMessage().GetType();
+    if (message_type == Message::Type::Hello) {
+        HandleHello(mesh_header.SourceAddress(), header.GetMessage().Position(), header.GetMessage().Velocity());
+    } else if (message_type == Message::Type::Position) {
+        HandlePosition(std::move(header.GetMessage()));
+    } else if (message_type == Message::Type::Data) {
+        HandleData(std::move(header.GetMessage()));
+    } else {
+        NS_LOG_WARN("Got a message with an uknown type " << static_cast<unsigned int>(message_type));
+    }
 }
 
 void Dream::SendPacket(ns3::Packet packet, IcaoAddress address) {
     NS_LOG_FUNCTION(this << packet << address);
     assert(_net_device);
     _net_device->Send(packet, address);
+}
+
+void Dream::HandleHello(IcaoAddress sender, const ns3::Vector& position, const ns3::Vector& velocity) {
+
+}
+void Dream::HandlePosition(Message&& message) {
+
+}
+void Dream::HandleData(Message&& message) {
+
 }
 
 

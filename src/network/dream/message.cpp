@@ -22,9 +22,8 @@ Message Message::DataMessage(IcaoAddress origin, IcaoAddress destination, std::u
     return message;
 }
 
-Message Message::HelloMessage(IcaoAddress origin, const ns3::Vector& position, const ns3::Vector& velocity) {
+Message Message::HelloMessage(const ns3::Vector& position, const ns3::Vector& velocity) {
     Message message(Type::Hello, 0);
-    message.SetOrigin(origin);
     message.SetPosition(position);
     message.SetVelocity(velocity);
     return message;

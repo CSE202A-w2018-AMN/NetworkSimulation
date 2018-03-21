@@ -28,7 +28,7 @@ public:
     /** Convenience constructor for a Data message */
     static Message DataMessage(IcaoAddress origin, IcaoAddress destination, std::uint8_t ttl, std::uint16_t data_length);
     /** Convenience constructor for a Hello message */
-    static Message HelloMessage(IcaoAddress origin, const ns3::Vector& position, const ns3::Vector& velocity);
+    static Message HelloMessage(const ns3::Vector& position, const ns3::Vector& velocity);
     /** Convenience constructor for a Position message */
     static Message PositionMessage(IcaoAddress origin, std::uint8_t ttl, const ns3::Vector& position, const ns3::Vector& velocity, double max_distance);
 
