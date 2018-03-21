@@ -20,6 +20,7 @@ Flight::Flight(std::vector<Point>&& points) :
 }
 
 Flight Flight::read_from_kml(const std::string& path) {
+    std::cerr << "Reading KML " << path << '\n';
     detail::FlightSaxParser parser;
     parser.parse_file(path);
 

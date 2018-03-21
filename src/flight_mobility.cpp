@@ -6,7 +6,7 @@
 void fill_flight_waypoints(const flightkml::Flight& flight, const boost::posix_time::ptime& epoch, ns3::WaypointMobilityModel* model) {
     // Clear
     model->EndMobility();
-    long prev_seconds_since_epoch = 0;
+    long prev_seconds_since_epoch = -1;
     for (const auto& point : flight.points()) {
         // Convert latitude/longitude/altitude to earth-centered, earth-fixed
         const auto ecef_position = ns3::GeographicPositions::GeographicToCartesianCoordinates(

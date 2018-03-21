@@ -6,7 +6,7 @@
 #include <ns3/object.h>
 #include <ns3/packet.h>
 #include <ns3/mobility-model.h>
-#include <address/icao_address.h>
+#include "address/icao_address.h"
 
 /**
  * A network device on an aircraft or ground station used for communication

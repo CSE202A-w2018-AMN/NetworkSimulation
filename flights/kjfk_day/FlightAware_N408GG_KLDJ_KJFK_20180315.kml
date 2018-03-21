@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+    <name>FlightAware ✈ N408GG ✈ 15-Mar-2018  ✈ KLDJ - KJFK</name>
+    <Placemark>
+        <name>KLDJ Airport</name>
+        <description><![CDATA[Linden <br> Linden, NJ<br><br><a href='http://flightaware.com/live/airport/KLDJ'>KLDJ airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KLDJ'>KLDJ airport information</a>]]></description>
+        <Point>
+            <coordinates>-74.2445833,40.6174444,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>KJFK Airport</name>
+        <description><![CDATA[John F Kennedy Intl <br> New York, NY<br><br><a href='http://flightaware.com/live/airport/KJFK'>KJFK airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KJFK'>KJFK airport information</a>]]></description>
+        <Point>
+            <coordinates>-73.778695,40.6399257,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>N408GG</name>
+        <description>KLDJ - KJFK</description>
+        <gx:Track>
+            <extrude>1</extrude>
+            <tessellate>1</tessellate>
+            <altitudeMode>absolute</altitudeMode>
+            <when>2018-03-15T10:51:36Z</when>
+            <when>2018-03-15T10:51:58Z</when>
+            <when>2018-03-15T10:52:17Z</when>
+            <when>2018-03-15T10:52:48Z</when>
+            <when>2018-03-15T10:53:19Z</when>
+            <when>2018-03-15T10:53:35Z</when>
+            <when>2018-03-15T10:53:58Z</when>
+            <when>2018-03-15T10:54:17Z</when>
+            <when>2018-03-15T10:54:47Z</when>
+            <when>2018-03-15T10:55:17Z</when>
+            <when>2018-03-15T10:55:56Z</when>
+            <when>2018-03-15T10:56:26Z</when>
+            <when>2018-03-15T10:56:44Z</when>
+            <when>2018-03-15T10:57:09Z</when>
+            <when>2018-03-15T10:57:32Z</when>
+            <when>2018-03-15T10:57:58Z</when>
+            <when>2018-03-15T10:58:19Z</when>
+            <when>2018-03-15T10:58:55Z</when>
+            <when>2018-03-15T10:59:21Z</when>
+            <when>2018-03-15T10:59:55Z</when>
+            <when>2018-03-15T11:00:25Z</when>
+            <when>2018-03-15T11:00:41Z</when>
+            <when>2018-03-15T11:00:57Z</when>
+            <when>2018-03-15T11:01:15Z</when>
+            <when>2018-03-15T11:01:33Z</when>
+            <gx:coord>-74.25061 40.60492 274</gx:coord>
+            <gx:coord>-74.23793 40.59718 335</gx:coord>
+            <gx:coord>-74.22457 40.59295 427</gx:coord>
+            <gx:coord>-74.20122 40.58610 488</gx:coord>
+            <gx:coord>-74.17493 40.57814 488</gx:coord>
+            <gx:coord>-74.16277 40.57428 518</gx:coord>
+            <gx:coord>-74.14276 40.56866 518</gx:coord>
+            <gx:coord>-74.12650 40.56529 488</gx:coord>
+            <gx:coord>-74.10628 40.56250 488</gx:coord>
+            <gx:coord>-74.07769 40.56017 518</gx:coord>
+            <gx:coord>-74.03761 40.55826 518</gx:coord>
+            <gx:coord>-74.01111 40.55722 518</gx:coord>
+            <gx:coord>-73.99361 40.55719 488</gx:coord>
+            <gx:coord>-73.97327 40.55878 427</gx:coord>
+            <gx:coord>-73.95509 40.56115 396</gx:coord>
+            <gx:coord>-73.92994 40.56823 366</gx:coord>
+            <gx:coord>-73.91358 40.57549 335</gx:coord>
+            <gx:coord>-73.88971 40.58972 274</gx:coord>
+            <gx:coord>-73.86976 40.59881 244</gx:coord>
+            <gx:coord>-73.85147 40.60784 244</gx:coord>
+            <gx:coord>-73.82500 40.62064 244</gx:coord>
+            <gx:coord>-73.81317 40.62602 244</gx:coord>
+            <gx:coord>-73.80347 40.63075 213</gx:coord>
+            <gx:coord>-73.79542 40.63573 213</gx:coord>
+            <gx:coord>-73.79834 40.64273 152</gx:coord>
+        </gx:Track>
+    </Placemark>
+    <ScreenOverlay>
+        <name>FlightAware</name>
+        <Icon>
+            <href>http://flightaware.com/images/logo_ge.png</href>
+        </Icon>
+        <overlayXY x="1" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+    </ScreenOverlay>
+</Document>
+
+</kml>

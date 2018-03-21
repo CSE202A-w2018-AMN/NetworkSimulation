@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+    <name>FlightAware ✈ EJA644 ✈ 15-Mar-2018  ✈ KBUR - KLAX</name>
+    <Placemark>
+        <name>KBUR Airport</name>
+        <description><![CDATA[Bob Hope <br> Burbank, CA<br><br><a href='http://flightaware.com/live/airport/KBUR'>KBUR airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KBUR'>KBUR airport information</a>]]></description>
+        <Point>
+            <coordinates>-118.3586667,34.2006944,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>KLAX Airport</name>
+        <description><![CDATA[Los Angeles Intl <br> Los Angeles, CA<br><br><a href='http://flightaware.com/live/airport/KLAX'>KLAX airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KLAX'>KLAX airport information</a>]]></description>
+        <Point>
+            <coordinates>-118.4080472,33.9424944,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>EJA644</name>
+        <description>KBUR - KLAX</description>
+        <gx:Track>
+            <extrude>1</extrude>
+            <tessellate>1</tessellate>
+            <altitudeMode>absolute</altitudeMode>
+            <when>2018-03-16T02:37:38Z</when>
+            <when>2018-03-16T02:38:49Z</when>
+            <when>2018-03-16T02:40:07Z</when>
+            <when>2018-03-16T02:42:11Z</when>
+            <when>2018-03-16T02:42:22Z</when>
+            <when>2018-03-16T02:43:14Z</when>
+            <when>2018-03-16T02:44:19Z</when>
+            <when>2018-03-16T02:45:18Z</when>
+            <when>2018-03-16T02:46:20Z</when>
+            <when>2018-03-16T02:47:22Z</when>
+            <when>2018-03-16T02:49:39Z</when>
+            <gx:coord>-118.35000 34.20000 518</gx:coord>
+            <gx:coord>-118.28656 34.14873 1615</gx:coord>
+            <gx:coord>-118.24917 34.07806 1554</gx:coord>
+            <gx:coord>-118.14667 34.02806 884</gx:coord>
+            <gx:coord>-118.12991 34.02159 792</gx:coord>
+            <gx:coord>-118.17333 33.98806 823</gx:coord>
+            <gx:coord>-118.24507 33.96310 792</gx:coord>
+            <gx:coord>-118.29528 33.96278 671</gx:coord>
+            <gx:coord>-118.34639 33.95833 396</gx:coord>
+            <gx:coord>-118.38445 33.95417 183</gx:coord>
+            <gx:coord>-118.57175 33.77557 30</gx:coord>
+        </gx:Track>
+    </Placemark>
+    <ScreenOverlay>
+        <name>FlightAware</name>
+        <Icon>
+            <href>http://flightaware.com/images/logo_ge.png</href>
+        </Icon>
+        <overlayXY x="1" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+    </ScreenOverlay>
+</Document>
+
+</kml>

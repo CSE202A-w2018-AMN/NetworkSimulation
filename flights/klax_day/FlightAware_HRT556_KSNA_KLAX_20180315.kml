@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+    <name>FlightAware ✈ HRT556 ✈ 15-Mar-2018  ✈ KSNA - KLAX</name>
+    <Placemark>
+        <name>KSNA Airport</name>
+        <description><![CDATA[John Wayne <br> Santa Ana, CA<br><br><a href='http://flightaware.com/live/airport/KSNA'>KSNA airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KSNA'>KSNA airport information</a>]]></description>
+        <Point>
+            <coordinates>-117.8682222,33.6756667,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>KLAX Airport</name>
+        <description><![CDATA[Los Angeles Intl <br> Los Angeles, CA<br><br><a href='http://flightaware.com/live/airport/KLAX'>KLAX airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KLAX'>KLAX airport information</a>]]></description>
+        <Point>
+            <coordinates>-118.4080472,33.9424944,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>HRT556</name>
+        <description>KSNA - KLAX</description>
+        <gx:Track>
+            <extrude>1</extrude>
+            <tessellate>1</tessellate>
+            <altitudeMode>absolute</altitudeMode>
+            <when>2018-03-15T23:13:25Z</when>
+            <when>2018-03-15T23:14:27Z</when>
+            <when>2018-03-15T23:15:19Z</when>
+            <when>2018-03-15T23:16:21Z</when>
+            <when>2018-03-15T23:17:24Z</when>
+            <when>2018-03-15T23:18:26Z</when>
+            <when>2018-03-15T23:19:27Z</when>
+            <when>2018-03-15T23:20:27Z</when>
+            <when>2018-03-15T23:20:33Z</when>
+            <when>2018-03-15T23:21:27Z</when>
+            <when>2018-03-15T23:22:27Z</when>
+            <when>2018-03-15T23:23:27Z</when>
+            <when>2018-03-15T23:24:27Z</when>
+            <when>2018-03-15T23:25:42Z</when>
+            <when>2018-03-15T23:26:44Z</when>
+            <when>2018-03-15T23:27:46Z</when>
+            <when>2018-03-15T23:27:46Z</when>
+            <when>2018-03-15T23:28:49Z</when>
+            <when>2018-03-15T23:31:12Z</when>
+            <gx:coord>-117.88333 33.66667 335</gx:coord>
+            <gx:coord>-117.90000 33.60000 1158</gx:coord>
+            <gx:coord>-117.90305 33.56528 1646</gx:coord>
+            <gx:coord>-117.96555 33.56611 2134</gx:coord>
+            <gx:coord>-117.99333 33.62750 2103</gx:coord>
+            <gx:coord>-118.01694 33.68972 2103</gx:coord>
+            <gx:coord>-118.05000 33.76667 2134</gx:coord>
+            <gx:coord>-118.05000 33.81667 2073</gx:coord>
+            <gx:coord>-118.06071 33.82264 2042</gx:coord>
+            <gx:coord>-118.06667 33.86666 1615</gx:coord>
+            <gx:coord>-118.06667 33.91667 1524</gx:coord>
+            <gx:coord>-118.10000 33.95000 1067</gx:coord>
+            <gx:coord>-118.16666 33.96667 914</gx:coord>
+            <gx:coord>-118.22694 33.95361 853</gx:coord>
+            <gx:coord>-118.27583 33.94861 610</gx:coord>
+            <gx:coord>-118.32653 33.94301 335</gx:coord>
+            <gx:coord>-118.32056 33.94389 366</gx:coord>
+            <gx:coord>-118.36278 33.94056 183</gx:coord>
+            <gx:coord>-118.54268 33.74996 30</gx:coord>
+        </gx:Track>
+    </Placemark>
+    <ScreenOverlay>
+        <name>FlightAware</name>
+        <Icon>
+            <href>http://flightaware.com/images/logo_ge.png</href>
+        </Icon>
+        <overlayXY x="1" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+    </ScreenOverlay>
+</Document>
+
+</kml>

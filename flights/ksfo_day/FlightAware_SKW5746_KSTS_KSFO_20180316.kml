@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+    <name>FlightAware ✈ SKW5746 ✈ 15-Mar-2018  ✈ KSTS - KSFO</name>
+    <Placemark>
+        <name>KSTS Airport</name>
+        <description><![CDATA[Schulz-Sonoma County <br> Santa Rosa, CA<br><br><a href='http://flightaware.com/live/airport/KSTS'>KSTS airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KSTS'>KSTS airport information</a>]]></description>
+        <Point>
+            <coordinates>-122.8128889,38.5096944,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>KSFO Airport</name>
+        <description><![CDATA[San Francisco Intl <br> San Francisco, CA<br><br><a href='http://flightaware.com/live/airport/KSFO'>KSFO airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KSFO'>KSFO airport information</a>]]></description>
+        <Point>
+            <coordinates>-122.3754167,37.6188056,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>SKW5746</name>
+        <description>KSTS - KSFO</description>
+        <gx:Track>
+            <extrude>1</extrude>
+            <tessellate>1</tessellate>
+            <altitudeMode>absolute</altitudeMode>
+            <when>2018-03-16T07:16:38Z</when>
+            <when>2018-03-16T07:17:38Z</when>
+            <when>2018-03-16T07:18:40Z</when>
+            <when>2018-03-16T07:19:40Z</when>
+            <when>2018-03-16T07:20:41Z</when>
+            <when>2018-03-16T07:21:41Z</when>
+            <when>2018-03-16T07:22:42Z</when>
+            <when>2018-03-16T07:23:43Z</when>
+            <when>2018-03-16T07:24:43Z</when>
+            <when>2018-03-16T07:26:10Z</when>
+            <when>2018-03-16T07:27:10Z</when>
+            <when>2018-03-16T07:28:10Z</when>
+            <when>2018-03-16T07:29:10Z</when>
+            <when>2018-03-16T07:30:16Z</when>
+            <when>2018-03-16T07:32:05Z</when>
+            <when>2018-03-16T07:33:06Z</when>
+            <when>2018-03-16T07:34:06Z</when>
+            <when>2018-03-16T07:34:12Z</when>
+            <when>2018-03-16T07:35:08Z</when>
+            <when>2018-03-16T07:36:07Z</when>
+            <when>2018-03-16T07:37:08Z</when>
+            <when>2018-03-16T07:38:08Z</when>
+            <gx:coord>-122.80028 38.49333 396</gx:coord>
+            <gx:coord>-122.75715 38.42928 1646</gx:coord>
+            <gx:coord>-122.71972 38.37472 2652</gx:coord>
+            <gx:coord>-122.70167 38.30361 3353</gx:coord>
+            <gx:coord>-122.69611 38.22083 3353</gx:coord>
+            <gx:coord>-122.69000 38.13500 3353</gx:coord>
+            <gx:coord>-122.68333 38.03361 3353</gx:coord>
+            <gx:coord>-122.67917 37.94889 3353</gx:coord>
+            <gx:coord>-122.64000 37.86917 3353</gx:coord>
+            <gx:coord>-122.53333 37.78333 3383</gx:coord>
+            <gx:coord>-122.48333 37.71667 3353</gx:coord>
+            <gx:coord>-122.38333 37.70000 3048</gx:coord>
+            <gx:coord>-122.30000 37.68333 2530</gx:coord>
+            <gx:coord>-122.20000 37.65000 2438</gx:coord>
+            <gx:coord>-122.08139 37.59972 2042</gx:coord>
+            <gx:coord>-122.05556 37.54611 1646</gx:coord>
+            <gx:coord>-122.11972 37.53833 1097</gx:coord>
+            <gx:coord>-122.13543 37.53953 1006</gx:coord>
+            <gx:coord>-122.19070 37.53881 884</gx:coord>
+            <gx:coord>-122.23333 37.56111 671</gx:coord>
+            <gx:coord>-122.28056 37.58111 427</gx:coord>
+            <gx:coord>-122.31555 37.59500 244</gx:coord>
+        </gx:Track>
+    </Placemark>
+    <ScreenOverlay>
+        <name>FlightAware</name>
+        <Icon>
+            <href>http://flightaware.com/images/logo_ge.png</href>
+        </Icon>
+        <overlayXY x="1" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+    </ScreenOverlay>
+</Document>
+
+</kml>

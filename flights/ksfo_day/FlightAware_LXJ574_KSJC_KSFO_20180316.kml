@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+    <name>FlightAware ✈ LXJ574 ✈ 16-Mar-2018  ✈ KSJC - KSFO</name>
+    <Placemark>
+        <name>KSJC Airport</name>
+        <description><![CDATA[San Jose Int'l <br> San Jose, CA<br><br><a href='http://flightaware.com/live/airport/KSJC'>KSJC airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KSJC'>KSJC airport information</a>]]></description>
+        <Point>
+            <coordinates>-121.9286208,37.3629924,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>KSFO Airport</name>
+        <description><![CDATA[San Francisco Intl <br> San Francisco, CA<br><br><a href='http://flightaware.com/live/airport/KSFO'>KSFO airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KSFO'>KSFO airport information</a>]]></description>
+        <Point>
+            <coordinates>-122.3754167,37.6188056,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>LXJ574</name>
+        <description>KSJC - KSFO</description>
+        <gx:Track>
+            <extrude>1</extrude>
+            <tessellate>1</tessellate>
+            <altitudeMode>absolute</altitudeMode>
+            <when>2018-03-16T14:34:51Z</when>
+            <when>2018-03-16T14:35:10Z</when>
+            <when>2018-03-16T14:35:28Z</when>
+            <when>2018-03-16T14:35:46Z</when>
+            <when>2018-03-16T14:36:04Z</when>
+            <when>2018-03-16T14:36:20Z</when>
+            <when>2018-03-16T14:36:37Z</when>
+            <when>2018-03-16T14:37:05Z</when>
+            <when>2018-03-16T14:37:50Z</when>
+            <when>2018-03-16T14:38:08Z</when>
+            <when>2018-03-16T14:38:25Z</when>
+            <when>2018-03-16T14:38:45Z</when>
+            <when>2018-03-16T14:39:04Z</when>
+            <when>2018-03-16T14:39:49Z</when>
+            <when>2018-03-16T14:40:19Z</when>
+            <when>2018-03-16T14:40:49Z</when>
+            <when>2018-03-16T14:41:19Z</when>
+            <when>2018-03-16T14:41:37Z</when>
+            <when>2018-03-16T14:41:55Z</when>
+            <when>2018-03-16T14:42:19Z</when>
+            <when>2018-03-16T14:42:43Z</when>
+            <when>2018-03-16T14:43:13Z</when>
+            <when>2018-03-16T14:43:34Z</when>
+            <when>2018-03-16T14:44:04Z</when>
+            <when>2018-03-16T14:44:34Z</when>
+            <when>2018-03-16T14:45:04Z</when>
+            <when>2018-03-16T14:45:34Z</when>
+            <when>2018-03-16T14:46:04Z</when>
+            <when>2018-03-16T14:46:23Z</when>
+            <gx:coord>-121.93468 37.36707 335</gx:coord>
+            <gx:coord>-121.94567 37.37833 732</gx:coord>
+            <gx:coord>-121.94889 37.39371 1067</gx:coord>
+            <gx:coord>-121.93579 37.40735 1402</gx:coord>
+            <gx:coord>-121.91102 37.41142 1524</gx:coord>
+            <gx:coord>-121.89038 37.40407 1524</gx:coord>
+            <gx:coord>-121.87940 37.38806 1615</gx:coord>
+            <gx:coord>-121.88647 37.36455 1798</gx:coord>
+            <gx:coord>-121.90860 37.32470 1829</gx:coord>
+            <gx:coord>-121.92896 37.32065 1829</gx:coord>
+            <gx:coord>-121.94508 37.32898 1829</gx:coord>
+            <gx:coord>-121.95847 37.34367 1829</gx:coord>
+            <gx:coord>-121.97062 37.35992 1829</gx:coord>
+            <gx:coord>-122.00352 37.40218 1829</gx:coord>
+            <gx:coord>-122.02276 37.42711 1829</gx:coord>
+            <gx:coord>-122.04244 37.45299 1737</gx:coord>
+            <gx:coord>-122.06249 37.47881 1494</gx:coord>
+            <gx:coord>-122.07704 37.49455 1402</gx:coord>
+            <gx:coord>-122.09568 37.50453 1311</gx:coord>
+            <gx:coord>-122.11952 37.51442 1219</gx:coord>
+            <gx:coord>-122.14618 37.52450 1189</gx:coord>
+            <gx:coord>-122.17586 37.53662 1036</gx:coord>
+            <gx:coord>-122.19585 37.54536 914</gx:coord>
+            <gx:coord>-122.22384 37.55750 762</gx:coord>
+            <gx:coord>-122.25235 37.56940 610</gx:coord>
+            <gx:coord>-122.27637 37.57947 488</gx:coord>
+            <gx:coord>-122.29834 37.58881 366</gx:coord>
+            <gx:coord>-122.32178 37.59865 213</gx:coord>
+            <gx:coord>-122.33557 37.60446 152</gx:coord>
+        </gx:Track>
+    </Placemark>
+    <ScreenOverlay>
+        <name>FlightAware</name>
+        <Icon>
+            <href>http://flightaware.com/images/logo_ge.png</href>
+        </Icon>
+        <overlayXY x="1" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+    </ScreenOverlay>
+</Document>
+
+</kml>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+    <name>FlightAware ✈ SIS517 ✈ 16-Mar-2018  ✈ KLGB - KLAX</name>
+    <Placemark>
+        <name>KLGB Airport</name>
+        <description><![CDATA[Daugherty Field <br> Long Beach, CA<br><br><a href='http://flightaware.com/live/airport/KLGB'>KLGB airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KLGB'>KLGB airport information</a>]]></description>
+        <Point>
+            <coordinates>-118.1514722,33.8176389,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>KLAX Airport</name>
+        <description><![CDATA[Los Angeles Intl <br> Los Angeles, CA<br><br><a href='http://flightaware.com/live/airport/KLAX'>KLAX airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KLAX'>KLAX airport information</a>]]></description>
+        <Point>
+            <coordinates>-118.4080472,33.9424944,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>SIS517</name>
+        <description>KLGB - KLAX</description>
+        <gx:Track>
+            <extrude>1</extrude>
+            <tessellate>1</tessellate>
+            <altitudeMode>absolute</altitudeMode>
+            <when>2018-03-16T19:44:00Z</when>
+            <when>2018-03-16T19:44:59Z</when>
+            <when>2018-03-16T19:45:59Z</when>
+            <when>2018-03-16T19:46:59Z</when>
+            <when>2018-03-16T19:48:18Z</when>
+            <when>2018-03-16T19:49:20Z</when>
+            <when>2018-03-16T19:50:23Z</when>
+            <when>2018-03-16T19:51:25Z</when>
+            <when>2018-03-16T19:52:27Z</when>
+            <when>2018-03-16T19:53:30Z</when>
+            <gx:coord>-118.15815 33.82363 213</gx:coord>
+            <gx:coord>-118.22033 33.84511 1128</gx:coord>
+            <gx:coord>-118.20000 33.78333 1219</gx:coord>
+            <gx:coord>-118.11667 33.78333 1219</gx:coord>
+            <gx:coord>-118.09835 33.85572 1158</gx:coord>
+            <gx:coord>-118.13084 33.90833 884</gx:coord>
+            <gx:coord>-118.18889 33.94222 610</gx:coord>
+            <gx:coord>-118.24834 33.95000 610</gx:coord>
+            <gx:coord>-118.30139 33.94639 488</gx:coord>
+            <gx:coord>-118.35445 33.94000 244</gx:coord>
+        </gx:Track>
+    </Placemark>
+    <ScreenOverlay>
+        <name>FlightAware</name>
+        <Icon>
+            <href>http://flightaware.com/images/logo_ge.png</href>
+        </Icon>
+        <overlayXY x="1" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+    </ScreenOverlay>
+</Document>
+
+</kml>

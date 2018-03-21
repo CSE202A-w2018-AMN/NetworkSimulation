@@ -7,6 +7,8 @@
 #include "mpr_table.h"
 #include "topology_table.h"
 #include "routing_table.h"
+#include "packet_recorder/packet_recorder.h"
+#include "network/network_protocol.h"
 #include <ns3/packet.h>
 #include <ns3/nstime.h>
 #include <functional>
@@ -20,7 +22,7 @@ class Message;
 /**
  * An optimized link-state routing protocol implementation
  */
-class Olsr : public ns3::Object {
+class Olsr : public NetworkProtocol {
 public:
     typedef std::function<void(ns3::Packet)> receive_callback;
 
@@ -28,16 +30,17 @@ public:
     /**
      * Starts sending hello messages and performing other network operations
      */
-    void Start();
+    virtual void Start() override;
 
     /**
      * Sends a packet to the specified destination
      */
-    void Send(ns3::Packet packet, IcaoAddress destination);
+    virtual void Send(ns3::Packet packet, IcaoAddress destination) override;
 
-    void SetReceiveCallback(receive_callback callback);
+    virtual void SetReceiveCallback(receive_callback callback) override;
 
-    void SetNetDevice(ns3::Ptr<MeshNetDevice> net_device);
+    virtual void SetNetDevice(ns3::Ptr<MeshNetDevice> net_device) override;
+    virtual void SetPacketRecorder(ns3::Ptr<PacketRecorder> recorder) override;
 
     IcaoAddress Address() const;
 
@@ -67,6 +70,8 @@ public:
 private:
     /** The network device used for communication */
     ns3::Ptr<MeshNetDevice> _net_device;
+    /** The packet recorder */
+    ns3::Ptr<PacketRecorder> _packet_recorder;
 
     /**
      * Interval between hello messages
@@ -76,6 +81,8 @@ private:
      * Interval between topology control messages
      */
     ns3::Time _topology_control_interval;
+    /** Interval between Cleanup() calls */
+    ns3::Time _cleanup_interval;
     /**
      * Default TTL to use when sending non-local messages
      */
@@ -130,6 +137,11 @@ private:
     void SendWithHeader(ns3::Packet packet, IcaoAddress destination);
 
     /**
+     * Cleans up expired entries and recalculates routes
+     */
+    void Cleanup();
+
+    /**
      * Handles a Hello message
      */
     void HandleHello(IcaoAddress sender, const NeighborTable& neighbors);
@@ -139,6 +151,8 @@ private:
     void HandleTopologyControl(IcaoAddress sender, Message&& message);
     void HandleData(ns3::Packet packet, Message&& message);
 
+    void RecordPacketSent(std::uint64_t id, PacketRecorder::PacketType type);
+    void RecordPacketReceived(std::uint64_t id);
 };
 
 }

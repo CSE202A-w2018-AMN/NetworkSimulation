@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 11)
 # Main package
 
 # NS3
-find_package(NS3 3.26 REQUIRED COMPONENTS core network internet point-to-point applications mobility csma)
+find_package(NS3 3.26 REQUIRED COMPONENTS core network applications mobility)
 # Boost
 find_package(Boost REQUIRED COMPONENTS filesystem)
 
@@ -46,6 +46,8 @@ set(SOURCES
     src/application/adsb_sender_helper.cpp
     src/ether/ether.h
     src/ether/ether.cpp
+    src/network/network_protocol.h
+    src/network/network_protocol.cpp
     src/network/olsr/olsr.h
     src/network/olsr/olsr.cpp
     src/network/olsr/header.h
@@ -70,6 +72,14 @@ set(SOURCES
     src/network/dream/routing_table.h
     src/network/dream/neighbor_table.h
     src/network/dream/neighbor_table.cpp
+    src/recorder/record.h
+    src/recorder/record.cpp
+    src/recorder/session.h
+    src/recorder/session.cpp
+    src/recorder/session_recorder.h
+    src/recorder/session_recorder.cpp
+    src/packet_recorder/packet_recorder.h
+    src/packet_recorder/packet_recorder.cpp
 )
 
 add_executable(${TARGET} ${SOURCES})

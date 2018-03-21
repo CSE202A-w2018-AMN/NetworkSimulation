@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+    <name>FlightAware ✈ CHN61 ✈ 16-Mar-2018  ✈ KCMA - KLAX</name>
+    <Placemark>
+        <name>KCMA Airport</name>
+        <description><![CDATA[Camarillo <br> Camarillo, CA<br><br><a href='http://flightaware.com/live/airport/KCMA'>KCMA airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KCMA'>KCMA airport information</a>]]></description>
+        <Point>
+            <coordinates>-119.0943611,34.21375,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>KLAX Airport</name>
+        <description><![CDATA[Los Angeles Intl <br> Los Angeles, CA<br><br><a href='http://flightaware.com/live/airport/KLAX'>KLAX airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KLAX'>KLAX airport information</a>]]></description>
+        <Point>
+            <coordinates>-118.4080472,33.9424944,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>CHN61</name>
+        <description>KCMA - KLAX</description>
+        <gx:Track>
+            <extrude>1</extrude>
+            <tessellate>1</tessellate>
+            <altitudeMode>absolute</altitudeMode>
+            <when>2018-03-16T21:26:13Z</when>
+            <when>2018-03-16T21:27:01Z</when>
+            <when>2018-03-16T21:28:02Z</when>
+            <when>2018-03-16T21:29:12Z</when>
+            <when>2018-03-16T21:30:14Z</when>
+            <when>2018-03-16T21:31:16Z</when>
+            <when>2018-03-16T21:32:19Z</when>
+            <when>2018-03-16T21:33:21Z</when>
+            <when>2018-03-16T21:34:23Z</when>
+            <when>2018-03-16T21:35:25Z</when>
+            <when>2018-03-16T21:36:28Z</when>
+            <when>2018-03-16T21:37:30Z</when>
+            <when>2018-03-16T21:39:30Z</when>
+            <when>2018-03-16T21:40:30Z</when>
+            <when>2018-03-16T21:41:30Z</when>
+            <when>2018-03-16T21:43:30Z</when>
+            <when>2018-03-16T21:44:31Z</when>
+            <when>2018-03-16T21:45:30Z</when>
+            <when>2018-03-16T21:46:50Z</when>
+            <when>2018-03-16T21:47:52Z</when>
+            <when>2018-03-16T21:48:55Z</when>
+            <when>2018-03-16T21:49:57Z</when>
+            <gx:coord>-119.11222 34.21472 335</gx:coord>
+            <gx:coord>-119.15972 34.22111 1311</gx:coord>
+            <gx:coord>-119.16028 34.16278 1524</gx:coord>
+            <gx:coord>-119.07555 34.12528 1524</gx:coord>
+            <gx:coord>-118.99333 34.09806 1524</gx:coord>
+            <gx:coord>-118.88805 34.08222 1524</gx:coord>
+            <gx:coord>-118.79889 34.06833 1524</gx:coord>
+            <gx:coord>-118.71250 34.05472 1524</gx:coord>
+            <gx:coord>-118.62666 34.03972 1524</gx:coord>
+            <gx:coord>-118.53528 34.02417 1524</gx:coord>
+            <gx:coord>-118.44778 34.01222 1524</gx:coord>
+            <gx:coord>-118.35306 34.02333 1524</gx:coord>
+            <gx:coord>-118.21667 34.03333 1097</gx:coord>
+            <gx:coord>-118.15000 34.05000 1097</gx:coord>
+            <gx:coord>-118.08334 34.05000 1097</gx:coord>
+            <gx:coord>-118.06667 34.00000 792</gx:coord>
+            <gx:coord>-118.11667 33.98333 792</gx:coord>
+            <gx:coord>-118.16666 33.98333 792</gx:coord>
+            <gx:coord>-118.23750 33.96861 792</gx:coord>
+            <gx:coord>-118.29195 33.96361 640</gx:coord>
+            <gx:coord>-118.34528 33.95833 366</gx:coord>
+            <gx:coord>-118.38250 33.95555 183</gx:coord>
+        </gx:Track>
+    </Placemark>
+    <ScreenOverlay>
+        <name>FlightAware</name>
+        <Icon>
+            <href>http://flightaware.com/images/logo_ge.png</href>
+        </Icon>
+        <overlayXY x="1" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+    </ScreenOverlay>
+</Document>
+
+</kml>

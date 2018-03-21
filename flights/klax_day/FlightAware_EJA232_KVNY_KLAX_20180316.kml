@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+    <name>FlightAware ✈ EJA232 ✈ 16-Mar-2018  ✈ KVNY - KLAX</name>
+    <Placemark>
+        <name>KVNY Airport</name>
+        <description><![CDATA[Van Nuys <br> Van Nuys, CA<br><br><a href='http://flightaware.com/live/airport/KVNY'>KVNY airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KVNY'>KVNY airport information</a>]]></description>
+        <Point>
+            <coordinates>-118.4899722,34.2098056,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>KLAX Airport</name>
+        <description><![CDATA[Los Angeles Intl <br> Los Angeles, CA<br><br><a href='http://flightaware.com/live/airport/KLAX'>KLAX airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KLAX'>KLAX airport information</a>]]></description>
+        <Point>
+            <coordinates>-118.4080472,33.9424944,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>EJA232</name>
+        <description>KVNY - KLAX</description>
+        <gx:Track>
+            <extrude>1</extrude>
+            <tessellate>1</tessellate>
+            <altitudeMode>absolute</altitudeMode>
+            <when>2018-03-16T19:40:04Z</when>
+            <when>2018-03-16T19:40:52Z</when>
+            <when>2018-03-16T19:41:47Z</when>
+            <when>2018-03-16T19:42:17Z</when>
+            <when>2018-03-16T19:43:19Z</when>
+            <when>2018-03-16T19:44:22Z</when>
+            <when>2018-03-16T19:45:25Z</when>
+            <when>2018-03-16T19:46:27Z</when>
+            <when>2018-03-16T19:47:28Z</when>
+            <when>2018-03-16T19:48:31Z</when>
+            <when>2018-03-16T19:49:33Z</when>
+            <when>2018-03-16T19:50:35Z</when>
+            <when>2018-03-16T19:53:39Z</when>
+            <when>2018-03-16T20:02:16Z</when>
+            <gx:coord>-118.48930 34.19778 427</gx:coord>
+            <gx:coord>-118.46667 34.16667 762</gx:coord>
+            <gx:coord>-118.43333 34.13334 1158</gx:coord>
+            <gx:coord>-118.41666 34.10917 1219</gx:coord>
+            <gx:coord>-118.36083 34.07695 1219</gx:coord>
+            <gx:coord>-118.29806 34.05500 884</gx:coord>
+            <gx:coord>-118.23000 34.05222 823</gx:coord>
+            <gx:coord>-118.18806 34.02222 792</gx:coord>
+            <gx:coord>-118.21445 33.98861 792</gx:coord>
+            <gx:coord>-118.26945 33.96611 701</gx:coord>
+            <gx:coord>-118.32083 33.96083 457</gx:coord>
+            <gx:coord>-118.36694 33.95528 244</gx:coord>
+            <gx:coord>-118.68138 33.66031 61</gx:coord>
+            <gx:coord>-118.51875 33.78494 30</gx:coord>
+        </gx:Track>
+    </Placemark>
+    <ScreenOverlay>
+        <name>FlightAware</name>
+        <Icon>
+            <href>http://flightaware.com/images/logo_ge.png</href>
+        </Icon>
+        <overlayXY x="1" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+    </ScreenOverlay>
+</Document>
+
+</kml>

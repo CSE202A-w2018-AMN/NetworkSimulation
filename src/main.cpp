@@ -10,6 +10,8 @@
 #include "device/mesh_net_device.h"
 #include "application/adsb_sender_helper.h"
 #include "ether/ether.h"
+#include "recorder/session_recorder.h"
+#include "packet_recorder/packet_recorder.h"
 
 #include "network/olsr/olsr.h"
 
@@ -28,9 +30,7 @@ namespace {
 /**
  * Creates and configures aircraft nodes. Returns a container of them.
  */
-ns3::NodeContainer create_aircraft(const std::string& kml_path) {
-    // Read flights
-    const auto flights = load_flights(kml_path);
+ns3::NodeContainer create_aircraft(const FlightGroup& flights) {
     const auto first_departure = flights.first_departure_time();
     NS_LOG_INFO("Read " << flights.flights().size() << " flights");
     // Set up a node for each flight
@@ -105,6 +105,12 @@ ns3::NodeContainer create_ground_stations() {
     device->SetMobilityModel(node->GetObject<ns3::MobilityModel>());
     node->AggregateObject(device);
 
+    // OLSR
+    auto olsr = ns3::CreateObject<olsr::Olsr>();
+    olsr->SetNetDevice(device);
+    olsr->Start();
+    node->AggregateObject(olsr);
+
     return nodes;
 }
 
@@ -119,36 +125,58 @@ int main(int argc, char** argv) {
     // Simulation configuration
     ns3::Time::SetResolution(ns3::Time::NS);
     ns3::LogComponentEnable("AircraftMeshSimulation", ns3::LOG_ALL);
-    ns3::LogComponentEnable("MeshNetDevice", ns3::LOG_INFO);
-    ns3::LogComponentEnable("AdsBSender", ns3::LOG_INFO);
-    ns3::LogComponentEnable("Ether", ns3::LOG_INFO);
-    ns3::LogComponentEnable("OLSR", ns3::LOG_ALL);
-    ns3::LogComponentEnable("olsr::multipoint_relay", ns3::LOG_ALL);
+    ns3::LogComponentEnable("record::SessionRecorder", ns3::LOG_INFO);
+    ns3::LogComponentEnable("PacketRecorder", ns3::LOG_LOGIC);
+    // ns3::LogComponentEnable("MeshNetDevice", ns3::LOG_LOGIC);
+    // ns3::LogComponentEnable("AdsBSender", ns3::LOG_INFO);
+    // ns3::LogComponentEnable("Ether", ns3::LOG_LOGIC);
+    ns3::LogComponentEnable("OLSR", ns3::LOG_WARN);
+    // ns3::LogComponentEnable("olsr::NeighborTable", ns3::LOG_LOGIC);
+    // ns3::LogComponentEnable("olsr::TopologyTable", ns3::LOG_LOGIC);
+    // ns3::LogComponentEnable("olsr::multipoint_relay", ns3::LOG_ALL);
 
-    auto aircraft = create_aircraft(argv[1]);
+    // Create aircraft and ground stations
+    const auto flights = load_flights(argv[1]);
+    auto aircraft = create_aircraft(flights);
     auto ground_stations = create_ground_stations();
 
-    // Create ether
+    // Create ether and container of all nodes
+    ns3::NodeContainer all_nodes(aircraft, ground_stations);
     Ether ether;
     // 300 km
     ether.SetRange(300000);
-    for (auto iter = aircraft.Begin(); iter != aircraft.End(); ++iter) {
-        ether.AddDevice((*iter)->GetObject<MeshNetDevice>());
-    }
-    for (auto iter = ground_stations.Begin(); iter != ground_stations.End(); ++iter) {
+    for (auto iter = all_nodes.Begin(); iter != all_nodes.End(); ++iter) {
         ether.AddDevice((*iter)->GetObject<MeshNetDevice>());
     }
 
     // Create applications
-    // AdsBSenderHelper sender_helper(ns3::Seconds(10));
-    // auto adsb_senders = sender_helper.Install(aircraft);
+    AdsBSenderHelper sender_helper(ns3::Minutes(30));
+    auto adsb_senders = sender_helper.Install(aircraft);
 
-    // adsb_senders.Start(ns3::Seconds(0));
-    // adsb_senders.Stop(ns3::Seconds(60));
+    // Create recorder
+    record::SessionRecorder recorder(flights.first_departure_time(), ns3::Minutes(10), std::move(all_nodes));
+    recorder.Start();
+
+    // Create packet recorder
+    auto packet_recorder = ns3::CreateObject<PacketRecorder>();
+    for (auto iter = all_nodes.Begin(); iter != all_nodes.End(); ++iter) {
+        auto node = *iter;
+        assert(node);
+        auto olsr = node->GetObject<olsr::Olsr>();
+        assert(olsr);
+        olsr->SetPacketRecorder(packet_recorder);
+    }
+
+    adsb_senders.Start(ns3::Seconds(0));
 
     NS_LOG_INFO("Running simulation");
-    ns3::Simulator::Stop(ns3::Seconds(60));
+    ns3::Simulator::Stop(ns3::Hours(36));
     ns3::Simulator::Run();
     ns3::Simulator::Destroy();
+    NS_LOG_INFO("Destroyed simulation");
+
+    recorder.WriteJson("log.json");
+    packet_recorder->WriteCsv("packets.csv");
+
     return 0;
 }

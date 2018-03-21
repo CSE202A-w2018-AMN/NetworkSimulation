@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2">
+<Document>
+    <name>FlightAware ✈ RPA6013 ✈ 15-Mar-2018  ✈ KSFO - KLAX</name>
+    <Placemark>
+        <name>KSFO Airport</name>
+        <description><![CDATA[San Francisco Intl <br> San Francisco, CA<br><br><a href='http://flightaware.com/live/airport/KSFO'>KSFO airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KSFO'>KSFO airport information</a>]]></description>
+        <Point>
+            <coordinates>-122.3754167,37.6188056,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>KLAX Airport</name>
+        <description><![CDATA[Los Angeles Intl <br> Los Angeles, CA<br><br><a href='http://flightaware.com/live/airport/KLAX'>KLAX airport activity (live)</a><br><a href='http://flightaware.com/resources/airport/KLAX'>KLAX airport information</a>]]></description>
+        <Point>
+            <coordinates>-118.4080472,33.9424944,0</coordinates>
+        </Point>
+    </Placemark>
+    <Placemark>
+        <name>RPA6013</name>
+        <description>KSFO - KLAX</description>
+        <gx:Track>
+            <extrude>1</extrude>
+            <tessellate>1</tessellate>
+            <altitudeMode>absolute</altitudeMode>
+            <when>2018-03-15T22:37:05Z</when>
+            <when>2018-03-15T22:37:45Z</when>
+            <when>2018-03-15T22:41:20Z</when>
+            <when>2018-03-15T22:41:53Z</when>
+            <when>2018-03-15T22:42:15Z</when>
+            <when>2018-03-15T22:42:39Z</when>
+            <when>2018-03-15T22:43:24Z</when>
+            <when>2018-03-15T22:43:54Z</when>
+            <when>2018-03-15T22:44:12Z</when>
+            <gx:coord>-122.36043 37.62220 0</gx:coord>
+            <gx:coord>-122.35850 37.61551 0</gx:coord>
+            <gx:coord>-122.36763 37.61560 0</gx:coord>
+            <gx:coord>-122.39349 37.62654 366</gx:coord>
+            <gx:coord>-122.41230 37.63486 579</gx:coord>
+            <gx:coord>-122.43713 37.64539 853</gx:coord>
+            <gx:coord>-122.48067 37.66544 1372</gx:coord>
+            <gx:coord>-122.51731 37.68187 1890</gx:coord>
+            <gx:coord>-122.53928 37.69157 1981</gx:coord>
+        </gx:Track>
+    </Placemark>
+    <ScreenOverlay>
+        <name>FlightAware</name>
+        <Icon>
+            <href>http://flightaware.com/images/logo_ge.png</href>
+        </Icon>
+        <overlayXY x="1" y="-1" xunits="fraction" yunits="fraction"/>
+        <screenXY x="1" y="0" xunits="fraction" yunits="fraction"/>
+        <size x="0" y="0" xunits="fraction" yunits="fraction"/>
+    </ScreenOverlay>
+</Document>
+
+</kml>
