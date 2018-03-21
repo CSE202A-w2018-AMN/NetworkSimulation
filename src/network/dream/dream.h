@@ -3,6 +3,7 @@
 
 #include "device/mesh_net_device.h"
 #include "address/icao_address.h"
+#include "network/network_protocol.h"
 #include "message.h"
 #include "routing_table.h"
 #include "neighbor_table.h"
@@ -16,20 +17,25 @@ namespace dream {
 /**
  * A DREAM () protocol implementation
  */
-class Dream : public ns3::Object {
+class Dream : public NetworkProtocol {
 public:
+    typedef std::function<void(ns3::Packet)> receive_callback;
+
+
     Dream(ns3::Ptr<MeshNetDevice> net_device = ns3::Ptr<MeshNetDevice>());
     /**
      * Starts sending messages and performing other network operations
      */
-    void Start();
+    virtual void Start() override;
 
     /**
      * Sends a packet to the specified destination
      */
-    void Send(ns3::Packet packet, IcaoAddress destination);
+    virtual void Send(ns3::Packet packet, IcaoAddress destination) override;
 
-    void SetNetDevice(ns3::Ptr<MeshNetDevice> net_device);
+    virtual void SetReceiveCallback(receive_callback callback) override;
+    virtual void SetNetDevice(ns3::Ptr<MeshNetDevice> net_device) override;
+    virtual void SetPacketRecorder(ns3::Ptr<PacketRecorder> recorder) override;
 
     static ns3::TypeId GetTypeId();
 
@@ -47,8 +53,13 @@ private:
 
     /** Routing table */
     RoutingTable _routing;
-
+    /** Neighbor table */
     NeighborTable _neighbors;
+
+    /** Default TTL for sending messages */
+    std::uint8_t _default_ttl;
+    /** Data receive callback */
+    receive_callback _receive_callback;
 
     /**
      * Interval between hello messages
@@ -69,10 +80,22 @@ private:
      * packet to the network interface.
      */
     void SendPacket(ns3::Packet packet, IcaoAddress address);
+    /**
+     * Sends a packet
+     *
+     * This is similar to Send(), but it requires the packet to already have
+     * a DREAM header.
+     */
+    void SendWithHeader(ns3::Packet packet, IcaoAddress destination);
 
     void HandleHello(IcaoAddress sender, const ns3::Vector& position);
-    void HandlePosition(Message&& message);
-    void HandleData(Message&& message);
+    void HandlePosition(IcaoAddress sender, Message&& message);
+    void HandleData(ns3::Packet packet, Message&& message);
+
+    /**
+     * Cleans up expired entries and recalculates routes
+     */
+    void Cleanup();
 };
 
 }

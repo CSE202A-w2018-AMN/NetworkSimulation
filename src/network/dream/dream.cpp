@@ -17,7 +17,7 @@ namespace {
 /**
  * Calculates the length of a vector
  *
- * Note: ns3::Vector3D::GetLenght() is not available in ns3 3.26.
+ * Note: ns3::Vector3D::GetLength() is not available in ns3 3.26.
  */
 double VectorLength(const ns3::Vector& v) {
     // Ideally would use a method that avoids overflow
@@ -30,7 +30,8 @@ Dream::Dream(ns3::Ptr<MeshNetDevice> net_device) :
     _net_device(net_device),
     // Entry TTL values
     _routing(ns3::Hours(1)),
-    _neighbors(ns3::Hours(1))
+    _neighbors(ns3::Hours(1)),
+    _default_ttl(8)
 {
     if (_net_device) {
         _net_device->SetReceiveCallback(std::bind(&Dream::OnPacketReceived, this, std::placeholders::_1));
@@ -50,20 +51,25 @@ void Dream::Start() {
 }
 
 void Dream::Send(ns3::Packet packet, IcaoAddress destination) {
-    NS_LOG_FUNCTION(this << packet << destination);
-    assert(_net_device);
-    const auto local_address(_net_device->GetAddress());
-
     // Check length
      if (packet.GetSize() > static_cast<std::uint32_t>(std::numeric_limits<std::uint16_t>::max())) {
          NS_LOG_WARN("Can't send packet more than 65536 bytes long");
          return;
      }
+     // Add header
+     const auto message = Message::DataMessage(_net_device->GetAddress(), destination, _default_ttl, packet.GetSize());
+     packet.AddHeader(Header(message));
+     SendWithHeader(packet, destination);
+}
 
+void Dream::SendWithHeader(ns3::Packet packet, IcaoAddress destination) {
+    NS_LOG_FUNCTION(this << packet << destination);
+    assert(_net_device);
+    const auto local_address(_net_device->GetAddress());
 
     const auto receiver_info = _routing.Find(destination);      //D get location information of the destination in the table
     if (receiver_info == _routing.end()) {
-        NS_LOG_WARN("At " << _net_device->GetAddress() << ", no route to " << destination);
+        NS_LOG_WARN("At " << local_address << ", no route to " << destination);
         return;
     }
 
@@ -95,7 +101,6 @@ void Dream::Send(ns3::Packet packet, IcaoAddress destination) {
             SendPacket(packet, iter->second.Address());
         }
     }
-
 }
 
 void Dream::OnPacketReceived(ns3::Packet packet) {
@@ -109,9 +114,9 @@ void Dream::OnPacketReceived(ns3::Packet packet) {
     if (message_type == Message::Type::Hello) {
         HandleHello(mesh_header.SourceAddress(), header.GetMessage().Position());
     } else if (message_type == Message::Type::Position) {
-        HandlePosition(std::move(header.GetMessage()));
+        HandlePosition(mesh_header.SourceAddress(), std::move(header.GetMessage()));
     } else if (message_type == Message::Type::Data) {
-        HandleData(std::move(header.GetMessage()));
+        HandleData(packet, std::move(header.GetMessage()));
     } else {
         NS_LOG_WARN("Got a message with an uknown type " << static_cast<unsigned int>(message_type));
     }
@@ -134,17 +139,69 @@ void Dream::HandleHello(IcaoAddress sender, const ns3::Vector& position) {
         _neighbors.Insert(NeighborTableEntry(sender, position));
     }
 }
-void Dream::HandlePosition(Message&& message) {
-
+void Dream::HandlePosition(IcaoAddress sender, Message&& message) {
+    NS_LOG_FUNCTION(this << sender);
+    // Update routing table
+    auto table_entry = _routing.Find(message.Origin());
+    if (table_entry != _routing.end()) {
+        table_entry->SetLocation(message.Position());
+        table_entry->SetVelocity(message.Velocity());
+        table_entry->MarkSeen();
+    } else {
+        _routing.Insert(RoutingTable::Entry(message.Origin(), message.Position(), message.Velocity()));
+    }
+    // Potentially forward
+    const auto local_position = _net_device->GetMobilityModel()->GetPosition();
+    const auto distance_from_sender = ns3::CalculateDistance(local_position, message.Position());
+    if (message.Ttl() > 0 && distance_from_sender < message.MaxDistance()) {
+        message.DecrementTtl();
+        ns3::Packet packet;
+        packet.AddHeader(Header(message));
+        // Forward to neighbors, but not the sender
+        for (const auto& neighbor_entry : _neighbors) {
+            const auto neighbor_address = neighbor_entry.second.Address();
+            if (neighbor_address != sender) {
+                SendPacket(packet, neighbor_address);
+            }
+        }
+    }
 }
-void Dream::HandleData(Message&& message) {
-
+void Dream::HandleData(ns3::Packet packet, Message&& message) {
+    NS_LOG_FUNCTION(this);
+    const auto local_address = _net_device->GetAddress();
+    if (message.Destination() == local_address) {
+        NS_LOG_INFO("Data arrived at " << local_address << " from " << message.Origin());
+        if (_receive_callback) {
+            _receive_callback(packet);
+        } else {
+            NS_LOG_WARN("No receive callback set");
+        }
+    } else if (message.Ttl() > 0) {
+        NS_LOG_INFO("Forwarding data");
+        message.DecrementTtl();
+        packet.AddHeader(Header(message));
+        SendWithHeader(packet, message.Destination());
+    } else {
+        NS_LOG_WARN("Data with destination " << message.Destination() << " died at " << local_address);
+    }
 }
 
+void Dream::Cleanup() {
+    NS_LOG_FUNCTION(this);
+    _neighbors.RemoveExpired();
+    _routing.RemoveExpired();
+}
+
+void Dream::SetReceiveCallback(receive_callback callback) {
+    _receive_callback = callback;
+}
+void Dream::SetPacketRecorder(ns3::Ptr<PacketRecorder> recorder) {
+    // Not yet implemented
+}
 
 ns3::TypeId Dream::GetTypeId() {
     static ns3::TypeId id = ns3::TypeId("dream::Dream")
-        .SetParent<Object>()
+        .SetParent<NetworkProtocol>()
         .AddConstructor<Dream>();
     return id;
 }
