@@ -362,7 +362,7 @@ void Olsr::RecordPacketReceived(std::uint64_t id) {
 
 ns3::TypeId Olsr::GetTypeId() {
     static ns3::TypeId id = ns3::TypeId("olsr::Olsr")
-        .SetParent<Object>()
+        .SetParent<NetworkProtocol>()
         .AddConstructor<Olsr>();
     return id;
 }

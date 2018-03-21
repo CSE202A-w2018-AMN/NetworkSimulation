@@ -1,6 +1,6 @@
 #include "adsb_sender_helper.h"
 #include "application/adsb_sender.h"
-#include "network/olsr/olsr.h"
+#include "network/network_protocol.h"
 #include <cassert>
 
 AdsBSenderHelper::AdsBSenderHelper() :
@@ -25,9 +25,9 @@ ns3::ApplicationContainer AdsBSenderHelper::Install(ns3::NodeContainer nodes) {
         application->SetInterval(_interval);
 
         // Send operation uses OLSR
-        auto olsr = node->GetObject<olsr::Olsr>();
-        assert(olsr);
-        application->SetSendOperation([olsr](ns3::Packet packet) { olsr->Send(packet, IcaoAddress(0x800000)); });
+        auto protocol = node->GetObject<NetworkProtocol>();
+        assert(protocol);
+        application->SetSendOperation([protocol](ns3::Packet packet) { protocol->Send(packet, IcaoAddress(0x800000)); });
         node->AddApplication(application);
         apps.Add(application);
     }

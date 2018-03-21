@@ -46,6 +46,8 @@ set(SOURCES
     src/application/adsb_sender_helper.cpp
     src/ether/ether.h
     src/ether/ether.cpp
+    src/network/network_protocol.h
+    src/network/network_protocol.cpp
     src/network/olsr/olsr.h
     src/network/olsr/olsr.cpp
     src/network/olsr/header.h

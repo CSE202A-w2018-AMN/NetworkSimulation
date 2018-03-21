@@ -8,11 +8,10 @@
 #include "topology_table.h"
 #include "routing_table.h"
 #include "packet_recorder/packet_recorder.h"
+#include "network/network_protocol.h"
 #include <ns3/packet.h>
 #include <ns3/nstime.h>
-#include <functional>
 #include <ostream>
-#include <memory>
 
 namespace olsr {
 
@@ -21,7 +20,7 @@ class Message;
 /**
  * An optimized link-state routing protocol implementation
  */
-class Olsr : public ns3::Object {
+class Olsr : public NetworkProtocol {
 public:
     typedef std::function<void(ns3::Packet)> receive_callback;
 
@@ -29,17 +28,17 @@ public:
     /**
      * Starts sending hello messages and performing other network operations
      */
-    void Start();
+    virtual void Start() override;
 
     /**
      * Sends a packet to the specified destination
      */
-    void Send(ns3::Packet packet, IcaoAddress destination);
+    virtual void Send(ns3::Packet packet, IcaoAddress destination) override;
 
-    void SetReceiveCallback(receive_callback callback);
+    virtual void SetReceiveCallback(receive_callback callback) override;
 
-    void SetNetDevice(ns3::Ptr<MeshNetDevice> net_device);
-    void SetPacketRecorder(ns3::Ptr<PacketRecorder> recorder);
+    virtual void SetNetDevice(ns3::Ptr<MeshNetDevice> net_device) override;
+    virtual void SetPacketRecorder(ns3::Ptr<PacketRecorder> recorder) override;
 
     IcaoAddress Address() const;
 
