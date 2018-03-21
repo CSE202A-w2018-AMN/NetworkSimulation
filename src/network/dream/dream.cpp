@@ -4,11 +4,25 @@
 #include "network/olsr/routing_calc.h"
 #include <ns3/log.h>
 #include <ns3/simulator.h>
-#include <math.h>
+#include <cmath>
 
 NS_LOG_COMPONENT_DEFINE("DREAM");
 
 namespace dream {
+
+namespace {
+
+/**
+ * Calculates the length of a vector
+ *
+ * Note: ns3::Vector3D::GetLenght() is not available in ns3 3.26.
+ */
+double VectorLength(const ns3::Vector& v) {
+    // TODO: Use a method that avoids overflow
+    return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+}
+
+}
 
 Dream::Dream(ns3::Ptr<MeshNetDevice> net_device) :
     _net_device(net_device)
@@ -29,13 +43,6 @@ void Dream::Start() {
     // ns3::Simulator::Schedule(_hello_interval, &Dream::SendHello, this);
     // ns3::Simulator::Schedule(_topology_control_interval, &Dream::SendTopologyControl, this);
 }
-
-/*D
-float Dream::Distance(const auto point1, const auto point2)
-{
-    return sqrt((point1.X-point2.X)*(point1.X-point2.X) + (point1.Y-point2.Y)*(point1.X-point2.Y));
-}
-D*/
 
 void Dream::Send(ns3::Packet packet, IcaoAddress destination) {
     NS_LOG_FUNCTION(this << packet << destination);
@@ -59,7 +66,7 @@ void Dream::Send(ns3::Packet packet, IcaoAddress destination) {
     const auto SenderCoor = _net_device->GetMobilityModel()->GetPosition();
     const auto ReceiverCoor = receiver_info->Location();
     const float r = ns3::CalculateDistance(SenderCoor, ReceiverCoor);       //D Distance(SenderCoor, ReceiverCoor);      //D distance between the device and the destination
-    const float x = receiver_info->Velocity().GetLength() * (ns3::Simulator::Now().GetSeconds()-receiver_info->Last_Time().GetSeconds());        //D maximum distance that the receiver can travel during the time
+    const float x = VectorLength(receiver_info->Velocity()) * (ns3::Simulator::Now().GetSeconds()-receiver_info->Last_Time().GetSeconds());        //D maximum distance that the receiver can travel during the time
 
     if (x < r)
     {
