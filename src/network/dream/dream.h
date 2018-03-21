@@ -1,5 +1,5 @@
-#ifndef NETWORK_OLSR_H
-#define NETWORK_OLSR_H
+#ifndef NETWORK_DREAM_H
+#define NETWORK_DREAM_H
 
 #include "device/mesh_net_device.h"
 #include "address/icao_address.h"
