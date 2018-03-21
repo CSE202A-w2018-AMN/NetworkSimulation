@@ -107,7 +107,7 @@ void Dream::OnPacketReceived(ns3::Packet packet) {
     packet.RemoveHeader(header);
     const auto message_type = header.GetMessage().GetType();
     if (message_type == Message::Type::Hello) {
-        HandleHello(mesh_header.SourceAddress(), header.GetMessage().Position(), header.GetMessage().Velocity());
+        HandleHello(mesh_header.SourceAddress(), header.GetMessage().Position());
     } else if (message_type == Message::Type::Position) {
         HandlePosition(std::move(header.GetMessage()));
     } else if (message_type == Message::Type::Data) {
@@ -123,8 +123,16 @@ void Dream::SendPacket(ns3::Packet packet, IcaoAddress address) {
     _net_device->Send(packet, address);
 }
 
-void Dream::HandleHello(IcaoAddress sender, const ns3::Vector& position, const ns3::Vector& velocity) {
-
+void Dream::HandleHello(IcaoAddress sender, const ns3::Vector& position) {
+    NS_LOG_FUNCTION(this << sender << position);
+    auto table_entry = _neighbors.Find(sender);
+    if (table_entry != _neighbors.end()) {
+        auto& entry = table_entry->second;
+        entry.SetLocation(position);
+        entry.MarkSeen();
+    } else {
+        _neighbors.Insert(NeighborTableEntry(sender, position));
+    }
 }
 void Dream::HandlePosition(Message&& message) {
 

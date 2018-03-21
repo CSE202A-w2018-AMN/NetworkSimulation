@@ -70,7 +70,7 @@ private:
      */
     void SendPacket(ns3::Packet packet, IcaoAddress address);
 
-    void HandleHello(IcaoAddress sender, const ns3::Vector& position, const ns3::Vector& velocity);
+    void HandleHello(IcaoAddress sender, const ns3::Vector& position);
     void HandlePosition(Message&& message);
     void HandleData(Message&& message);
 };

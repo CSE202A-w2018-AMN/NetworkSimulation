@@ -10,55 +10,34 @@
 namespace dream {
 
 /**
- * Link state values for each neighbor
- */
-enum class LinkState {
-    /** Have a unidirectional link from the neighbor to this node */
-    Unidirectional = 1,
-    /** Have a bidirectional link to and from this neighbor */
-    Bidirectional = 2,
-    /** Have a bidirectional link, and this neighbor is a multipoint relay */
-    MultiPointRelay = 3,
-};
-std::ostream& operator << (std::ostream& stream, const LinkState& state);
-
-/**
  * An entry in a neighbor table
  */
 class NeighborTableEntry {
 private:
     /** The neighbor address */
     IcaoAddress _address;
-    /** The link state */
-    LinkState _state;
     /** The location */
     ns3::Vector _location;
     /** The time when this entry was last updated */
     ns3::Time _updated;
-    /**
-     * The addresses of two-hop neighbors that can be accessed through this
-     * neighbor
-     */
-    std::set<IcaoAddress> _two_hop_neighbors;
 public:
-    NeighborTableEntry(IcaoAddress address, LinkState state, ns3::Vector location);
-    IcaoAddress Address() const;
-    LinkState State() const;
-    ns3::Vector Location() const;
+    NeighborTableEntry(IcaoAddress address, const ns3::Vector& location);
+    inline IcaoAddress Address() const {
+        return _address;
+    }
+    inline ns3::Vector Location() const {
+        return _location;
+    }
+    inline void SetLocation(const ns3::Vector& location) {
+        _location = location;
+    }
     /** Returns the simulation time when this entry was updated */
-    ns3::Time LastUpdated() const;
-
-    std::set<IcaoAddress>& TwoHopNeighbors();
-    const std::set<IcaoAddress>& TwoHopNeighbors() const;
-
-    /** Sets the link state and marks this entry as updated */
-    void SetState(LinkState state);
+    inline ns3::Time LastUpdated() const {
+        return _updated;
+    }
     /** Marks this entry as updated */
     void MarkSeen();
-
-    friend std::ostream& operator << (std::ostream& stream, const NeighborTableEntry& entry);
 };
-std::ostream& operator << (std::ostream& stream, const std::pair<const IcaoAddress, dream::NeighborTableEntry>& entry);
 
 class NeighborTable {
 private:
@@ -88,11 +67,6 @@ public:
     const_iterator end() const;
     std::size_t size() const;
     void clear();
-
-    /** Returns the addresses of neighbors with bidirectional or MPR links */
-    std::set<IcaoAddress> Neighbors() const;
-    /** Returns the addresses of neighbors with unidirectional links */
-    std::set<IcaoAddress> UnidirectionalNeighbors() const;
 };
 
 }

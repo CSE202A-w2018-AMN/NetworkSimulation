@@ -22,10 +22,9 @@ Message Message::DataMessage(IcaoAddress origin, IcaoAddress destination, std::u
     return message;
 }
 
-Message Message::HelloMessage(const ns3::Vector& position, const ns3::Vector& velocity) {
+Message Message::HelloMessage(const ns3::Vector& position) {
     Message message(Type::Hello, 0);
     message.SetPosition(position);
-    message.SetVelocity(velocity);
     return message;
 }
 Message Message::PositionMessage(IcaoAddress origin, std::uint8_t ttl, const ns3::Vector& position, const ns3::Vector& velocity, double max_distance) {

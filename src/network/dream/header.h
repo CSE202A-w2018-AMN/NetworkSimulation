@@ -18,7 +18,6 @@ namespace dream {
  *
  * Hello message data:
  * Originator position, 24 bytes
- * Originator velocity, 24 bytes
  *
  * Position message data:
  * Originator address, 3 bytes
