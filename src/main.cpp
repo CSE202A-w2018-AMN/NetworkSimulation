@@ -11,6 +11,7 @@
 #include "application/adsb_sender_helper.h"
 #include "ether/ether.h"
 #include "recorder/session_recorder.h"
+#include "packet_recorder/packet_recorder.h"
 
 #include "network/olsr/olsr.h"
 
@@ -125,7 +126,8 @@ int main(int argc, char** argv) {
     ns3::Time::SetResolution(ns3::Time::NS);
     ns3::LogComponentEnable("AircraftMeshSimulation", ns3::LOG_ALL);
     ns3::LogComponentEnable("record::SessionRecorder", ns3::LOG_INFO);
-    // ns3::LogComponentEnable("MeshNetDevice", ns3::LOG_INFO);
+    ns3::LogComponentEnable("PacketRecorder", ns3::LOG_LOGIC);
+    // ns3::LogComponentEnable("MeshNetDevice", ns3::LOG_LOGIC);
     // ns3::LogComponentEnable("AdsBSender", ns3::LOG_INFO);
     // ns3::LogComponentEnable("Ether", ns3::LOG_LOGIC);
     ns3::LogComponentEnable("OLSR", ns3::LOG_WARN);
@@ -155,6 +157,16 @@ int main(int argc, char** argv) {
     record::SessionRecorder recorder(flights.first_departure_time(), ns3::Minutes(10), std::move(all_nodes));
     recorder.Start();
 
+    // Create packet recorder
+    auto packet_recorder = ns3::CreateObject<PacketRecorder>();
+    for (auto iter = all_nodes.Begin(); iter != all_nodes.End(); ++iter) {
+        auto node = *iter;
+        assert(node);
+        auto olsr = node->GetObject<olsr::Olsr>();
+        assert(olsr);
+        olsr->SetPacketRecorder(packet_recorder);
+    }
+
     adsb_senders.Start(ns3::Seconds(0));
 
     NS_LOG_INFO("Running simulation");
@@ -164,6 +176,7 @@ int main(int argc, char** argv) {
     NS_LOG_INFO("Destroyed simulation");
 
     recorder.WriteJson("log.json");
+    packet_recorder->WriteCsv("packets.csv");
 
     return 0;
 }

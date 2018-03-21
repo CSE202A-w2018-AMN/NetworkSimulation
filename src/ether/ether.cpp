@@ -42,6 +42,7 @@ void Ether::OnSend(const MeshNetDevice* sender, const ns3::Vector& position, ns3
                 const double sending_seconds = static_cast<double>(packet.GetSize()) / BITS_PER_SECOND;
                 const auto receive_delay = ns3::Time::FromDouble(propagation_seconds + sending_seconds, ns3::Time::Unit::S);
                 NS_LOG_LOGIC("Receive delay " << sender->GetAddress() << " -> " << other_device->GetAddress() << ": " << receive_delay);
+                NS_LOG_LOGIC("Before sending, time is " << ns3::Simulator::Now());
                 ns3::Simulator::Schedule(receive_delay, &MeshNetDevice::Receive, other_device, packet);
             }
         }

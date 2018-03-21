@@ -4,6 +4,7 @@
 #include "routing_calc.h"
 #include "util/print_container.h"
 #include "header/mesh_header.h"
+#include "packet_recorder/packet_recorder.h"
 #include <cassert>
 #include <limits>
 #include <ns3/log.h>
@@ -56,6 +57,7 @@ void Olsr::Send(ns3::Packet packet, IcaoAddress destination) {
     const auto local_address(_net_device->GetAddress());
     const auto message(Message::Data(local_address, destination, _default_ttl, static_cast<std::uint16_t>(packet.GetSize())));
     packet.AddHeader(Header(message));
+    RecordPacketSent(packet.GetUid(), PacketRecorder::PacketType::Data);
     SendWithHeader(packet, destination);
 }
 
@@ -80,9 +82,13 @@ void Olsr::SendWithHeader(ns3::Packet packet, IcaoAddress destination) {
 void Olsr::SetReceiveCallback(receive_callback callback) {
     _receive_callback = callback;
 }
+void Olsr::SetPacketRecorder(ns3::Ptr<PacketRecorder> recorder) {
+    _packet_recorder = recorder;
+}
 
 void Olsr::OnPacketReceived(ns3::Packet packet) {
-    // NS_LOG_FUNCTION(this << packet);
+    NS_LOG_FUNCTION(this << packet);
+    RecordPacketReceived(packet.GetUid());
 
     MeshHeader mesh_header;
     packet.RemoveHeader(mesh_header);
@@ -136,6 +142,7 @@ void Olsr::SendHello() {
     message.Neighbors() = _neighbors;
 
     packet.AddHeader(Header(message));
+    RecordPacketSent(packet.GetUid(), PacketRecorder::PacketType::Management);
     SendPacket(packet, IcaoAddress::Broadcast());
 
     // Schedule next
@@ -152,6 +159,7 @@ void Olsr::SendTopologyControl() {
         message.MprSelector() = _mpr_selector;
         message.SetOriginator(_net_device->GetAddress());
         packet.AddHeader(Header(message));
+        RecordPacketSent(packet.GetUid(), PacketRecorder::PacketType::Management);
         SendPacket(packet, IcaoAddress::Broadcast());
 
     }
@@ -339,6 +347,17 @@ std::ostream& operator << (std::ostream& stream, const Olsr::DumpState& state) {
 IcaoAddress Olsr::Address() const {
     assert(_net_device);
     return _net_device->GetAddress();
+}
+
+void Olsr::RecordPacketSent(std::uint64_t id, PacketRecorder::PacketType type) {
+    if (_packet_recorder) {
+        _packet_recorder->RecordPacketSent(id, type);
+    }
+}
+void Olsr::RecordPacketReceived(std::uint64_t id) {
+    if (_packet_recorder) {
+        _packet_recorder->RecordPacketReceived(id);
+    }
 }
 
 ns3::TypeId Olsr::GetTypeId() {

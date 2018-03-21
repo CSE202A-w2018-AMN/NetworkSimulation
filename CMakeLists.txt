@@ -70,6 +70,8 @@ set(SOURCES
     src/recorder/session.cpp
     src/recorder/session_recorder.h
     src/recorder/session_recorder.cpp
+    src/packet_recorder/packet_recorder.h
+    src/packet_recorder/packet_recorder.cpp
 )
 
 add_executable(${TARGET} ${SOURCES})

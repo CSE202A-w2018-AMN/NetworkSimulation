@@ -7,6 +7,7 @@
 #include "mpr_table.h"
 #include "topology_table.h"
 #include "routing_table.h"
+#include "packet_recorder/packet_recorder.h"
 #include <ns3/packet.h>
 #include <ns3/nstime.h>
 #include <functional>
@@ -38,6 +39,7 @@ public:
     void SetReceiveCallback(receive_callback callback);
 
     void SetNetDevice(ns3::Ptr<MeshNetDevice> net_device);
+    void SetPacketRecorder(ns3::Ptr<PacketRecorder> recorder);
 
     IcaoAddress Address() const;
 
@@ -67,6 +69,8 @@ public:
 private:
     /** The network device used for communication */
     ns3::Ptr<MeshNetDevice> _net_device;
+    /** The packet recorder */
+    ns3::Ptr<PacketRecorder> _packet_recorder;
 
     /**
      * Interval between hello messages
@@ -146,6 +150,8 @@ private:
     void HandleTopologyControl(IcaoAddress sender, Message&& message);
     void HandleData(ns3::Packet packet, Message&& message);
 
+    void RecordPacketSent(std::uint64_t id, PacketRecorder::PacketType type);
+    void RecordPacketReceived(std::uint64_t id);
 };
 
 }
