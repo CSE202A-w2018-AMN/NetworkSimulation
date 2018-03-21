@@ -18,14 +18,17 @@ namespace {
  * Note: ns3::Vector3D::GetLenght() is not available in ns3 3.26.
  */
 double VectorLength(const ns3::Vector& v) {
-    // TODO: Use a method that avoids overflow
+    // Ideally would use a method that avoids overflow
     return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 }
 
 }
 
 Dream::Dream(ns3::Ptr<MeshNetDevice> net_device) :
-    _net_device(net_device)
+    _net_device(net_device),
+    // Entry TTL values
+    _routing(ns3::Hours(1)),
+    _neighbors(ns3::Hours(1))
 {
     if (_net_device) {
         _net_device->SetReceiveCallback(std::bind(&Dream::OnPacketReceived, this, std::placeholders::_1));
@@ -48,8 +51,8 @@ void Dream::Send(ns3::Packet packet, IcaoAddress destination) {
     NS_LOG_FUNCTION(this << packet << destination);
     assert(_net_device);
     const auto local_address(_net_device->GetAddress());
-    //
-    // // Check length
+
+    // Check length
      if (packet.GetSize() > static_cast<std::uint32_t>(std::numeric_limits<std::uint16_t>::max())) {
          NS_LOG_WARN("Can't send packet more than 65536 bytes long");
          return;
@@ -66,7 +69,7 @@ void Dream::Send(ns3::Packet packet, IcaoAddress destination) {
     const auto SenderCoor = _net_device->GetMobilityModel()->GetPosition();
     const auto ReceiverCoor = receiver_info->Location();
     const float r = ns3::CalculateDistance(SenderCoor, ReceiverCoor);       //D Distance(SenderCoor, ReceiverCoor);      //D distance between the device and the destination
-    const float x = VectorLength(receiver_info->Velocity()) * (ns3::Simulator::Now().GetSeconds()-receiver_info->Last_Time().GetSeconds());        //D maximum distance that the receiver can travel during the time
+    const float x = VectorLength(receiver_info->Velocity()) * (ns3::Simulator::Now().GetSeconds()-receiver_info->LastTime().GetSeconds());        //D maximum distance that the receiver can travel during the time
 
     if (x < r)
     {

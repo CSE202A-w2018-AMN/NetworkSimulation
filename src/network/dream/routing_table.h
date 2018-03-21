@@ -11,7 +11,9 @@
 namespace dream {
 
 /**
- * OLSR routing table
+ * DREAM routing table
+ *
+ * Stores the position and velocity of every other node in the network
  */
 class RoutingTable {
 public:
@@ -20,34 +22,34 @@ public:
     private:
         /** Destination address */
         IcaoAddress _destination;
+        /** Location of destination when last updated, m */
         ns3::Vector _location;
+        /** Velocity of destination when last updated, m/s */
         ns3::Vector _velocity;
+        /** Time when last updated */
         ns3::Time _last_time;
-
-        /** Next hop address */
-        IcaoAddress _next_hop;
-        /** Estimated distance to destination */
-        std::uint16_t _distance;
     public:
-        Entry(IcaoAddress destination, IcaoAddress next_hop, std::uint16_t distance);
+        Entry(IcaoAddress destination, const ns3::Vector& location, const ns3::Vector& velocity);
         inline IcaoAddress Destination() const {
             return _destination;
-        }
-        inline IcaoAddress NextHop() const {
-            return _next_hop;
-        }
-        inline std::uint16_t Distance() const {
-            return _distance;
         }
         inline ns3::Vector Location() const {
             return _location;
         }
+        inline void SetLocation(const ns3::Vector& location) {
+            _location = location;
+        }
         inline ns3::Vector Velocity() const {
             return _velocity;
         }
-        inline ns3::Time Last_Time() const {
+        inline void SetVelocity(const ns3::Vector& velocity) {
+            _velocity = velocity;
+        }
+        inline ns3::Time LastTime() const {
             return _last_time;
         }
+        /** Sets the last updated time to now */
+        void MarkSeen();
 
     };
 
@@ -65,6 +67,8 @@ private:
 public:
     typedef util::ValueIterator<underlying_iterator> iterator;
     typedef util::ConstValueIterator<underlying_const_iterator> const_iterator;
+
+    RoutingTable(const ns3::Time& ttl);
 
     inline std::size_t size() const {
         return _table.size();
@@ -88,12 +92,16 @@ public:
 
     iterator Find(IcaoAddress destination);
     void Insert(Entry entry);
+    /** Removes old entries */
+    void RemoveExpired();
 
 private:
     /**
      * Table with a mapping from destination address to entry
      */
     std::map<IcaoAddress, Entry> _table;
+    /** Time since last update threshold for deleting old entries */
+    ns3::Time _ttl;
 };
 
 }

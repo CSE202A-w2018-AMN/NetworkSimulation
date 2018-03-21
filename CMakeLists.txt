@@ -72,6 +72,10 @@ set(SOURCES
     src/network/dream/routing_table.h
     src/network/dream/neighbor_table.h
     src/network/dream/neighbor_table.cpp
+    src/network/dream/message.h
+    src/network/dream/message.cpp
+    src/network/dream/header.h
+    src/network/dream/header.cpp
     src/recorder/record.h
     src/recorder/record.cpp
     src/recorder/session.h

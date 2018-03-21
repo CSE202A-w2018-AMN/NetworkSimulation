@@ -32,7 +32,7 @@ public:
 
     static ns3::TypeId GetTypeId();
 
-    inline const dream::RoutingTable& Routing() const {
+    inline const RoutingTable& Routing() const {
         return _routing;
     }
 
@@ -45,9 +45,9 @@ private:
     ns3::Ptr<MeshNetDevice> _net_device;
 
     /** Routing table */
-    dream::RoutingTable _routing;
+    RoutingTable _routing;
 
-    dream::NeighborTable _neighbors;
+    NeighborTable _neighbors;
 
     /**
      * Interval between hello messages
