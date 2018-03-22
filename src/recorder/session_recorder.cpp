@@ -73,21 +73,25 @@ void SessionRecorder::RecordRecord() {
     for (auto iter = _nodes.Begin(); iter != _nodes.End(); ++iter) {
         const auto mobility = (*iter)->GetObject<ns3::MobilityModel>();
         assert(mobility);
+        const auto net_device = (*iter)->GetObject<MeshNetDevice>();
+        assert(net_device);
         const auto olsr = (*iter)->GetObject<olsr::Olsr>();
+        const auto pos_ecef = mobility->GetPosition();
+        double latitude;
+        double longitude;
+        double altitude;
+        std::tie(latitude, longitude, altitude) = EcefToLla(pos_ecef);
+        olsr::RoutingTable routing;
         if (olsr) {
-            const auto pos_ecef = mobility->GetPosition();
-            double latitude;
-            double longitude;
-            double altitude;
-            std::tie(latitude, longitude, altitude) = EcefToLla(pos_ecef);
-            auto node_record = NodeRecord {
-                latitude,
-                longitude,
-                altitude,
-                olsr->Routing()
-            };
-            record.AddNode(olsr->Address(), std::move(node_record));
+            routing = olsr->Routing();
         }
+        auto node_record = NodeRecord {
+            latitude,
+            longitude,
+            altitude,
+            routing
+        };
+        record.AddNode(net_device->GetAddress(), std::move(node_record));
     }
     _session.AddRecord(std::move(record));
 

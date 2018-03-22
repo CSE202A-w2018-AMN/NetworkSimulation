@@ -118,17 +118,17 @@ int main(int argc, char** argv) {
 
     // Simulation configuration
     ns3::Time::SetResolution(ns3::Time::NS);
-    ns3::LogComponentEnable("AircraftMeshSimulation", ns3::LOG_ALL);
-    ns3::LogComponentEnable("record::SessionRecorder", ns3::LOG_INFO);
-    ns3::LogComponentEnable("PacketRecorder", ns3::LOG_LOGIC);
-    // ns3::LogComponentEnable("MeshNetDevice", ns3::LOG_LOGIC);
-    // ns3::LogComponentEnable("AdsBSender", ns3::LOG_INFO);
-    // ns3::LogComponentEnable("Ether", ns3::LOG_LOGIC);
-    ns3::LogComponentEnable("OLSR", ns3::LOG_WARN);
-    ns3::LogComponentEnable("DREAM", ns3::LOG_WARN);
-    // ns3::LogComponentEnable("olsr::NeighborTable", ns3::LOG_LOGIC);
-    // ns3::LogComponentEnable("olsr::TopologyTable", ns3::LOG_LOGIC);
-    // ns3::LogComponentEnable("olsr::multipoint_relay", ns3::LOG_ALL);
+    ns3::LogComponentEnable("AircraftMeshSimulation", ns3::LOG_LEVEL_ALL);
+    ns3::LogComponentEnable("record::SessionRecorder", ns3::LOG_LEVEL_INFO);
+    ns3::LogComponentEnable("PacketRecorder", ns3::LOG_LEVEL_LOGIC);
+    // ns3::LogComponentEnable("MeshNetDevice", ns3::LOG_LEVEL_LOGIC);
+    // ns3::LogComponentEnable("AdsBSender", ns3::LOG_LEVEL_INFO);
+    // ns3::LogComponentEnable("Ether", ns3::LOG_LEVEL_LOGIC);
+    ns3::LogComponentEnable("OLSR", ns3::LOG_LEVEL_WARN);
+    ns3::LogComponentEnable("DREAM", ns3::LOG_LEVEL_INFO);
+    // ns3::LogComponentEnable("olsr::NeighborTable", ns3::LOG_LEVEL_LOGIC);
+    // ns3::LogComponentEnable("olsr::TopologyTable", ns3::LOG_LEVEL_LOGIC);
+    // ns3::LogComponentEnable("olsr::multipoint_relay", ns3::LOG_LEVEL_ALL);
 
     // Create aircraft and ground stations
     const auto flights = load_flights(argv[1]);
@@ -149,6 +149,7 @@ int main(int argc, char** argv) {
         auto net_device = (*iter)->GetObject<MeshNetDevice>();
         assert(net_device);
         auto protocol = create_protocol();
+        protocol->Start();
         protocol->SetNetDevice(net_device);
         (*iter)->AggregateObject(protocol);
     }
@@ -173,7 +174,8 @@ int main(int argc, char** argv) {
     adsb_senders.Start(ns3::Seconds(0));
 
     NS_LOG_INFO("Running simulation");
-    ns3::Simulator::Stop(ns3::Hours(36));
+    // Was 36 hours for simulation used in presentation
+    ns3::Simulator::Stop(ns3::Hours(4));
     ns3::Simulator::Run();
     ns3::Simulator::Destroy();
     NS_LOG_INFO("Destroyed simulation");
