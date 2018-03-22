@@ -210,7 +210,6 @@ void Olsr::HandleTopologyControl(IcaoAddress sender, Message&& message) {
         // Resend to each of the multipoint relay neighbors
         ns3::Packet packet;
         packet.AddHeader(Header(message));
-        RecordPacketSent(packet.GetUid(), PacketRecorder::PacketType::Management);
         SendMultipointRelay(packet);
     }
 }
