@@ -30,8 +30,15 @@ Dream::Dream(ns3::Ptr<MeshNetDevice> net_device) :
     _net_device(net_device),
     // Entry TTL values
     _routing(ns3::Hours(1)),
-    _neighbors(ns3::Hours(1)),
-    _default_ttl(8)
+    _neighbors(ns3::Minutes(30)),
+    _default_ttl(8),
+    // Intervals
+    _hello_interval(ns3::Minutes(10)),
+    _cleanup_interval(ns3::Minutes(10)),
+    _frequent_position_interval(ns3::Minutes(20)),
+    _infrequent_position_interval(ns3::Minutes(50)),
+    _frequent_max_distance(/* 900 km */900000),
+    _infrequent_max_distance(/* 4000 km */400000)
 {
     if (_net_device) {
         _net_device->SetReceiveCallback(std::bind(&Dream::OnPacketReceived, this, std::placeholders::_1));
@@ -46,8 +53,10 @@ void Dream::SetNetDevice(ns3::Ptr<MeshNetDevice> net_device) {
 }
 
 void Dream::Start() {
-    // ns3::Simulator::Schedule(_hello_interval, &Dream::SendHello, this);
-    // ns3::Simulator::Schedule(_topology_control_interval, &Dream::SendTopologyControl, this);
+    ns3::Simulator::Schedule(_hello_interval, &Dream::SendHello, this);
+    ns3::Simulator::Schedule(_frequent_position_interval, &Dream::SendFrequentPosition, this);
+    ns3::Simulator::Schedule(_infrequent_position_interval, &Dream::SendInfrequentPosition, this);
+    ns3::Simulator::Schedule(_cleanup_interval, &Dream::Cleanup, this);
 }
 
 void Dream::Send(ns3::Packet packet, IcaoAddress destination) {
@@ -96,10 +105,7 @@ void Dream::SendWithHeader(ns3::Packet packet, IcaoAddress destination) {
     }
     else        //D the destination can be every direction! need to send the packet to all neighbors
     {
-        for (auto iter = _neighbors.begin(); iter != _neighbors.end(); iter++)
-        {
-            SendPacket(packet, iter->second.Address());
-        }
+        SendPacket(packet, IcaoAddress::Broadcast());
     }
 }
 
@@ -157,13 +163,9 @@ void Dream::HandlePosition(IcaoAddress sender, Message&& message) {
         message.DecrementTtl();
         ns3::Packet packet;
         packet.AddHeader(Header(message));
-        // Forward to neighbors, but not the sender
-        for (const auto& neighbor_entry : _neighbors) {
-            const auto neighbor_address = neighbor_entry.second.Address();
-            if (neighbor_address != sender) {
-                SendPacket(packet, neighbor_address);
-            }
-        }
+        // Forward to neighbors
+        // Could change to not send back to the server
+        SendPacket(packet, IcaoAddress::Broadcast());
     }
 }
 void Dream::HandleData(ns3::Packet packet, Message&& message) {
@@ -186,10 +188,45 @@ void Dream::HandleData(ns3::Packet packet, Message&& message) {
     }
 }
 
+void Dream::SendPosition(double max_distance) {
+    const auto local_address = _net_device->GetAddress();
+    const auto mobility = _net_device->GetMobilityModel();
+    const auto message = Message::PositionMessage(
+        local_address,
+        _default_ttl,
+        mobility->GetPosition(),
+        mobility->GetVelocity(),
+        max_distance
+    );
+    ns3::Packet packet;
+    packet.AddHeader(Header(message));
+    SendPacket(packet, IcaoAddress::Broadcast());
+}
+
+void Dream::SendHello() {
+    const auto mobility = _net_device->GetMobilityModel();
+    const auto message = Message::HelloMessage(mobility->GetPosition());
+    ns3::Packet packet;
+    packet.AddHeader(Header(message));
+    // Send to all neighbors
+    SendPacket(packet, IcaoAddress::Broadcast());
+
+    ns3::Simulator::Schedule(_hello_interval, &Dream::SendHello, this);
+}
+void Dream::SendInfrequentPosition() {
+    SendPosition(_infrequent_max_distance);
+    ns3::Simulator::Schedule(_infrequent_position_interval, &Dream::SendInfrequentPosition, this);
+}
+void Dream::SendFrequentPosition() {
+    SendPosition(_frequent_max_distance);
+    ns3::Simulator::Schedule(_frequent_position_interval, &Dream::SendFrequentPosition, this);
+}
+
 void Dream::Cleanup() {
     NS_LOG_FUNCTION(this);
     _neighbors.RemoveExpired();
     _routing.RemoveExpired();
+    ns3::Simulator::Schedule(_cleanup_interval, &Dream::Cleanup, this);
 }
 
 void Dream::SetReceiveCallback(receive_callback callback) {

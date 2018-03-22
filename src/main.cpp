@@ -14,6 +14,7 @@
 #include "packet_recorder/packet_recorder.h"
 
 #include "network/olsr/olsr.h"
+#include "network/dream/dream.h"
 
 #include <ns3/node-container.h>
 #include <ns3/mobility-helper.h>
@@ -26,6 +27,10 @@ NS_LOG_COMPONENT_DEFINE("AircraftMeshSimulation");
 
 
 namespace {
+
+ns3::Ptr<NetworkProtocol> create_protocol() {
+    return ns3::CreateObject<olsr::Olsr>();
+}
 
 /**
  * Creates and configures aircraft nodes. Returns a container of them.
@@ -61,12 +66,6 @@ ns3::NodeContainer create_aircraft(const FlightGroup& flights) {
         device->SetAddress(address);
         device->SetMobilityModel(mobility_model);
         node->AggregateObject(device);
-
-        // OLSR
-        auto olsr = ns3::CreateObject<olsr::Olsr>();
-        olsr->SetNetDevice(device);
-        olsr->Start();
-        node->AggregateObject(olsr);
 
     }
 
@@ -105,12 +104,6 @@ ns3::NodeContainer create_ground_stations() {
     device->SetMobilityModel(node->GetObject<ns3::MobilityModel>());
     node->AggregateObject(device);
 
-    // OLSR
-    auto olsr = ns3::CreateObject<olsr::Olsr>();
-    olsr->SetNetDevice(device);
-    olsr->Start();
-    node->AggregateObject(olsr);
-
     return nodes;
 }
 
@@ -131,6 +124,7 @@ int main(int argc, char** argv) {
     // ns3::LogComponentEnable("AdsBSender", ns3::LOG_INFO);
     // ns3::LogComponentEnable("Ether", ns3::LOG_LOGIC);
     ns3::LogComponentEnable("OLSR", ns3::LOG_WARN);
+    ns3::LogComponentEnable("DREAM", ns3::LOG_WARN);
     // ns3::LogComponentEnable("olsr::NeighborTable", ns3::LOG_LOGIC);
     // ns3::LogComponentEnable("olsr::TopologyTable", ns3::LOG_LOGIC);
     // ns3::LogComponentEnable("olsr::multipoint_relay", ns3::LOG_ALL);
@@ -147,6 +141,12 @@ int main(int argc, char** argv) {
     ether.SetRange(300000);
     for (auto iter = all_nodes.Begin(); iter != all_nodes.End(); ++iter) {
         ether.AddDevice((*iter)->GetObject<MeshNetDevice>());
+    }
+
+    // Set up network protocol
+    for (auto iter = all_nodes.Begin(); iter != all_nodes.End(); ++iter) {
+        auto protocol = create_protocol();
+        (*iter)->AggregateObject(protocol);
     }
 
     // Create applications

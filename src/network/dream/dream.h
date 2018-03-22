@@ -64,7 +64,17 @@ private:
     /**
      * Interval between hello messages
      */
-    // ns3::Time _hello_interval;
+    ns3::Time _hello_interval;
+    /** Interval between cleanups */
+    ns3::Time _cleanup_interval;
+    /** Interval between frequent position messages */
+    ns3::Time _frequent_position_interval;
+    /** Interval between infrequent position messages */
+    ns3::Time _infrequent_position_interval;
+    /** Frequent position message max distance */
+    double _frequent_max_distance;
+    /** Infrequent position message max distance */
+    double _infrequent_max_distance;
 
     /**
      * Called when the network device receives a packet
@@ -92,8 +102,18 @@ private:
     void HandlePosition(IcaoAddress sender, Message&& message);
     void HandleData(ns3::Packet packet, Message&& message);
 
+    /** Sends a Position message with the specified maximum distance */
+    void SendPosition(double max_distance);
+
+    /** Event callback: Sends a hello message */
+    void SendHello();
+        /** Event callback: Sends an infrequent position message */
+    void SendInfrequentPosition();
+    /** Event callback: Sends a frequent position message */
+    void SendFrequentPosition();
+
     /**
-     * Cleans up expired entries and recalculates routes
+     * Event callback: Cleans up expired entries and recalculates routes
      */
     void Cleanup();
 };
