@@ -35,7 +35,6 @@ public:
 
     virtual void SetReceiveCallback(receive_callback callback) override;
     virtual void SetNetDevice(ns3::Ptr<MeshNetDevice> net_device) override;
-    virtual void SetPacketRecorder(ns3::Ptr<PacketRecorder> recorder) override;
 
     static ns3::TypeId GetTypeId();
 

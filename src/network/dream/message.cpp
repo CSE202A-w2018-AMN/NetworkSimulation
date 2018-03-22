@@ -42,4 +42,22 @@ void Message::DecrementTtl() {
     }
 }
 
+std::ostream& operator << (std::ostream& stream, const Message::Type& type) {
+    switch (type) {
+    case Message::Type::None:
+        stream << "<none>";
+        break;
+    case Message::Type::Hello:
+        stream << "Hello";
+        break;
+    case Message::Type::Position:
+        stream << "Position";
+        break;
+    case Message::Type::Data:
+        stream << "Data";
+        break;
+    }
+    return stream;
+}
+
 }

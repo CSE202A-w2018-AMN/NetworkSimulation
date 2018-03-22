@@ -4,10 +4,10 @@
 #include <ns3/object.h>
 #include <ns3/packet.h>
 #include "address/icao_address.h"
+#include "packet_recorder/packet_recorder.h"
 
 // Forward-declare
 class MeshNetDevice;
-class PacketRecorder;
 
 /**
  * Base class for network protocols
@@ -38,12 +38,21 @@ public:
     /**
      * Sets the packet recorder
      */
-    virtual void SetPacketRecorder(ns3::Ptr<PacketRecorder> recorder) = 0;
+    void SetPacketRecorder(ns3::Ptr<PacketRecorder> recorder);
 
     /** Empty destructor */
     virtual ~NetworkProtocol() = default;
 
     static ns3::TypeId GetTypeId();
+
+protected:
+    // Packet recording functions
+    void RecordPacketSent(std::uint64_t id, PacketRecorder::PacketType type);
+    void RecordPacketReceived(std::uint64_t id);
+
+private:
+    /** The packet recorder */
+    ns3::Ptr<PacketRecorder> _packet_recorder;
 };
 
 #endif

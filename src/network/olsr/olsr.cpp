@@ -82,9 +82,6 @@ void Olsr::SendWithHeader(ns3::Packet packet, IcaoAddress destination) {
 void Olsr::SetReceiveCallback(receive_callback callback) {
     _receive_callback = callback;
 }
-void Olsr::SetPacketRecorder(ns3::Ptr<PacketRecorder> recorder) {
-    _packet_recorder = recorder;
-}
 
 void Olsr::OnPacketReceived(ns3::Packet packet) {
     NS_LOG_FUNCTION(this << packet);
@@ -213,6 +210,7 @@ void Olsr::HandleTopologyControl(IcaoAddress sender, Message&& message) {
         // Resend to each of the multipoint relay neighbors
         ns3::Packet packet;
         packet.AddHeader(Header(message));
+        RecordPacketSent(packet.GetUid(), PacketRecorder::PacketType::Management);
         SendMultipointRelay(packet);
     }
 }
@@ -347,17 +345,6 @@ std::ostream& operator << (std::ostream& stream, const Olsr::DumpState& state) {
 IcaoAddress Olsr::Address() const {
     assert(_net_device);
     return _net_device->GetAddress();
-}
-
-void Olsr::RecordPacketSent(std::uint64_t id, PacketRecorder::PacketType type) {
-    if (_packet_recorder) {
-        _packet_recorder->RecordPacketSent(id, type);
-    }
-}
-void Olsr::RecordPacketReceived(std::uint64_t id) {
-    if (_packet_recorder) {
-        _packet_recorder->RecordPacketReceived(id);
-    }
 }
 
 ns3::TypeId Olsr::GetTypeId() {

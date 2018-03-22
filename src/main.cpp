@@ -175,7 +175,7 @@ int main(int argc, char** argv) {
 
     NS_LOG_INFO("Running simulation");
     // Was 36 hours for simulation used in presentation
-    ns3::Simulator::Stop(ns3::Hours(4));
+    ns3::Simulator::Stop(ns3::Hours(36));
     ns3::Simulator::Run();
     ns3::Simulator::Destroy();
     NS_LOG_INFO("Destroyed simulation");

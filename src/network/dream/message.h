@@ -1,6 +1,7 @@
 #ifndef NETWORK_DREAM_MESSAGE_H
 #define NETWORK_DREAM_MESSAGE_H
 #include <cstdint>
+#include <ostream>
 #include <ns3/vector.h>
 #include "address/icao_address.h"
 
@@ -104,6 +105,8 @@ private:
     /** Maximum distance, m */
     double _max_distance;
 };
+
+std::ostream& operator << (std::ostream& stream, const Message::Type& type);
 
 }
 

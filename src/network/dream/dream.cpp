@@ -71,6 +71,7 @@ void Dream::Send(ns3::Packet packet, IcaoAddress destination) {
      // Add header
      const auto message = Message::DataMessage(_net_device->GetAddress(), destination, _default_ttl, packet.GetSize());
      packet.AddHeader(Header(message));
+     RecordPacketSent(packet.GetUid(), PacketRecorder::PacketType::Data);
      SendWithHeader(packet, destination);
 }
 
@@ -120,9 +121,12 @@ void Dream::OnPacketReceived(ns3::Packet packet) {
     Header header;
     packet.RemoveHeader(header);
     const auto message_type = header.GetMessage().GetType();
+    ADDR_LOG_INFO(message_type << " message from " << mesh_header.SourceAddress() << " packet " << packet.GetUid());
     if (message_type == Message::Type::Hello) {
+        RecordPacketReceived(packet.GetUid());
         HandleHello(mesh_header.SourceAddress(), header.GetMessage().Position());
     } else if (message_type == Message::Type::Position) {
+        RecordPacketReceived(packet.GetUid());
         HandlePosition(mesh_header.SourceAddress(), std::move(header.GetMessage()));
     } else if (message_type == Message::Type::Data) {
         HandleData(packet, std::move(header.GetMessage()));
@@ -179,6 +183,7 @@ void Dream::HandleData(ns3::Packet packet, Message&& message) {
     const auto local_address = _net_device->GetAddress();
     if (message.Destination() == local_address) {
         ADDR_LOG_INFO("Data arrived at " << local_address << " from " << message.Origin());
+        RecordPacketReceived(packet.GetUid());
         if (_receive_callback) {
             _receive_callback(packet);
         } else {
@@ -206,6 +211,7 @@ void Dream::SendPosition(double max_distance) {
     );
     ns3::Packet packet;
     packet.AddHeader(Header(message));
+    RecordPacketSent(packet.GetUid(), PacketRecorder::PacketType::Management);
     SendPacket(packet, IcaoAddress::Broadcast());
 }
 
@@ -216,6 +222,7 @@ void Dream::SendHello() {
     ns3::Packet packet;
     packet.AddHeader(Header(message));
     // Send to all neighbors
+    RecordPacketSent(packet.GetUid(), PacketRecorder::PacketType::Management);
     SendPacket(packet, IcaoAddress::Broadcast());
 
     ns3::Simulator::Schedule(_hello_interval, &Dream::SendHello, this);
@@ -240,9 +247,6 @@ void Dream::Cleanup() {
 
 void Dream::SetReceiveCallback(receive_callback callback) {
     _receive_callback = callback;
-}
-void Dream::SetPacketRecorder(ns3::Ptr<PacketRecorder> recorder) {
-    // Not yet implemented
 }
 
 ns3::TypeId Dream::GetTypeId() {

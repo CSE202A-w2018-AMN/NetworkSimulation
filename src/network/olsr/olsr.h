@@ -40,7 +40,6 @@ public:
     virtual void SetReceiveCallback(receive_callback callback) override;
 
     virtual void SetNetDevice(ns3::Ptr<MeshNetDevice> net_device) override;
-    virtual void SetPacketRecorder(ns3::Ptr<PacketRecorder> recorder) override;
 
     IcaoAddress Address() const;
 
@@ -150,9 +149,6 @@ private:
 
     void HandleTopologyControl(IcaoAddress sender, Message&& message);
     void HandleData(ns3::Packet packet, Message&& message);
-
-    void RecordPacketSent(std::uint64_t id, PacketRecorder::PacketType type);
-    void RecordPacketReceived(std::uint64_t id);
 };
 
 }
