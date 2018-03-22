@@ -34,7 +34,7 @@ Dream::Dream(ns3::Ptr<MeshNetDevice> net_device) :
     // Entry TTL values
     _routing(ns3::Hours(1)),
     _neighbors(ns3::Minutes(30)),
-    _default_ttl(8),
+    _default_ttl(3),
     // Intervals
     _hello_interval(ns3::Minutes(10)),
     _cleanup_interval(ns3::Minutes(10)),

@@ -120,12 +120,12 @@ int main(int argc, char** argv) {
     ns3::Time::SetResolution(ns3::Time::NS);
     ns3::LogComponentEnable("AircraftMeshSimulation", ns3::LOG_LEVEL_ALL);
     ns3::LogComponentEnable("record::SessionRecorder", ns3::LOG_LEVEL_INFO);
-    ns3::LogComponentEnable("PacketRecorder", ns3::LOG_LEVEL_LOGIC);
+    // ns3::LogComponentEnable("PacketRecorder", ns3::LOG_LEVEL_LOGIC);
     // ns3::LogComponentEnable("MeshNetDevice", ns3::LOG_LEVEL_LOGIC);
     // ns3::LogComponentEnable("AdsBSender", ns3::LOG_LEVEL_INFO);
     // ns3::LogComponentEnable("Ether", ns3::LOG_LEVEL_LOGIC);
     ns3::LogComponentEnable("OLSR", ns3::LOG_LEVEL_WARN);
-    ns3::LogComponentEnable("DREAM", ns3::LOG_LEVEL_INFO);
+    ns3::LogComponentEnable("DREAM", ns3::LOG_LEVEL_WARN);
     // ns3::LogComponentEnable("olsr::NeighborTable", ns3::LOG_LEVEL_LOGIC);
     // ns3::LogComponentEnable("olsr::TopologyTable", ns3::LOG_LEVEL_LOGIC);
     // ns3::LogComponentEnable("olsr::multipoint_relay", ns3::LOG_LEVEL_ALL);
