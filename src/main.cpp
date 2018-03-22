@@ -29,7 +29,8 @@ NS_LOG_COMPONENT_DEFINE("AircraftMeshSimulation");
 namespace {
 
 ns3::Ptr<NetworkProtocol> create_protocol() {
-    return ns3::CreateObject<olsr::Olsr>();
+    // return ns3::CreateObject<olsr::Olsr>();
+    return ns3::CreateObject<dream::Dream>();
 }
 
 /**
@@ -145,7 +146,10 @@ int main(int argc, char** argv) {
 
     // Set up network protocol
     for (auto iter = all_nodes.Begin(); iter != all_nodes.End(); ++iter) {
+        auto net_device = (*iter)->GetObject<MeshNetDevice>();
+        assert(net_device);
         auto protocol = create_protocol();
+        protocol->SetNetDevice(net_device);
         (*iter)->AggregateObject(protocol);
     }
 
@@ -161,10 +165,9 @@ int main(int argc, char** argv) {
     auto packet_recorder = ns3::CreateObject<PacketRecorder>();
     for (auto iter = all_nodes.Begin(); iter != all_nodes.End(); ++iter) {
         auto node = *iter;
-        assert(node);
-        auto olsr = node->GetObject<olsr::Olsr>();
-        assert(olsr);
-        olsr->SetPacketRecorder(packet_recorder);
+        auto protocol = node->GetObject<NetworkProtocol>();
+        assert(protocol);
+        protocol->SetPacketRecorder(packet_recorder);
     }
 
     adsb_senders.Start(ns3::Seconds(0));
